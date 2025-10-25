@@ -1,3 +1,4 @@
+#include "include.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -10,6 +11,7 @@
 #include <iomanip>
 
 namespace fs = std::filesystem;
+namespace core {
 
 namespace console
 {
@@ -23,21 +25,17 @@ namespace console
         cout << "\033[93mwarning\033[0m:\n└──────── " << name << endl;
     }
 
-    int err(const string& name) {
+    void err(const string& name) {
         cerr << "\033[91merror\033[0m:\n└──────── " << name << endl;
-        return 1;
+        exit(1);
     }
 } // namespace console
 
 namespace utils
 {
     fs::path getHomeDirectory() {
-#ifdef _WIN32
-        const char* home = std::getenv("USERPROFILE");
-#else
         const char* home = std::getenv("HOME");
-#endif
-        return home ? fs::path(home) : fs::path();
+        return home;
     }
 
     bool ends_with(const std::string& str, const std::string& suffix) {
@@ -76,13 +74,11 @@ namespace yaml
     std::string reed(const fs::path& fileName) {
         if (!fs::exists(fileName)) {
             console::err("file " + fileName.string() + " not found");
-            return "";
         }
 
         std::ifstream file(fileName);
         if (!file.is_open()) {
             console::err("cannot open file");
-            return "";
         }
 
         std::string fileContent((std::istreambuf_iterator<char>(file)),
@@ -109,29 +105,28 @@ namespace yaml
     }
 } // namespace yaml
 
-fs::path homeDirectory = utils::getHomeDirectory() / ".Clib";
+fs::path homeDirectory = utils::getHomeDirectory() / ".clib";
 
-int init() {
+void init() {
     try {
-        if (fs::create_directory(homeDirectory / "_sys")) {
+        if (fs::create_directory(homeDirectory)) {
             console::log("CLIB has been successfully initialized");
-            return 0;
         } else {
-            return console::err("initialization failed");
+            console::err("initialization failed");
         }
     } catch (const fs::filesystem_error& e) {
-        return console::err(e.what());
+        console::err(e.what());
     }
 }
 
-int install(const std::string& url, bool force = false) {
+void install(const std::string& url, const bool force) {
     if (!force) {
         char answer;
         std::cout << "Are you sure you want to install the library from '" << url << "'? [Y/n]: ";
         std::cin >> answer;
         answer = std::tolower(static_cast<unsigned char>(answer));
-        if (answer != 'y' && answer != '\n') {
-            return 0;
+        if (answer != 'y') {
+            return;
         }
     }
 
@@ -143,22 +138,25 @@ int install(const std::string& url, bool force = false) {
 
     try {
         if (!fs::create_directory(pkgPath)) {
-            return console::err("initialization failed");
+            console::err("initialization failed");
         }
     } catch (const fs::filesystem_error& e) {
-        return console::err(e.what());
+        console::err(e.what());
     }
 
     std::string cmd = "git clone --depth 1 " + url + " " + pkgPath.string();
     int result = system(cmd.c_str());
-
-    if (result != 0) {
-        console::err("Git clone failed with code " + std::to_string(result));
-    } else {
-        console::log("Library installed successfully to " + pkgPath.string());
-    }
-
     auto infoData = yaml::parser(yaml::reed(pkgPath / "info.yaml"));
+    if (result != 0) {
+        console::err("git clone failed with code " + std::to_string(result));
+    } else {
+        try{
+            fs::rename(pkgPath.string(), homeDirectory / infoData["name"]);
+        }catch (fs::filesystem_error& e) {
+            console::err(std::string("error: ") + e.what() + "\n");
+        }
+        console::log("library installed successfully to " + pkgPath.string());
+    }
 
     fs::create_directories(homeDirectory / "_sys");
 
@@ -172,17 +170,73 @@ int install(const std::string& url, bool force = false) {
         for (const auto& [key, value] : infoData) {
             pkgFile << key << ": " << value << "\n";
         }
-        pkgFile << "# - SOURCES - " << std::endl;
+        pkgFile << "" << std::endl;
         pkgFile << "git-url: " << url << std::endl;
         pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
         pkgFile.close();
 
         console::log("record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     }
-
-    return 0;
 }
 
-int main() {
-    return install("https://github.com/ZeleznaRuda/platform-lib.git");
+void uninstall(const std::string& pkgName, bool force) {
+    if (!force) {
+        char answer;
+        std::cout << "Are you sure you want to remove '" << pkgName << "' library? [Y/n]: ";
+        std::cin >> answer;
+        answer = std::tolower(static_cast<unsigned char>(answer));
+        if (answer != 'y') {
+            return;
+        }
+    }
+    fs::path pkgPath = homeDirectory / pkgName;
+
+    auto infoData = yaml::parser(yaml::reed(pkgPath / "info.yaml"));
+
+    fs::path pkgInfoFilePath = homeDirectory / "_sys" / (infoData["name"] + "-package.yaml");
+
+    try {
+        if (fs::exists(pkgPath) && fs::exists(pkgInfoFilePath) ) {
+            fs::remove_all(pkgPath);
+            fs::remove(pkgInfoFilePath);
+            console::log("library '" + pkgName + "' removed successfully.\n");
+        } else {
+            console::err("library '" + pkgName + "' does not exist.\n");
+        }
+    } catch (const fs::filesystem_error& e) {
+        console::err(std::string("error removing library: ") + e.what() + "\n");
+    }
 }
+
+
+void connect(const std::string& pkgName, const fs::path& targetDirectory) {
+    // ai//my
+    fs::path pkgPath = homeDirectory / pkgName;
+    if (!fs::exists(pkgPath)) {
+        console::err("library " + pkgName +" not found\n");
+    }
+
+    fs::path projectDirectory = targetDirectory / "libs" / pkgName;
+
+    fs::create_directories(projectDirectory.parent_path());
+
+    if (fs::exists(projectDirectory) || fs::is_symlink(projectDirectory)) {
+        std::error_code ec_remove;
+        if (fs::remove(projectDirectory, ec_remove)) {
+            console::log("disconnecting the project: "+projectDirectory.string() +"\n");
+        } else {
+            console::err("error disconnecting the project: "+ ec_remove.message()+"\n");
+        }
+    }
+
+    std::error_code ec;
+    fs::create_directory_symlink(pkgPath, projectDirectory, ec);
+    if (ec) {
+        console::err("error occurred when connecting project: " + ec.message() +"\n");
+    } else {
+        console::log("package '"+std::string(projectDirectory)+"' was successfully connected"+"\n");
+    }
+}
+}
+
+// .Clib filesystem error
