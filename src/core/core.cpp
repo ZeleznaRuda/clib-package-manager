@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <ctime>
 #include <iomanip>
+#include <regex>
 
 namespace fs = std::filesystem;
 namespace core {
@@ -17,17 +18,19 @@ namespace console
 {
     using namespace std;
 
-    void log(const string& name) {
+    void log(const std::string& name) {
         cout << "\033[92minfo\033[0m:\n└──────── " << name << endl;
     }
 
-    void warn(const string& name) {
+    void warn(const std::string& name) {
         cout << "\033[93mwarning\033[0m:\n└──────── " << name << endl;
     }
 
-    void err(const string& name) {
+    void err( const int exitCode,const std::string& name) {
         cerr << "\033[91merror\033[0m:\n└──────── " << name << endl;
-        exit(1);
+        if (exitCode != -1){
+            exit(exitCode);
+        }
     }
 } // namespace console
 
@@ -38,11 +41,33 @@ namespace utils
         return home;
     }
 
+    void isValidUrl(const std::string& name){
+
+        for (char c : name) {
+            if (!std::isalnum(c) && c != '/' && c != '.' && c != ':' && c != '-' && c != '_' && c != '@') {
+                console::err(1,"invalid character in git url");
+            }
+        }
+
+    }
+    std::string escapeShellArg(const std::string& arg) {
+        std::string escaped = "'";
+        for (char c : arg) {
+            if (c == '\'') escaped += "'\\''"; // close, add escaped single quote, reopen
+            else escaped += c;
+        }
+        escaped += "'";
+        return escaped;
+    }
     bool ends_with(const std::string& str, const std::string& suffix) {
         return str.size() >= suffix.size() &&
                str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
+    bool start_with(const std::string& str, const std::string& prefix) {
+        return str.size() >= prefix.size() &&
+               str.compare(0, prefix.size(), prefix) == 0;
+    }
     std::vector<std::string> split(const std::string& text, char delimiter) {
         std::vector<std::string> result;
         std::stringstream ss(text);
@@ -71,14 +96,14 @@ namespace utils
 
 namespace yaml
 {
-    std::string reed(const fs::path& fileName) {
+    std::string read(const fs::path& fileName) {
         if (!fs::exists(fileName)) {
-            console::err("file " + fileName.string() + " not found");
+            console::err(1,"file " + fileName.string() + " not found");
         }
 
         std::ifstream file(fileName);
         if (!file.is_open()) {
-            console::err("cannot open file");
+            console::err(1,"cannot open file");
         }
 
         std::string fileContent((std::istreambuf_iterator<char>(file)),
@@ -104,6 +129,38 @@ namespace yaml
         return data;
     }
 } // namespace yaml
+namespace lister
+{
+    std::string read(const fs::path& fileName) {
+        if (!fs::exists(fileName)) {
+            console::err(1,"file " + fileName.string() + " not found");
+        }
+
+        std::ifstream file(fileName);
+        if (!file.is_open()) {
+            console::err(1,"cannot open file");
+        }
+
+        std::string fileContent((std::istreambuf_iterator<char>(file)),
+                                 std::istreambuf_iterator<char>());
+
+        return fileContent;
+    }
+    std::vector<std::string> parser(const std::string& fileContent) {
+        std::vector<std::string> urls;
+        std::istringstream stream(fileContent);
+        std::string line;
+
+        while (std::getline(stream, line)) {
+            line = utils::strip(line);  // odstraní mezery a \n
+            if (!line.empty()) {
+                urls.push_back(line);
+            }
+        }
+
+        return urls;
+    }
+} // namespace lister
 
 fs::path homeDirectory = utils::getHomeDirectory() / ".clib";
 
@@ -112,48 +169,66 @@ void init() {
         if (fs::create_directory(homeDirectory)) {
             console::log("CLIB has been successfully initialized");
         } else {
-            console::err("initialization failed");
+            console::err(1,"initialization failed");
         }
     } catch (const fs::filesystem_error& e) {
-        console::err(e.what());
+        console::err(1,e.what());
     }
 }
 
-void install(const std::string& url, const bool force) {
+void install(const std::string& url, const bool force, const bool installDependencies) {
     if (!force) {
-        char answer;
         std::cout << "Are you sure you want to install the library from '" << url << "'? [Y/n]: ";
-        std::cin >> answer;
-        answer = std::tolower(static_cast<unsigned char>(answer));
+        std::string input;
+        std::getline(std::cin, input);
+        char answer = input.empty() ? 'n' : std::tolower(input[0]);
         if (answer != 'y') {
+            console::log("uninstallation cancelled by user");
             return;
         }
     }
 
+    if (!(utils::start_with(url, "http") || utils::start_with(url, "git@")) 
+    || !utils::ends_with(url, ".git")) {
+        console::err(1,"invalid git url format");
+    }
     std::string repoName = url.substr(url.find_last_of('/') + 1);
     if (utils::ends_with(repoName, ".git"))
         repoName = repoName.substr(0, repoName.size() - 4);
+
+
+
 
     fs::path pkgPath = homeDirectory / repoName;
 
     try {
         if (!fs::create_directory(pkgPath)) {
-            console::err("initialization failed");
+            console::err(2,"initialization failed");
         }
     } catch (const fs::filesystem_error& e) {
-        console::err(e.what());
+        console::err(2,e.what());
     }
 
-    std::string cmd = "git clone --depth 1 " + url + " " + pkgPath.string();
-    int result = system(cmd.c_str());
-    auto infoData = yaml::parser(yaml::reed(pkgPath / "info.yaml"));
+    std::string cmd = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string());
+    int result=system(cmd.c_str());
+
+    auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
+
+    
     if (result != 0) {
-        console::err("git clone failed with code " + std::to_string(result));
+        console::err(result,"git clone failed with code " + std::to_string(result));
     } else {
         try{
-            fs::rename(pkgPath.string(), homeDirectory / infoData["name"]);
+            fs::path newPath = homeDirectory / infoData["name"];
+            if (fs::exists(newPath)){
+                fs::remove_all(pkgPath);
+                console::err(1, "the library is already installed.");
+            }
+            fs::rename(pkgPath.string(), newPath);
+            pkgPath = newPath;
+
         }catch (fs::filesystem_error& e) {
-            console::err(std::string("error: ") + e.what() + "\n");
+            console::err(2,std::string("error: ") + e.what() + "\n");
         }
         console::log("library installed successfully to " + pkgPath.string());
     }
@@ -162,79 +237,111 @@ void install(const std::string& url, const bool force) {
 
     std::ofstream pkgFile(homeDirectory / "_sys" / (infoData["name"] + "-package.yaml"));
     if (!pkgFile) {
-        console::err("failed to create record: " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
+        console::err(2,"failed to create record: " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     } else {
         std::time_t t = std::time(nullptr);
         std::tm* now = std::localtime(&t);
+        pkgFile << "# package information:" << std::endl;
+        pkgFile << "name: " << infoData["name"] << std::endl;
+        pkgFile << "description: " << infoData["description"] << std::endl;
+        pkgFile << "version: " << infoData["version"] << std::endl;
 
-        for (const auto& [key, value] : infoData) {
-            pkgFile << key << ": " << value << "\n";
-        }
-        pkgFile << "" << std::endl;
+        pkgFile << std::endl;
+        pkgFile << "# origin:" << std::endl;
+        pkgFile << "author: " << infoData["author"] << std::endl;
         pkgFile << "git-url: " << url << std::endl;
         pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
-        pkgFile.close();
+
 
         console::log("record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     }
+    if (installDependencies && fs::exists(pkgPath / "dependencies.list")){
+        auto dependenciesData = lister::parser(yaml::read(pkgPath / "dependencies.list"));
+        pkgFile << std::endl;
+        pkgFile << "# dependencies:" << std::endl;
+        for (const auto& dep : dependenciesData){
+            console::log("installing dependency " + dep);
+            core::install(dep, true, false);
+            pkgFile << "dependence: " << dep << std::endl;
+        }
+    }
+    pkgFile.close();
+
+
 }
 
 void uninstall(const std::string& pkgName, bool force) {
     if (!force) {
-        char answer;
         std::cout << "Are you sure you want to remove '" << pkgName << "' library? [Y/n]: ";
-        std::cin >> answer;
-        answer = std::tolower(static_cast<unsigned char>(answer));
+        std::string input;
+        std::getline(std::cin, input);
+        char answer = input.empty() ? 'n' : std::tolower(input[0]);
         if (answer != 'y') {
+            console::log("uninstallation cancelled by user");
             return;
         }
     }
+
     fs::path pkgPath = homeDirectory / pkgName;
+    fs::path pkgInfoFilePath = homeDirectory / "_sys" / (pkgName + "-package.yaml");
 
-    auto infoData = yaml::parser(yaml::reed(pkgPath / "info.yaml"));
-
-    fs::path pkgInfoFilePath = homeDirectory / "_sys" / (infoData["name"] + "-package.yaml");
+    if (!fs::exists(pkgPath)) {
+        console::err(1, "library '" + pkgName + "' does not exist.");
+    }
 
     try {
-        if (fs::exists(pkgPath) && fs::exists(pkgInfoFilePath) ) {
-            fs::remove_all(pkgPath);
-            fs::remove(pkgInfoFilePath);
-            console::log("library '" + pkgName + "' removed successfully.\n");
-        } else {
-            console::err("library '" + pkgName + "' does not exist.\n");
-        }
+        if (fs::exists(pkgPath)) fs::remove_all(pkgPath);
+        if (fs::exists(pkgInfoFilePath)) fs::remove(pkgInfoFilePath);
+        console::log("library '" + pkgName + "' removed successfully.");
     } catch (const fs::filesystem_error& e) {
-        console::err(std::string("error removing library: ") + e.what() + "\n");
+        console::err(2, "error removing library: " + std::string(e.what()));
     }
 }
 
 
-void connect(const std::string& pkgName, const fs::path& targetDirectory) {
-    // ai//my
-    fs::path pkgPath = homeDirectory / pkgName;
-    if (!fs::exists(pkgPath)) {
-        console::err("library " + pkgName +" not found\n");
-    }
+void connect(const std::string& pkgName, const fs::path& targetDirectory, const bool all) {
+    std::vector<fs::path> packages;
 
-    fs::path projectDirectory = targetDirectory / "libs" / pkgName;
-
-    fs::create_directories(projectDirectory.parent_path());
-
-    if (fs::exists(projectDirectory) || fs::is_symlink(projectDirectory)) {
-        std::error_code ec_remove;
-        if (fs::remove(projectDirectory, ec_remove)) {
-            console::log("disconnecting the project: "+projectDirectory.string() +"\n");
-        } else {
-            console::err("error disconnecting the project: "+ ec_remove.message()+"\n");
+    if (all) {
+        for (auto& entry : fs::directory_iterator(homeDirectory)) {
+            if (fs::is_directory(entry.path())) {
+                std::string name = entry.path().filename().string();
+                if (name.empty() || name[0] == '_') {
+                    continue; 
+                }
+                packages.push_back(entry.path());
+            }
         }
+    } else {
+        fs::path pkgPath = homeDirectory / pkgName;
+        if (!fs::exists(pkgPath)) {
+            console::err(1,"library " + pkgName +" not found\n");
+        }
+        packages.push_back(pkgPath);
     }
 
-    std::error_code ec;
-    fs::create_directory_symlink(pkgPath, projectDirectory, ec);
-    if (ec) {
-        console::err("error occurred when connecting project: " + ec.message() +"\n");
-    } else {
-        console::log("package '"+std::string(projectDirectory)+"' was successfully connected"+"\n");
+    for (auto& pkgPath : packages) {
+        std::string name = pkgPath.filename().string();
+        fs::path projectDirectory = targetDirectory / "libs" / name;
+
+        fs::create_directories(projectDirectory.parent_path());
+
+        if (fs::exists(projectDirectory) || fs::is_symlink(projectDirectory)) {
+            std::error_code ec_remove;
+            if (fs::remove(projectDirectory, ec_remove)) {
+                console::log("disconnecting the project: " + projectDirectory.string() + "\n");
+            } else {
+                console::err(2,"error disconnecting the project: "+ ec_remove.message()+"\n");
+            }
+        }
+
+        std::error_code ec;
+        fs::create_directory_symlink(pkgPath, projectDirectory, ec);
+        if (ec) {
+            console::err(1,"error occurred when connecting project: " + ec.message() +"\n");
+        } else {
+            console::log("package '"+ projectDirectory.string() +"' was successfully connected\n");
+        }
     }
 }
 }

@@ -109,14 +109,22 @@ std::string version = "1.0.0";
 int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
     bool _force = false;
+    bool _all = false;
+    bool _installDep = false;
+
+
 
     argvparser::add_help("init",                "initializes clib");
-    argvparser::add_help("install",             "install library                    (supports the '-f' flag)");
-    argvparser::add_help("uninstall",           "uninstall library                  (supports the '-f' flag)");
-    argvparser::add_help("connect",             "connect clib to your project");
+    argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-I' flag)");
+    argvparser::add_help("uninstall",           "uninstall library                    (supports the '-f' flag)");
+    argvparser::add_help("connect",             "connect clib to your project         (supports the '-a' flag)");
     argvparser::add_help("create",              "creates a template based on the name ('CMakeLists.txt', 'info.yaml')");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
+    argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
+    argvparser::define_argument({"-I", "--InstDep"}, [&_installDep](){ _installDep = true;}, "installs dependencies along with the package");
+
+
     argvparser::define_argument({"-v", "--version"}, [](){ core::console::log(version); }, "shows the current CLIB versions");
 
 
@@ -124,18 +132,18 @@ int main(int argc, char* argv[]){
 
 
     if (!argvparser::has_argument(1)){
-        core::console::err("You don't entered a command. \n\t\thint: Use the --help or -h to display the command list.");
+        core::console::err(1,"You don't entered a command. \n\t\thint: Use the --help or -h to display the command list.");
     }
 
     std::string cmd = argvparser::get_argument(1);
     if (cmd == "init"){
         core::init();
     } else if (cmd == "install"){
-        core::install(argvparser::get_argument_after({"install"}), _force);
+        core::install(argvparser::get_argument_after({"install"}), _force, _installDep);
     } else if (cmd == "uninstall"){
         core::uninstall(argvparser::get_argument_after({"uninstall"}), _force);
     } else if (cmd == "connect"){
-        core::connect(argvparser::get_argument_after({"connect"}), fs::current_path());
+        core::connect(argvparser::get_argument_after({"connect"}), fs::current_path(), _all);
     } else if (cmd == "create"){
         templates::mk(argvparser::get_argument_after({"create"}),fs::current_path());
     }

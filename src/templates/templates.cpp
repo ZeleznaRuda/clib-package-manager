@@ -55,7 +55,7 @@ Darwin: true
 void mk(const std::string& name, const std::filesystem::path& targetDirectory){
     std::ofstream templateFile(targetDirectory / (name));
     if (!templateFile) {
-        core::console::err("failed to create template: " + targetDirectory.string());
+        core::console::err(2,"failed to create template: " + targetDirectory.string());
     } else {
         templateFile << data[name];
         templateFile.close();
