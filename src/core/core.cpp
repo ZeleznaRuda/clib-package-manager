@@ -253,8 +253,8 @@ void install(const std::string& url, const bool force, const bool installDepende
 
         console::log("record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     }
-    if (installDependencies && fs::exists(pkgPath / "dependencies.list")){
-        auto dependenciesData = lister::parser(yaml::read(pkgPath / "dependencies.list"));
+    if (installDependencies && fs::exists(pkgPath / "dependencies.txt")){
+        auto dependenciesData = lister::parser(yaml::read(pkgPath / "dependencies.txt"));
         pkgFile << std::endl;
         pkgFile << "# dependencies:" << std::endl;
         for (const auto& dep : dependenciesData){
@@ -339,6 +339,27 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
         }
     }
 }
+
+void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory, std::unordered_map<std::string, std::string>& data){
+
+    if (data.find(name) != data.end()){
+            std::ofstream templateFile(targetDirectory / (name));
+            if (!templateFile) {
+                core::console::err(2,"failed to create template: " + targetDirectory.string());
+            }
+            templateFile << data[name];
+            templateFile.close();
+
+            core::console::log("template successfully created " + targetDirectory.string());
+            
+        } else {
+            for (const auto& [key, value] : data) {
+                std::cout << "---" << key << "---" << value << "\n";}
+            console::err(1, "template '" + name + "' does not exist");
+
+        }
+    }
 }
+
 
 // .Clib filesystem error

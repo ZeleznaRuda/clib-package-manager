@@ -1,61 +1,41 @@
 # CLIBX Command-Line Tool Documentation
 
-**CLIBX** is a command-line tool written in **C++** that serves as a **package manager** for managing C/C++ libraries in your projects. It allows you to easily install, uninstall, connect, and manage library dependencies.
+**CLIBX** is a command-line tool written in **C++** that serves as a **package manager** for managing C/C++ libraries in your projects.  
+It allows you to easily **install**, **uninstall**, **connect**, **initialize**, and **manage** library dependencies.
 
-You can install libraries directly from **Git repositories** or use different **kits/packages** to include libraries in your project. This makes it flexible for both individual libraries and bundled sets of libraries.
-
-The prototype was written in **Python**.
+Libraries can be installed directly from **Git repositories**, or you can use **kits** (sets of dependent libraries).  
+The early prototype of CLIBX was written in **Python**.
 
 ---
 
-## Global Flags
+## Flags
 
-| Flag               | Description                                |
-| ------------------ | ------------------------------------------ |
-| `--version` / `-v` | Shows the current CLIBX version.           |
-| `--help` / `-h`    | Show this help message and exit.           |
-| `--force` / `-f`   | Executes the command without confirmation. |
+| Flag | Description |
+|------|--------------|
+| `--version`, `-v` | Shows the current CLIBX version. |
+| `--help`, `-h` | Shows this help message and exits. |
+| `--force`, `-f` | Executes the command without confirmation. |
+| `--web`, `-w` | Opens the CLIBX website. |
+| `--instDep`, `-I` | Installs dependencies along with the package. |
+| `--all`, `-a` | Connects all libraries you have installed. |
 
 ---
 
 ## Commands
 
 ### init
-
 Initializes CLIBX.
 
 ```bash
 clibx init
-```
+````
 
-### uninstall
+### template
 
-Uninstalls a library. Supports `-f` flag.
-
-```bash
-clibx uninstall <library_name> [-f]
-```
-
-### connect
-
-Connects CLIBX to your project. Supports `-a` flag.
+Creates a project template based on the given name.
 
 ```bash
-clibx connect <library_name> [-a]
-```
-
-#### Flags
-
-| Flag           | Description                                |
-| -------------- | ------------------------------------------ |
-| `--all` / `-a` | Connects all libraries you have installed. |
-
-### create
-
-Creates a template based on the name (`CMakeLists.txt`, `info.yaml`).
-
-```bash
-clibx create <template_name>
+clibx template <template_name>
 ```
 
 ### install
@@ -66,20 +46,47 @@ Installs a library. Supports `-f` and `-I` flags.
 clibx install <library_name> [-f] [-I]
 ```
 
-#### Flags
+| Flag              | Description                                   |
+| ----------------- | --------------------------------------------- |
+| `-f`              | Executes the command without confirmation.    |
+| `--instDep`, `-I` | Installs dependencies along with the package. |
 
-| Flag               | Description                                   |
-| ------------------ | --------------------------------------------- |
-| `-f`               | Executes the command without confirmation.    |
-| `--InstDep` / `-I` | Installs dependencies along with the package. |
+### uninstall
+
+Uninstalls a library. Supports the `-f` flag.
+
+```bash
+clibx uninstall <library_name> [-f]
+```
+
+### connect
+
+Connects CLIBX to your project. Supports the `-a` flag.
+
+```bash
+clibx connect <library_name> [-a]
+```
+
+| Flag          | Description                                |
+| ------------- | ------------------------------------------ |
+| `--all`, `-a` | Connects all libraries you have installed. |
+
+### Website and Info Commands
+
+| Command           | Description                      |
+| ----------------- | -------------------------------- |
+| `--web`, `-w`     | Opens the CLIBX website.         |
+| `--version`, `-v` | Shows the current CLIBX version. |
+| `--help`, `-h`    | Shows help and exits.            |
 
 ---
 
-## How to install the kits?
+## Installing Kits
 
-**Note about kits:** Kits are not actually kits as you might think. In reality, they are libraries that depend on other libraries included in the set. Set names are usually written in capital letters, and the description indicates which "libraries" are included.
+> **Kits** are not traditional bundles. They are libraries that depend on other libraries within the same set.
+> Kit names are usually written in uppercase, and their description specifies the libraries they include.
 
-**Installation process is simple:** use the `install` function, enter the Git URL to the repository, and add the `-I` flag.
+To install a kit (or a library) with all dependencies, use:
 
 ```bash
 clibx install "https://github.com/ZeleznaRuda/clibx-mainkit.git" [-f] -I
@@ -87,4 +94,6 @@ clibx install "https://github.com/ZeleznaRuda/clibx-mainkit.git" [-f] -I
 
 ---
 
-### ZeleznaRuda - 2025
+ ZeleznaRuda - 2025
+
+

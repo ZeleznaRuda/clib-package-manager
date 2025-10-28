@@ -6,7 +6,8 @@
 #include <iomanip> 
 #include <filesystem>
 #include <cstdlib>
-
+#include "core/include.h"
+#include "templates/include.h"
 namespace argvparser
 {
 
@@ -79,7 +80,7 @@ namespace argvparser
         return defaultValue;
     }
 
-    int parser(int i = 1) {
+    void parser(int i = 1) {
         if (argc <= 1) {
             help();
         }
@@ -89,18 +90,15 @@ namespace argvparser
                 definedArguments[arg]();
             } else {
                 if (starts_with(arg, "--")||starts_with(arg, "-")){
-                    std::cerr << "\033[1;91munknown argument:\033[0m " << arg << "\n";
-                    return 1;
+                    core::console::err(1,"\033[1;91munknown argument:\033[0m " + arg + "\n");
                 }
             }
         }
-        return 0;
     }
 
 } // namespace argvparser
 
-#include "core/include.h"
-#include "templates/include.h"
+
 
 namespace fs = std::filesystem;
 
@@ -117,12 +115,14 @@ int main(int argc, char* argv[]){
     argvparser::add_help("init",                "initializes clibx");
     argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-I' flag)");
     argvparser::add_help("uninstall",           "uninstall library                    (supports the '-f' flag)");
-    argvparser::add_help("connect",             "connect clibx to your project         (supports the '-a' flag)");
-    argvparser::add_help("create",              "creates a template based on the name ('CMakeLists.txt', 'info.yaml')");
+    argvparser::add_help("connect",             "connect clibx to your project        (supports the '-a' flag)");
+    argvparser::add_help("template",            "creates a template based on the name ");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
-    argvparser::define_argument({"-I", "--InstDep"}, [&_installDep](){ _installDep = true;}, "installs dependencies along with the package");
+    argvparser::define_argument({"-I", "--instDep"}, [&_installDep](){ _installDep = true;}, "installs dependencies along with the package");
+    argvparser::define_argument({"-w", "--web"}, [](){ system("xdg-open 'https://zeleznaruda.github.io/clibx-package-manager/'"); }, "opens the CLIBX website");
+
 
 
     argvparser::define_argument({"-v", "--version"}, [](){ core::console::log(version); }, "shows the current CLIBX versions");
@@ -139,13 +139,29 @@ int main(int argc, char* argv[]){
     if (cmd == "init"){
         core::init();
     } else if (cmd == "install"){
-        core::install(argvparser::get_argument_after({"install"}), _force, _installDep);
+        if (argvparser::has_argument(2) ){
+            core::install(argvparser::get_argument_after({"install"}), _force, _installDep);
+        } else {
+            core::console::err(1, "we expect an argument");
+        }
     } else if (cmd == "uninstall"){
-        core::uninstall(argvparser::get_argument_after({"uninstall"}), _force);
+        if (argvparser::has_argument(2)){
+            core::uninstall(argvparser::get_argument_after({"uninstall"}), _force);
+        } else {
+            core::console::err(1, "we expect an argument");
+        }
     } else if (cmd == "connect"){
-        core::connect(argvparser::get_argument_after({"connect"}), fs::current_path(), _all);
-    } else if (cmd == "create"){
-        templates::mk(argvparser::get_argument_after({"create"}),fs::current_path());
+        if (argvparser::has_argument(2)){
+            core::connect(argvparser::get_argument_after({"connect"}), fs::current_path(), _all);
+        } else {
+            core::console::err(1, "we expect an argument");
+        }
+    } else if (cmd == "template"){
+        if (argvparser::has_argument(2)){
+            core::ctemplate(argvparser::get_argument_after({"template"}),fs::current_path(),templates::data);
+        } else {
+            core::console::err(1, "we expect an argument");
+        }
     }
 
 
