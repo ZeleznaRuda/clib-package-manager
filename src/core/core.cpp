@@ -162,12 +162,15 @@ namespace lister
     }
 } // namespace lister
 
-fs::path homeDirectory = utils::getHomeDirectory() / ".clib";
+fs::path homeDirectory = utils::getHomeDirectory() / ".clibx";
 
 void init() {
     try {
         if (fs::create_directory(homeDirectory)) {
-            console::log("CLIB has been successfully initialized");
+            std::ofstream READMEFile(homeDirectory / "README.md");
+            READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
+            READMEFile.close();
+            console::log("CLIBX has been successfully initialized");
         } else {
             console::err(1,"initialization failed");
         }
@@ -183,7 +186,7 @@ void install(const std::string& url, const bool force, const bool installDepende
         std::getline(std::cin, input);
         char answer = input.empty() ? 'n' : std::tolower(input[0]);
         if (answer != 'y') {
-            console::log("uninstallation cancelled by user");
+            console::log("installation cancelled by user");
             return;
         }
     }
@@ -195,9 +198,6 @@ void install(const std::string& url, const bool force, const bool installDepende
     std::string repoName = url.substr(url.find_last_of('/') + 1);
     if (utils::ends_with(repoName, ".git"))
         repoName = repoName.substr(0, repoName.size() - 4);
-
-
-
 
     fs::path pkgPath = homeDirectory / repoName;
 
@@ -214,7 +214,6 @@ void install(const std::string& url, const bool force, const bool installDepende
 
     auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
 
-    
     if (result != 0) {
         console::err(result,"git clone failed with code " + std::to_string(result));
     } else {
@@ -252,7 +251,6 @@ void install(const std::string& url, const bool force, const bool installDepende
         pkgFile << "git-url: " << url << std::endl;
         pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
 
-
         console::log("record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     }
     if (installDependencies && fs::exists(pkgPath / "dependencies.list")){
@@ -266,8 +264,6 @@ void install(const std::string& url, const bool force, const bool installDepende
         }
     }
     pkgFile.close();
-
-
 }
 
 void uninstall(const std::string& pkgName, bool force) {
@@ -297,7 +293,6 @@ void uninstall(const std::string& pkgName, bool force) {
         console::err(2, "error removing library: " + std::string(e.what()));
     }
 }
-
 
 void connect(const std::string& pkgName, const fs::path& targetDirectory, const bool all) {
     std::vector<fs::path> packages;

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLIBX Command-Line Tool Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #ecf0f1;
+        }
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        pre {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .intro {
+            background-color: #e8f0fe;
+            padding: 15px;
+            border-left: 5px solid #2196f3;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CLIBX Command-Line Tool Documentation</h1>
+
+    <div class="intro">
+        <p><strong>CLIBX</strong> is a command-line tool written in <strong>C++</strong> that serves as a <strong>package manager</strong> for managing C/C++ libraries in your projects. It allows you to easily install, uninstall, connect, and manage library dependencies.</p>
+        <p>You can install libraries directly from <strong>Git repositories</strong> or use different <strong>kits/packages</strong> to include libraries in your project. This makes it flexible for both individual libraries and bundled sets of libraries.</p>
+        <p>The prototype was written in <strong>Python</strong></p>
+    </div>
+
+
+    <h2>Global Flags</h2>
+    <table>
+        <tr>
+            <th>Flag</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>--version</code> / <code>-v</code></td>
+            <td>Shows the current CLIBX version.</td>
+        </tr>
+        <tr>
+            <td><code>--help</code> / <code>-h</code></td>
+            <td>Show this help message and exit.</td>
+        </tr>
+        <tr>
+            <td><code>--force</code> / <code>-f</code></td>
+            <td>Executes the command without confirmation.</td>
+        </tr>
+    </table>
+
+    <h2>Commands</h2>
+
+    <h3>init</h3>
+    <p>Initializes CLIBX.</p>
+    <pre><code>clibx init</code></pre>
+
+    <h3>uninstall</h3>
+    <p>Uninstalls a library. Supports <code>-f</code> flag.</p>
+    <pre><code>clibx uninstall &lt;library_name&gt; [-f]</code></pre>
+
+    <h3>connect</h3>
+    <p>Connects CLIBX to your project. Supports <code>-a</code> flag.</p>
+    <pre><code>clibx connect &lt;library_name&gt; [-a]</code></pre>
+
+    <h4>Flags</h4>
+    <table>
+        <tr>
+            <th>Flag</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>--all</code> / <code>-a</code></td>
+            <td>Connects all libraries you have installed.</td>
+        </tr>
+    </table>
+
+    <h3>create</h3>
+    <p>Creates a template based on the name (<code>CMakeLists.txt</code>, <code>info.yaml</code>).</p>
+    <pre><code>clibx create &lt;template_name&gt;</code></pre>
+
+    <h3>install</h3>
+    <p>Installs a library. Supports <code>-f</code> and <code>-I</code> flags.</p>
+    <pre><code>clibx install &lt;library_name&gt; [-f] [-I]</code></pre>
+
+    <h4>Flags</h4>
+    <table>
+        <tr>
+            <th>Flag</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>-f</code></td>
+            <td>Executes the command without confirmation.</td>
+        </tr>
+        <tr>
+            <td><code>--InstDep</code> / <code>-I</code></td>
+            <td>Installs dependencies along with the package.</td>
+        </tr>
+    </table>
+    <h1>How to install the kits?</h1>
+    <div class="intro">
+        <p><strong>Note about kits:</strong> Kits are not actually kits as you might think. In reality, they are libraries that depend on other libraries included in the set. Set names are usually written in capital letters, and the description indicates which "libraries" are included.</p>
+    </div>
+    <p><strong>Installation process is simple:</strong> use the <code>install</code> function, enter the Git URL to the repository, and add the <code>-I</code> flag.</p>
+    <pre><code>clibx install "https://github.com/ZeleznaRuda/clibx-mainkit.git" [-f] -I</code></pre>
+    <br><br>
+
+    <h3>ZeleznaRuda - 2025</h3>
+
+</body>
+</html>

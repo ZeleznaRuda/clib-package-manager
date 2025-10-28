@@ -104,7 +104,7 @@ namespace argvparser
 
 namespace fs = std::filesystem;
 
-std::string version = "1.0.0";
+std::string version = "1.0.2";
 
 int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
@@ -114,10 +114,10 @@ int main(int argc, char* argv[]){
 
 
 
-    argvparser::add_help("init",                "initializes clib");
+    argvparser::add_help("init",                "initializes clibx");
     argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-I' flag)");
     argvparser::add_help("uninstall",           "uninstall library                    (supports the '-f' flag)");
-    argvparser::add_help("connect",             "connect clib to your project         (supports the '-a' flag)");
+    argvparser::add_help("connect",             "connect clibx to your project         (supports the '-a' flag)");
     argvparser::add_help("create",              "creates a template based on the name ('CMakeLists.txt', 'info.yaml')");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
     argvparser::define_argument({"-I", "--InstDep"}, [&_installDep](){ _installDep = true;}, "installs dependencies along with the package");
 
 
-    argvparser::define_argument({"-v", "--version"}, [](){ core::console::log(version); }, "shows the current CLIB versions");
+    argvparser::define_argument({"-v", "--version"}, [](){ core::console::log(version); }, "shows the current CLIBX versions");
 
 
     argvparser::parser();

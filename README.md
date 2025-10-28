@@ -1,7 +1,6 @@
+# CLIBX Command-Line Tool Documentation
 
-# CLIB Command-Line Tool Documentation
-
-**CLIB** is a command-line tool written in **C++** that serves as a **package manager** for managing C/C++ libraries in your projects. It allows you to easily install, uninstall, connect, and manage library dependencies.
+**CLIBX** is a command-line tool written in **C++** that serves as a **package manager** for managing C/C++ libraries in your projects. It allows you to easily install, uninstall, connect, and manage library dependencies.
 
 You can install libraries directly from **Git repositories** or use different **kits/packages** to include libraries in your project. This makes it flexible for both individual libraries and bundled sets of libraries.
 
@@ -13,7 +12,7 @@ The prototype was written in **Python**.
 
 | Flag               | Description                                |
 | ------------------ | ------------------------------------------ |
-| `--version` / `-v` | Shows the current CLIB version.            |
+| `--version` / `-v` | Shows the current CLIBX version.           |
 | `--help` / `-h`    | Show this help message and exit.           |
 | `--force` / `-f`   | Executes the command without confirmation. |
 
@@ -23,10 +22,10 @@ The prototype was written in **Python**.
 
 ### init
 
-Initializes CLIB.
+Initializes CLIBX.
 
 ```bash
-clib init
+clibx init
 ```
 
 ### uninstall
@@ -34,15 +33,15 @@ clib init
 Uninstalls a library. Supports `-f` flag.
 
 ```bash
-clib uninstall <library_name> [-f]
+clibx uninstall <library_name> [-f]
 ```
 
 ### connect
 
-Connects CLIB to your project. Supports `-a` flag.
+Connects CLIBX to your project. Supports `-a` flag.
 
 ```bash
-clib connect <library_name> [-a]
+clibx connect <library_name> [-a]
 ```
 
 #### Flags
@@ -56,7 +55,7 @@ clib connect <library_name> [-a]
 Creates a template based on the name (`CMakeLists.txt`, `info.yaml`).
 
 ```bash
-clib create <template_name>
+clibx create <template_name>
 ```
 
 ### install
@@ -64,7 +63,7 @@ clib create <template_name>
 Installs a library. Supports `-f` and `-I` flags.
 
 ```bash
-clib install <library_name> [-f] [-I]
+clibx install <library_name> [-f] [-I]
 ```
 
 #### Flags
@@ -83,10 +82,9 @@ clib install <library_name> [-f] [-I]
 **Installation process is simple:** use the `install` function, enter the Git URL to the repository, and add the `-I` flag.
 
 ```bash
-clib install "https://github.com/ZeleznaRuda/clib-mainkit.git" [-f] -I
+clibx install "https://github.com/ZeleznaRuda/clibx-mainkit.git" [-f] -I
 ```
 
 ---
 
 ### ZeleznaRuda - 2025
-
