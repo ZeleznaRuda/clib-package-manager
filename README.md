@@ -67,6 +67,14 @@ Connects CLIBX to your project. Supports the `-a` flag.
 clibx connect <library_name> [-a]
 ```
 
+### search
+
+Checks the repository is available
+
+```bash
+clibx search <library_name>
+```
+
 | Flag          | Description                                |
 | ------------- | ------------------------------------------ |
 | `--all`, `-a` | Connects all libraries you have installed. |

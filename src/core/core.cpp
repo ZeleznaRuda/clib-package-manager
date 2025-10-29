@@ -359,6 +359,17 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
 
         }
     }
+
+void search(const std::string& repoName){
+    std::string command = "git ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null; ";
+    int result = system(command.c_str());
+    if (result == 0){
+        console::log("the library is accessible");
+    } else {
+        console::warn("library is not accessible");
+    }
+}
+
 }
 
 

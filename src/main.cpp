@@ -117,6 +117,7 @@ int main(int argc, char* argv[]){
     argvparser::add_help("uninstall",           "uninstall library                    (supports the '-f' flag)");
     argvparser::add_help("connect",             "connect clibx to your project        (supports the '-a' flag)");
     argvparser::add_help("template",            "creates a template based on the name ");
+    argvparser::add_help("search",              "checks the repository is available");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
@@ -159,6 +160,12 @@ int main(int argc, char* argv[]){
     } else if (cmd == "template"){
         if (argvparser::has_argument(2)){
             core::ctemplate(argvparser::get_argument_after({"template"}),fs::current_path(),templates::data);
+        } else {
+            core::console::err(1, "we expect an argument");
+        }
+    } else if (cmd == "search"){
+        if (argvparser::has_argument(2)){
+            core::search(argvparser::get_argument_after({"search"}));
         } else {
             core::console::err(1, "we expect an argument");
         }

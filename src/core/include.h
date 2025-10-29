@@ -14,4 +14,5 @@ namespace core {
     void uninstall(const std::string& pkgName, bool force = false);
     void connect(const std::string& pkgName, const std::filesystem::path& targetDirectory, const bool all);
     void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory, std::unordered_map<std::string, std::string>& data);
+    void search(const std::string& repoName);
 }
