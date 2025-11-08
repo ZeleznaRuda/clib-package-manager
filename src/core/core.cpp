@@ -209,8 +209,8 @@ void install(const std::string& url, const bool force, const bool installDepende
         console::err(2,e.what());
     }
 
-    std::string cmd = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string());
-    int result=system(cmd.c_str());
+    std::string command = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string()) + " &> /dev/null";
+    int result=system(command.c_str());
 
     auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
 
@@ -361,7 +361,7 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
     }
 
 void search(const std::string& repoName){
-    std::string command = "git ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null; ";
+    std::string command = "git ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null";
     int result = system(command.c_str());
     if (result == 0){
         console::log("the library is accessible");

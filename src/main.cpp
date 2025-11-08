@@ -135,40 +135,25 @@ int main(int argc, char* argv[]){
     if (!argvparser::has_argument(1)){
         core::console::err(1,"You don't entered a command. \n\t\thint: Use the --help or -h to display the command list.");
     }
-
-    std::string cmd = argvparser::get_argument(1);
+    std::string cmd;
+    if (argvparser::has_argument(2)){
+        cmd = argvparser::get_argument(1);
+    } else {
+        core::console::err(1, "we expect an argument");
+    }
+    
     if (cmd == "init"){
         core::init();
     } else if (cmd == "install"){
-        if (argvparser::has_argument(2) ){
-            core::install(argvparser::get_argument_after({"install"}), _force, _installDep);
-        } else {
-            core::console::err(1, "we expect an argument");
-        }
+            core::install(argvparser::get_argument_after({cmd}), _force, _installDep);
     } else if (cmd == "uninstall"){
-        if (argvparser::has_argument(2)){
-            core::uninstall(argvparser::get_argument_after({"uninstall"}), _force);
-        } else {
-            core::console::err(1, "we expect an argument");
-        }
+            core::uninstall(argvparser::get_argument_after({cmd}), _force);
     } else if (cmd == "connect"){
-        if (argvparser::has_argument(2)){
-            core::connect(argvparser::get_argument_after({"connect"}), fs::current_path(), _all);
-        } else {
-            core::console::err(1, "we expect an argument");
-        }
+            core::connect(argvparser::get_argument_after({cmd}), fs::current_path(), _all);
     } else if (cmd == "template"){
-        if (argvparser::has_argument(2)){
-            core::ctemplate(argvparser::get_argument_after({"template"}),fs::current_path(),templates::data);
-        } else {
-            core::console::err(1, "we expect an argument");
-        }
+            core::ctemplate(argvparser::get_argument_after({cmd}),fs::current_path(),templates::data);
     } else if (cmd == "search"){
-        if (argvparser::has_argument(2)){
-            core::search(argvparser::get_argument_after({"search"}));
-        } else {
-            core::console::err(1, "we expect an argument");
-        }
+            core::search(argvparser::get_argument_after({cmd}));
     }
 
 
