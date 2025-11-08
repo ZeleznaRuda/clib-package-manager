@@ -1,4 +1,3 @@
-#include "include.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -11,156 +10,12 @@
 #include <iomanip>
 #include <regex>
 
+#include "../include/core.h"
+#include "../include/utils.h"
+
 namespace fs = std::filesystem;
+
 namespace core {
-
-namespace console
-{
-    using namespace std;
-
-    void log(const std::string& name) {
-        cout << "\033[92minfo\033[0m:\n└──────── " << name << endl;
-    }
-
-    void warn(const std::string& name) {
-        cout << "\033[93mwarning\033[0m:\n└──────── " << name << endl;
-    }
-
-    void err( const int exitCode,const std::string& name) {
-        cerr << "\033[91merror\033[0m:\n└──────── " << name << endl;
-        if (exitCode != -1){
-            exit(exitCode);
-        }
-    }
-} // namespace console
-
-namespace utils
-{
-    fs::path getHomeDirectory() {
-        const char* home = std::getenv("HOME");
-        return home;
-    }
-
-    void isValidUrl(const std::string& name){
-
-        for (char c : name) {
-            if (!std::isalnum(c) && c != '/' && c != '.' && c != ':' && c != '-' && c != '_' && c != '@') {
-                console::err(1,"invalid character in git url");
-            }
-        }
-
-    }
-    std::string escapeShellArg(const std::string& arg) {
-        std::string escaped = "'";
-        for (char c : arg) {
-            if (c == '\'') escaped += "'\\''"; // close, add escaped single quote, reopen
-            else escaped += c;
-        }
-        escaped += "'";
-        return escaped;
-    }
-    bool ends_with(const std::string& str, const std::string& suffix) {
-        return str.size() >= suffix.size() &&
-               str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
-    }
-
-    bool start_with(const std::string& str, const std::string& prefix) {
-        return str.size() >= prefix.size() &&
-               str.compare(0, prefix.size(), prefix) == 0;
-    }
-    std::vector<std::string> split(const std::string& text, char delimiter) {
-        std::vector<std::string> result;
-        std::stringstream ss(text);
-        std::string item;
-
-        while (std::getline(ss, item, delimiter)) {
-            result.push_back(item);
-        }
-
-        return result;
-    }
-
-    std::string strip(const std::string& s) {
-        size_t start = 0;
-        size_t end = s.size();
-
-        while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start])))
-            ++start;
-
-        while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1])))
-            --end;
-
-        return s.substr(start, end - start);
-    }
-} // namespace utils
-
-namespace yaml
-{
-    std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) {
-            console::err(1,"file " + fileName.string() + " not found");
-        }
-
-        std::ifstream file(fileName);
-        if (!file.is_open()) {
-            console::err(1,"cannot open file");
-        }
-
-        std::string fileContent((std::istreambuf_iterator<char>(file)),
-                                 std::istreambuf_iterator<char>());
-
-        return fileContent;
-    }
-
-    std::unordered_map<std::string, std::string> parser(const std::string& fileContent) {
-        std::unordered_map<std::string, std::string> data;
-        auto lines = utils::split(fileContent, '\n');
-
-        for (auto& l : lines) {
-            l = utils::strip(l);
-            if (l.empty() || l[0] == '#') continue;
-            auto parts = utils::split(l, ':');
-            if (parts.size() == 2) {
-                std::string key = utils::strip(parts[0]);
-                std::string value = utils::strip(parts[1]);
-                data[key] = value;
-            }
-        }
-        return data;
-    }
-} // namespace yaml
-namespace lister
-{
-    std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) {
-            console::err(1,"file " + fileName.string() + " not found");
-        }
-
-        std::ifstream file(fileName);
-        if (!file.is_open()) {
-            console::err(1,"cannot open file");
-        }
-
-        std::string fileContent((std::istreambuf_iterator<char>(file)),
-                                 std::istreambuf_iterator<char>());
-
-        return fileContent;
-    }
-    std::vector<std::string> parser(const std::string& fileContent) {
-        std::vector<std::string> urls;
-        std::istringstream stream(fileContent);
-        std::string line;
-
-        while (std::getline(stream, line)) {
-            line = utils::strip(line);  // odstraní mezery a \n
-            if (!line.empty()) {
-                urls.push_back(line);
-            }
-        }
-
-        return urls;
-    }
-} // namespace lister
 
 fs::path homeDirectory = utils::getHomeDirectory() / ".clibx";
 
@@ -345,12 +200,12 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
     if (data.find(name) != data.end()){
             std::ofstream templateFile(targetDirectory / (name));
             if (!templateFile) {
-                core::console::err(2,"failed to create template: " + targetDirectory.string());
+                console::err(2,"failed to create template: " + targetDirectory.string());
             }
             templateFile << data[name];
             templateFile.close();
 
-            core::console::log("template successfully created " + targetDirectory.string());
+            console::log("template successfully created " + targetDirectory.string());
             
         } else {
             for (const auto& [key, value] : data) {
