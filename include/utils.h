@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <unordered_map>
 #include <filesystem>
 #include <cstdlib>
@@ -70,15 +71,46 @@ namespace argvparser
 
     namespace {
         inline void help() {
-            int maxKeyLength = 0;
-            for (const auto& [key, val] : descriptionsArguments) {
-                if (key.length() > maxKeyLength) maxKeyLength = key.length();
+            std::cout << "Usage: clibx" << " [options]\n\n";
+
+            std::vector<std::pair<std::string, std::string>> flags;
+            std::vector<std::pair<std::string, std::string>> options;
+
+            for (const auto& kv : descriptionsArguments) {
+                if (!kv.first.empty() && kv.first[0] == '-') {
+                    flags.push_back(kv);
+                } else {
+                    options.push_back(kv);
+                }
             }
-            for (const auto& [key, val] : descriptionsArguments) {
-                std::cout << std::setw(maxKeyLength + 2) << std::left << key
-                          << " - " << val << std::endl;
+
+            auto cmp_length = [](const auto& a, const auto& b) {
+                return a.first.length() < b.first.length();
+            };
+
+            std::sort(flags.begin(), flags.end(), cmp_length);
+            std::sort(options.begin(), options.end(), cmp_length);
+
+            if (!flags.empty()) {
+                std::cout << "Flags:\n";
+                for (const auto& kv : flags) {
+                    int spacing = 20 - kv.first.length();
+                    if (spacing < 1) spacing = 1;
+                    std::cout << "  " << kv.first << std::string(spacing, ' ') << kv.second << "\n";
+                }
+                std::cout << "\n";
+            }
+
+            if (!options.empty()) {
+                std::cout << "Options:\n";
+                for (const auto& kv : options) {
+                    int spacing = 20 - kv.first.length();
+                    if (spacing < 1) spacing = 1;
+                    std::cout << "  " << kv.first << std::string(spacing, ' ') << kv.second << "\n";
+                }
             }
         }
+
 
         inline bool starts_with(const std::string& text, const std::string& prefix) {
             return text.rfind(prefix, 0) == 0;
