@@ -63,6 +63,5 @@ int main(int argc, char* argv[]){
             core::search(argvparser::get_argument_after({cmd}));
     }
 
-
     return 0;
 }
