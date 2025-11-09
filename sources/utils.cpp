@@ -66,26 +66,44 @@ namespace console
 namespace yaml
 {
     std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) console::err(1, "file " + fileName.string() + " not found");
+        if (!fs::exists(fileName))
+            console::err(1, "file " + fileName.string() + " not found");
+
         std::ifstream file(fileName);
-        if (!file.is_open()) console::err(1, "cannot open file");
-        return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        if (!file.is_open())
+            console::err(1, "cannot open file");
+
+        return std::string((std::istreambuf_iterator<char>(file)),
+                           std::istreambuf_iterator<char>());
     }
 
     std::unordered_map<std::string, std::string> parser(const std::string& fileContent) {
         std::unordered_map<std::string, std::string> data;
         auto lines = utils::split(fileContent, '\n');
+
         for (auto& l : lines) {
             l = utils::strip(l);
             if (l.empty() || l[0] == '#') continue;
+
+            auto hashPos = l.find('#');
+            if (hashPos != std::string::npos)
+                l = l.substr(0, hashPos);
+
+            l = utils::strip(l);
+            if (l.empty()) continue;
+
             auto parts = utils::split(l, ':');
-            if (parts.size() == 2) {
-                data[utils::strip(parts[0])] = utils::strip(parts[1]);
+            if (parts.size() >= 2) {
+                std::string key = utils::strip(parts[0]);
+                std::string value = utils::strip(l.substr(l.find(':') + 1));
+                data[key] = value;
             }
         }
+
         return data;
     }
 }
+
 
 namespace lister
 {
