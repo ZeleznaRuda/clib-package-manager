@@ -10,4 +10,3 @@ For more information, visit our website: https://rudolfmuller.github.io/clibx-pa
 
 ### Rudolf Müller - 2025
 
-
