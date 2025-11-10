@@ -10,4 +10,6 @@ namespace core {
     void connect(const std::string& pkgName, const std::filesystem::path& targetDirectory, const bool all);
     void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory, std::unordered_map<std::string, std::string>& data);
     void search(const std::string& repoName);
+    void info(const std::string& repoName);
+    void ls();
 }

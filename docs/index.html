@@ -79,7 +79,7 @@
         <tr><td><code>--help</code> / <code>-h</code></td><td>Shows this help message and exits.</td></tr>
         <tr><td><code>--force</code> / <code>-f</code></td><td>Executes the command without confirmation.</td></tr>
         <tr><td><code>--web</code> / <code>-w</code></td><td>Opens the CLIBX website.</td></tr>
-        <tr><td><code>--instDep</code> / <code>-I</code></td><td>Installs dependencies along with the package.</td></tr>
+        <tr><td><code>--dep</code> / <code>-d</code></td><td>Installs dependencies along with the package.</td></tr>
         <tr><td><code>--all</code> / <code>-a</code></td><td>Connects all libraries you have installed.</td></tr>
     </table>
 
@@ -94,8 +94,8 @@
     <pre><code>clibx template &lt;template_name&gt;</code></pre>
 
     <h3>install</h3>
-    <p>Installs a library. Supports <code>-f</code> and <code>-I</code> flags.</p>
-    <pre><code>clibx install &lt;library_name&gt; [-f] [-I]</code></pre>
+    <p>Installs a library. Supports <code>-f</code> and <code>-d</code> flags.</p>
+    <pre><code>clibx install &lt;library_name&gt; [-f] [-d]</code></pre>
 
     <h3>uninstall</h3>
     <p>Uninstalls a library. Supports the <code>-f</code> flag.</p>
@@ -108,6 +108,14 @@
     <h3>search</h3>
     <p>Checks the repository is available</p>
     <pre><code>clibx search &lt;library_name&gt;</code></pre>
+
+    <h3>ls</h3>
+    <p>Print a list of installed libraries</p>
+    <pre><code>clibx ls</code></pre>
+
+    <h3>info</h3>
+    <p>Print package information</p>
+    <pre><code>clibx info &lt;library_name&gt;</code></pre>
 
     <h2>Website and Info Commands</h2>
     <table>
@@ -123,10 +131,10 @@
     </div>
 
     <p>To install a kit or library with dependencies:</p>
-    <pre><code>clibx install "https://github.com/ZeleznaRuda/clibx-mainkit.git" [-f] -I</code></pre>
+    <pre><code>clibx install &lt;library_name&gt; [-f] -d</code></pre>
 
     <footer>
-        <p><strong>ZeleznaRuda - 2025</strong></p>
+        <p><strong>Rudolf Müller - 2025</strong></p>
     </footer>
 
 </body>

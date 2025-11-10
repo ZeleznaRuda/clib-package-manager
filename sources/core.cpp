@@ -224,5 +224,37 @@ void search(const std::string& repoName){
         console::warn("library is not accessible");
     }
 }
+void info(const std::string& repoName){
+    const std::string suffix = "-package.yaml";
 
+    std::string name = repoName;
+
+    if (name.size() >= suffix.size() &&
+            name.compare(name.size() - suffix.size(), suffix.size(), suffix) == 0) {
+            name.erase(name.size() - suffix.size());
+    }
+    std::ifstream file(homeDirectory / "_sys" / (name + suffix)); 
+    if (!file.is_open()) {
+        console::err(1, "package does not exist");
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {  
+        std::cout << line << std::endl;
+    }
+
+    file.close();  
 }
+void ls(){
+    std::cout << "Installed library:" << std::endl;
+
+    for (const auto& entry : fs::directory_iterator(homeDirectory)) {
+        if (!fs::is_directory(entry.path())) continue;
+        std::string name = entry.path().filename().string();
+        if (name == "_sys") continue;
+        std::cout << "\t" << name << std::endl;
+    }
+}
+}
+/*    for (const auto& entry : fs::directory_iterator(path))
+        std::cout << entry.path() << std::endl;*/
