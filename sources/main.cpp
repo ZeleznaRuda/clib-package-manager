@@ -13,7 +13,7 @@
 
 namespace fs = std::filesystem;
 
-std::string version = "1.0.2";
+std::string version = "1.1.1";
 
 int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
@@ -62,6 +62,7 @@ int main(int argc, char* argv[]){
     } else if (cmd == "search"){
             core::search(argvparser::get_argument_after({cmd}));
     }
+
 
     return 0;
 }
