@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
     argvparser::define_argument({"-d", "--dep"}, [&_installDep](){ _installDep = true;}, "installs dependencies along with the package");
-    argvparser::define_argument({"-w", "--web"}, [](){ system("xdg-open 'https://github.com/rudolfmuller/clibx-package-manager'"); }, "opens the CLIBX website");
+    argvparser::define_argument({"-w", "--web"}, [](){ system("xdg-open 'https://github.com/rudolfmuller/clibx-package-manager';xdg-open 'https://rudolfmuller.github.io/clibx-package-manager/'"); }, "opens the CLIBX website");
 
 
 
