@@ -255,6 +255,24 @@ void ls(){
         std::cout << "\t" << name << std::endl;
     }
 }
+void clear(const bool force){
+    if (!force) {
+        std::cout << "Are you sure you want to delete the .clibx folder? (this will delete all libraries and records) [Y/n]: ";
+        std::string input;
+        std::getline(std::cin, input);
+        char answer = input.empty() ? 'n' : std::tolower(input[0]);
+        if (answer != 'y') {
+            console::log("removing cancelled by user");
+            return;
+        }
+    }
+    try {
+        if (fs::exists(homeDirectory)) fs::remove_all(homeDirectory);
+        console::log(".clibx was removed");
+    } catch (const fs::filesystem_error& e) {
+        console::err(2, "error removing .clibx: " + std::string(e.what()));
+    }
+}
 }
 /*    for (const auto& entry : fs::directory_iterator(path))
         std::cout << entry.path() << std::endl;*/
