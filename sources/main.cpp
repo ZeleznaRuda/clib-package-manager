@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
     argvparser::add_help("search",              "checks the repository is available");
     argvparser::add_help("ls",                  "print a list of installed libraries");
     argvparser::add_help("info",                "print package information");
-    argvparser::add_help("clear",               "deletes the .clibx folder            (supports the '-f' flag)");
+    argvparser::add_help("clean",               "deletes the .clibx folder            (supports the '-f' flag)");
 
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
@@ -69,8 +69,8 @@ int main(int argc, char* argv[]){
             core::ls();
     } else if (cmd == "info"){
             core::info(argvparser::get_argument_after({cmd}));
-    } else if (cmd == "clear"){
-            core::clear(_force);
+    } else if (cmd == "clean"){
+            core::clean(_force);
     }
 
 

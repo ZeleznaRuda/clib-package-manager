@@ -12,5 +12,5 @@ namespace core {
     void search(const std::string& repoName);
     void info(const std::string& repoName);
     void ls();
-    void clear(const bool force = false);
+    void clean(const bool force = false);
 }
