@@ -12,7 +12,7 @@ namespace core {
     void search(const std::string& repoName);
     void info(const std::string& repoName);
     void ls();
-    void clean(const bool force = false);
+    void apk_clean(const bool force = false);
     void apk_uninstall(const bool force = false);
 
 }

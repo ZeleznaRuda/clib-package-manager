@@ -255,7 +255,7 @@ void ls(){
         std::cout << "\t" << name << std::endl;
     }
 }
-void clean(const bool force){
+void apk_clean(const bool force){
     if (!force) {
         std::cout << "Are you sure you want to delete the .clibx folder? (this will delete all libraries and records) [Y/n]: ";
         std::string input;

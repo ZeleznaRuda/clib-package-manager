@@ -70,9 +70,9 @@ int main(int argc, char* argv[]){
             core::ls();
     } else if (cmd == "info"){
             core::info(argvparser::get_argument_after({cmd}));
-            
+
     } else if (cmd == "apk-clean"){
-            core::clean(_force);
+            core::apk_clean(_force);
     } else if (cmd == "apk-uninstall"){
             core::apk_uninstall(_force);
     }
