@@ -89,6 +89,14 @@
     <p>Libraries can be installed from <strong>Git repositories</strong> or as part of <strong>kits</strong> (library sets). Prototype written in <strong>Python</strong>.</p>
     <p><strong>POSIX</strong> only</p>
 </div>
+<h2>Compatibility</h2>
+<table>
+    <tr><th>Platform</th><th>Compatibility</th></tr>
+    <tr><td>Linux</td><td>Yes</td></tr>
+    <tr><td>MacOS</td><td>Half</td></tr>
+    <tr><td>Windows</td><td>No</td></tr>
+
+</table>
 
 <h2>Installation</h2>
 <ul>
@@ -156,9 +164,33 @@
         <strong>clean</strong> – Delete the .clibx folder. Supports <code>-f</code>.
         <pre><button class="copy-btn">Copy</button><code>clibx clean [-f]</code></pre>
     </li>
+    <li>
+        <strong>apk-uninstall</strong> – Uninstall applications. Supports <code>-f</code>.
+        <pre><button class="copy-btn">Copy</button><code>clibx apk-uninstall [-f]</code></pre>
+    </li>
+</ul>
 </ul>
 
 </section>
+
+<h2>Example Usage</h2>
+<pre><button class="copy-btn">Copy</button><code>
+git clone https://github.com/rudolfmuller/clibx-package-manager.git
+cd clibx-package-manager
+sudo ./install.sh
+
+mkdir my_project && cd my_project
+
+clibx install "https://github.com/rudolfmuller/platform-lib.git"
+
+echo '#include "libs/platform/platform.h"' &gt; main.cpp
+echo 'int main() { platform::getPlatform(); return 0; }' &gt;&gt; main.cpp
+
+clibx connect platform
+
+g++ main.cpp libs/platform/platform.cpp -o main
+./main
+</code></pre>
 
 <h2>Installing Kits</h2>
 <div class="note">
@@ -173,32 +205,15 @@
 
 <h2>License</h2>
 <div class="note">
-<pre>
-MIT License
-
-Copyright (c) 2025 Rudolf Müller
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, without restriction, including without requiring credit
-to the author.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-</pre>
+    <pre id="license">...</pre>
 </div>
 
-
 <footer>
-    <p><strong>Rudolf Müller - 2025</strong></p>
+    <strong>If you have any problems please <a href="https://github.com/rudolfmuller/clibx-package-manager/issues/new">write to us.</a></strong>
+    <br>
+    <strong>GitHub <a href="https://github.com/rudolfmuller/clibx-package-manager">https://github.com/rudolfmuller/clibx-package-manager</a></strong>
+    <br><br>
+    <strong>Rudolf Müller - 2025</strong>
 </footer>
 
 <script>
@@ -211,6 +226,19 @@ document.querySelectorAll('.copy-btn').forEach(button => {
         });
     });
 });
+
+const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/clibx-package-manager/main/LICENSE";
+fetch(licenseUrl)
+    .then(response => {
+        if (!response.ok) throw new Error("Failed to load license");
+        return response.text();
+    })
+    .then(text => {
+        document.getElementById('license').textContent = text;
+    })
+    .catch(err => {
+        document.getElementById('license').textContent = err;
+    });
 </script>
 
 </body>

@@ -13,4 +13,6 @@ namespace core {
     void info(const std::string& repoName);
     void ls();
     void clean(const bool force = false);
+    void apk_uninstall(const bool force = false);
+
 }

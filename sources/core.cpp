@@ -273,6 +273,31 @@ void clean(const bool force){
         console::err(2, "error removing .clibx: " + std::string(e.what()));
     }
 }
+void apk_uninstall(bool force) { // apk-uninstall
+    if (!force) {
+        std::cout << "Are you sure you want to uninstall CLIBX? [Y/n]: ";
+        std::string input;
+        std::getline(std::cin, input);
+        char answer = input.empty() ? 'n' : std::tolower(input[0]);
+        if (answer != 'y') {
+            console::log("uninstallation cancelled by user");
+            return;
+        }
+    }
+
+    fs::path Path = utils::getHomeDirectory() / ".local" / "bin" / "clibx";
+
+    if (!fs::exists(Path)) {
+        console::err(1, "CLIBX does not exist.");
+    }
+
+    try {
+        if (fs::exists(Path)) fs::remove(Path);
+        console::log("\e[32mthe program has been successfully uninstalled, SAY GOODBYE\e[0m");
+    } catch (const fs::filesystem_error& e) {
+        console::err(2, "error removing CLIBX: " + std::string(e.what()));
+    }
+}
 }
 /*    for (const auto& entry : fs::directory_iterator(path))
         std::cout << entry.path() << std::endl;*/
