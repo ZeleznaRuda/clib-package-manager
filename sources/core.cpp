@@ -19,7 +19,7 @@ namespace core {
 
 fs::path homeDirectory = utils::getHomeDirectory() / ".clibx";
 
-void init() {
+void apk_init() {
     try {
         if (fs::create_directory(homeDirectory)) {
             std::ofstream READMEFile(homeDirectory / "README.md");
@@ -34,6 +34,7 @@ void init() {
     }
 }
 
+
 void install(const std::string& url, const bool force, const bool installDependencies) {
     if (!force) {
         std::cout << "Are you sure you want to install the library from '" << url << "'? [Y/n]: ";
@@ -47,9 +48,10 @@ void install(const std::string& url, const bool force, const bool installDepende
     }
 
     if (!(utils::start_with(url, "http") || utils::start_with(url, "git@")) 
-    || !utils::ends_with(url, ".git")) {
+        || !utils::ends_with(url, ".git")) {
         console::err(1,"invalid git url format");
     }
+
     std::string repoName = url.substr(url.find_last_of('/') + 1);
     if (utils::ends_with(repoName, ".git"))
         repoName = repoName.substr(0, repoName.size() - 4);
@@ -58,30 +60,34 @@ void install(const std::string& url, const bool force, const bool installDepende
 
     try {
         if (!fs::create_directory(pkgPath)) {
-            console::err(2,"initialization failed");
+            console::err(2,"install failed");
         }
     } catch (const fs::filesystem_error& e) {
         console::err(2,e.what());
     }
 
     std::string command = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string()) + " &> /dev/null";
-    int result=system(command.c_str());
+    int result = system(command.c_str());
+
+    if (!fs::exists(pkgPath / "info.yaml")) {
+        console::err(1, "library is not CLIBX-compatible (missing info.yaml). Use --wrap to force installation.");
+        
+    }
 
     auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
 
     if (result != 0) {
         console::err(result,"git clone failed with code " + std::to_string(result));
     } else {
-        try{
+        try {
             fs::path newPath = homeDirectory / infoData["name"];
-            if (fs::exists(newPath)){
+            if (fs::exists(newPath)) {
                 fs::remove_all(pkgPath);
                 console::err(1, "the library is already installed.");
             }
             fs::rename(pkgPath.string(), newPath);
             pkgPath = newPath;
-
-        }catch (fs::filesystem_error& e) {
+        } catch (fs::filesystem_error& e) {
             console::err(2,std::string("error: ") + e.what() + "\n");
         }
         console::log("library installed successfully to " + pkgPath.string());
@@ -108,11 +114,12 @@ void install(const std::string& url, const bool force, const bool installDepende
 
         console::log("record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     }
-    if (installDependencies && fs::exists(pkgPath / "dependencies.txt")){
+
+    if (installDependencies && fs::exists(pkgPath / "dependencies.txt")) {
         auto dependenciesData = lister::parser(yaml::read(pkgPath / "dependencies.txt"));
         pkgFile << std::endl;
         pkgFile << "# dependencies:" << std::endl;
-        for (const auto& dep : dependenciesData){
+        for (const auto& dep : dependenciesData) {
             console::log("installing dependency " + dep);
             core::install(dep, true, false);
             pkgFile << "dependence: " << dep << std::endl;
@@ -120,6 +127,7 @@ void install(const std::string& url, const bool force, const bool installDepende
     }
     pkgFile.close();
 }
+
 
 void uninstall(const std::string& pkgName, bool force) {
     if (!force) {

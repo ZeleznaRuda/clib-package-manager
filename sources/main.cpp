@@ -21,9 +21,7 @@ int main(int argc, char* argv[]){
     bool _all = false;
     bool _Dep = false;
 
-
-
-    argvparser::add_help("init",                "initializes clibx");
+    argvparser::add_help("apk-init",            "initializes clibx");
     argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-d' flag)");
     argvparser::add_help("uninstall",           "uninstall library                    (supports the '-f' flag)");
     argvparser::add_help("connect",             "connect clibx to your project        (supports the '-a' flag)");
@@ -31,14 +29,14 @@ int main(int argc, char* argv[]){
     argvparser::add_help("search",              "checks the repository is available");
     argvparser::add_help("ls",                  "print a list of installed libraries");
     argvparser::add_help("info",                "print package information");
-    argvparser::add_help("apk-clean",               "deletes the .clibx folder            (supports the '-f' flag)");
+    argvparser::add_help("apk-clean",           "deletes the .clibx folder            (supports the '-f' flag)");
     argvparser::add_help("apk-uninstall",       "uninstall applications");
 
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the command without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
     argvparser::define_argument({"-d", "--dep"}, [&_Dep](){ _Dep = true;}, "installs dependencies along with the package");
-    argvparser::define_argument({"-w", "--web"}, [](){ system("xdg-open 'https://github.com/rudolfmuller/clibx-package-manager';xdg-open 'https://rudolfmuller.github.io/clibx-package-manager/'"); }, "opens the CLIBX website");
+    argvparser::define_argument({"-wh", "--web"}, [](){ system("xdg-open 'https://github.com/rudolfmuller/clibx-package-manager';xdg-open 'https://rudolfmuller.github.io/clibx-package-manager/'"); }, "opens the CLIBX website");
 
 
 
@@ -54,8 +52,8 @@ int main(int argc, char* argv[]){
         cmd = argvparser::get_argument(1);
     } 
     
-    if (cmd == "init"){
-        core::init();
+    if (cmd == "apk-init"){
+        core::apk_init();
     } else if (cmd == "install"){
             core::install(argvparser::get_argument_after({cmd}), _force, _Dep);
     } else if (cmd == "uninstall"){
