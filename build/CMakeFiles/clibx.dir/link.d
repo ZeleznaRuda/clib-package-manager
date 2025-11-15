@@ -5,6 +5,8 @@
   CMakeFiles/clibx.dir/sources/main.cpp.o \
   CMakeFiles/clibx.dir/sources/core.cpp.o \
   CMakeFiles/clibx.dir/sources/utils.cpp.o \
+  CMakeFiles/clibx.dir/sources/parsers.cpp.o \
+  CMakeFiles/clibx.dir/sources/cli.cpp.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
@@ -44,6 +46,10 @@ CMakeFiles/clibx.dir/sources/main.cpp.o:
 CMakeFiles/clibx.dir/sources/core.cpp.o:
 
 CMakeFiles/clibx.dir/sources/utils.cpp.o:
+
+CMakeFiles/clibx.dir/sources/parsers.cpp.o:
+
+CMakeFiles/clibx.dir/sources/cli.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so:
 

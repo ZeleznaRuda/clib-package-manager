@@ -8,8 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/ruda/Dokumenty/Programming/C++/clibx/sources/cli.cpp" "CMakeFiles/clibx.dir/sources/cli.cpp.o" "gcc" "CMakeFiles/clibx.dir/sources/cli.cpp.o.d"
   "/home/ruda/Dokumenty/Programming/C++/clibx/sources/core.cpp" "CMakeFiles/clibx.dir/sources/core.cpp.o" "gcc" "CMakeFiles/clibx.dir/sources/core.cpp.o.d"
   "/home/ruda/Dokumenty/Programming/C++/clibx/sources/main.cpp" "CMakeFiles/clibx.dir/sources/main.cpp.o" "gcc" "CMakeFiles/clibx.dir/sources/main.cpp.o.d"
+  "/home/ruda/Dokumenty/Programming/C++/clibx/sources/parsers.cpp" "CMakeFiles/clibx.dir/sources/parsers.cpp.o" "gcc" "CMakeFiles/clibx.dir/sources/parsers.cpp.o.d"
   "/home/ruda/Dokumenty/Programming/C++/clibx/sources/utils.cpp" "CMakeFiles/clibx.dir/sources/utils.cpp.o" "gcc" "CMakeFiles/clibx.dir/sources/utils.cpp.o.d"
   "" "/home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx" "gcc" "CMakeFiles/clibx.dir/link.d"
   )

@@ -85,12 +85,12 @@ clean: CMakeFiles/clibx.dir/clean
 CMakeFiles/clibx.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=1,2,3,4 "Built target clibx"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target clibx"
 .PHONY : CMakeFiles/clibx.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/clibx.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/clibx.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles 0
 .PHONY : CMakeFiles/clibx.dir/rule
@@ -102,7 +102,7 @@ clibx: CMakeFiles/clibx.dir/rule
 # codegen rule for target.
 CMakeFiles/clibx.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=1,2,3,4 "Finished codegen for target clibx"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Finished codegen for target clibx"
 .PHONY : CMakeFiles/clibx.dir/codegen
 
 # clean rule for target.

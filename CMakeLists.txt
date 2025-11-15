@@ -17,6 +17,9 @@ set(SOURCES
     sources/main.cpp
     sources/core.cpp
     sources/utils.cpp
+    sources/parsers.cpp
+    sources/cli.cpp
+
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

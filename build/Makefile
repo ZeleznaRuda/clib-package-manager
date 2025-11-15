@@ -129,6 +129,30 @@ clibx/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/build
 .PHONY : clibx/fast
 
+sources/cli.o: sources/cli.cpp.o
+.PHONY : sources/cli.o
+
+# target to build an object file
+sources/cli.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/cli.cpp.o
+.PHONY : sources/cli.cpp.o
+
+sources/cli.i: sources/cli.cpp.i
+.PHONY : sources/cli.i
+
+# target to preprocess a source file
+sources/cli.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/cli.cpp.i
+.PHONY : sources/cli.cpp.i
+
+sources/cli.s: sources/cli.cpp.s
+.PHONY : sources/cli.s
+
+# target to generate assembly for a file
+sources/cli.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/cli.cpp.s
+.PHONY : sources/cli.cpp.s
+
 sources/core.o: sources/core.cpp.o
 .PHONY : sources/core.o
 
@@ -177,6 +201,30 @@ sources/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/main.cpp.s
 .PHONY : sources/main.cpp.s
 
+sources/parsers.o: sources/parsers.cpp.o
+.PHONY : sources/parsers.o
+
+# target to build an object file
+sources/parsers.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/parsers.cpp.o
+.PHONY : sources/parsers.cpp.o
+
+sources/parsers.i: sources/parsers.cpp.i
+.PHONY : sources/parsers.i
+
+# target to preprocess a source file
+sources/parsers.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/parsers.cpp.i
+.PHONY : sources/parsers.cpp.i
+
+sources/parsers.s: sources/parsers.cpp.s
+.PHONY : sources/parsers.s
+
+# target to generate assembly for a file
+sources/parsers.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/clibx.dir/build.make CMakeFiles/clibx.dir/sources/parsers.cpp.s
+.PHONY : sources/parsers.cpp.s
+
 sources/utils.o: sources/utils.cpp.o
 .PHONY : sources/utils.o
 
@@ -210,12 +258,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... clibx"
+	@echo "... sources/cli.o"
+	@echo "... sources/cli.i"
+	@echo "... sources/cli.s"
 	@echo "... sources/core.o"
 	@echo "... sources/core.i"
 	@echo "... sources/core.s"
 	@echo "... sources/main.o"
 	@echo "... sources/main.i"
 	@echo "... sources/main.s"
+	@echo "... sources/parsers.o"
+	@echo "... sources/parsers.i"
+	@echo "... sources/parsers.s"
 	@echo "... sources/utils.o"
 	@echo "... sources/utils.i"
 	@echo "... sources/utils.s"

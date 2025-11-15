@@ -9,11 +9,13 @@
 
 #include "../include/core.h"
 #include "../include/utils.h"
+#include "../include/parsers.h"
+#include "../include/cli.h"
 #include "./templates.h"
 
 namespace fs = std::filesystem;
 
-std::string version = "1.1.1";
+std::string version = "1.1.4";
 
 int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
@@ -40,20 +42,26 @@ int main(int argc, char* argv[]){
 
 
 
-    argvparser::define_argument({"-v", "--version"}, [](){ console::log(version); }, "shows the current CLIBX versions");
+    argvparser::define_argument({"-v", "--version"}, [](){ cli::log(INFO,version); }, "shows the current CLIBX versions");
 
 
     argvparser::parser();
 
     std::string cmd;
     if (!argvparser::has_argument(1)){
-        console::err(1,"You don't entered a command. \n\t\thint: Use the --help or -h to display the command list.");
+        cli::log(ERROR,"You don't entered a command. ");
+        cli::log(HINT,"use the --help or -h to display the command list.");
     } else {
         cmd = argvparser::get_argument(1);
     } 
     
     if (cmd == "apk-init"){
         core::apk_init();
+    } else if (cmd == "apk-clean"){
+            core::apk_clean(_force);
+    } else if (cmd == "apk-uninstall"){
+            core::apk_uninstall(_force);
+
     } else if (cmd == "install"){
             core::install(argvparser::get_argument_after({cmd}), _force, _Dep);
     } else if (cmd == "uninstall"){
@@ -68,12 +76,7 @@ int main(int argc, char* argv[]){
             core::ls();
     } else if (cmd == "info"){
             core::info(argvparser::get_argument_after({cmd}));
-
-    } else if (cmd == "apk-clean"){
-            core::apk_clean(_force);
-    } else if (cmd == "apk-uninstall"){
-            core::apk_uninstall(_force);
-    }
+    } 
 
 
 

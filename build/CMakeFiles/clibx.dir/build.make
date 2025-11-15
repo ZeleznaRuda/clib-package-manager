@@ -114,11 +114,41 @@ CMakeFiles/clibx.dir/sources/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/clibx.dir/sources/utils.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ruda/Dokumenty/Programming/C++/clibx/sources/utils.cpp -o CMakeFiles/clibx.dir/sources/utils.cpp.s
 
+CMakeFiles/clibx.dir/sources/parsers.cpp.o: CMakeFiles/clibx.dir/flags.make
+CMakeFiles/clibx.dir/sources/parsers.cpp.o: /home/ruda/Dokumenty/Programming/C++/clibx/sources/parsers.cpp
+CMakeFiles/clibx.dir/sources/parsers.cpp.o: CMakeFiles/clibx.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/clibx.dir/sources/parsers.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/clibx.dir/sources/parsers.cpp.o -MF CMakeFiles/clibx.dir/sources/parsers.cpp.o.d -o CMakeFiles/clibx.dir/sources/parsers.cpp.o -c /home/ruda/Dokumenty/Programming/C++/clibx/sources/parsers.cpp
+
+CMakeFiles/clibx.dir/sources/parsers.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/clibx.dir/sources/parsers.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ruda/Dokumenty/Programming/C++/clibx/sources/parsers.cpp > CMakeFiles/clibx.dir/sources/parsers.cpp.i
+
+CMakeFiles/clibx.dir/sources/parsers.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/clibx.dir/sources/parsers.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ruda/Dokumenty/Programming/C++/clibx/sources/parsers.cpp -o CMakeFiles/clibx.dir/sources/parsers.cpp.s
+
+CMakeFiles/clibx.dir/sources/cli.cpp.o: CMakeFiles/clibx.dir/flags.make
+CMakeFiles/clibx.dir/sources/cli.cpp.o: /home/ruda/Dokumenty/Programming/C++/clibx/sources/cli.cpp
+CMakeFiles/clibx.dir/sources/cli.cpp.o: CMakeFiles/clibx.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/clibx.dir/sources/cli.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/clibx.dir/sources/cli.cpp.o -MF CMakeFiles/clibx.dir/sources/cli.cpp.o.d -o CMakeFiles/clibx.dir/sources/cli.cpp.o -c /home/ruda/Dokumenty/Programming/C++/clibx/sources/cli.cpp
+
+CMakeFiles/clibx.dir/sources/cli.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/clibx.dir/sources/cli.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ruda/Dokumenty/Programming/C++/clibx/sources/cli.cpp > CMakeFiles/clibx.dir/sources/cli.cpp.i
+
+CMakeFiles/clibx.dir/sources/cli.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/clibx.dir/sources/cli.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ruda/Dokumenty/Programming/C++/clibx/sources/cli.cpp -o CMakeFiles/clibx.dir/sources/cli.cpp.s
+
 # Object files for target clibx
 clibx_OBJECTS = \
 "CMakeFiles/clibx.dir/sources/main.cpp.o" \
 "CMakeFiles/clibx.dir/sources/core.cpp.o" \
-"CMakeFiles/clibx.dir/sources/utils.cpp.o"
+"CMakeFiles/clibx.dir/sources/utils.cpp.o" \
+"CMakeFiles/clibx.dir/sources/parsers.cpp.o" \
+"CMakeFiles/clibx.dir/sources/cli.cpp.o"
 
 # External object files for target clibx
 clibx_EXTERNAL_OBJECTS =
@@ -126,10 +156,12 @@ clibx_EXTERNAL_OBJECTS =
 /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/sources/main.cpp.o
 /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/sources/core.cpp.o
 /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/sources/utils.cpp.o
+/home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/sources/parsers.cpp.o
+/home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/sources/cli.cpp.o
 /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/build.make
 /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/compiler_depend.ts
 /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx: CMakeFiles/clibx.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/clibx.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

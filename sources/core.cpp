@@ -12,6 +12,9 @@
 
 #include "../include/core.h"
 #include "../include/utils.h"
+#include "../include/parsers.h"
+#include "../include/cli.h"
+
 
 namespace fs = std::filesystem;
 
@@ -25,31 +28,27 @@ void apk_init() {
             std::ofstream READMEFile(homeDirectory / "README.md");
             READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
             READMEFile.close();
-            console::log("CLIBX has been successfully initialized");
+            cli::log(INFO,"CLIBX has been successfully initialized");
         } else {
-            console::err(1,"initialization failed");
+            cli::log(FATAL,"initialization failed");
         }
     } catch (const fs::filesystem_error& e) {
-        console::err(1,e.what());
+        cli::log(FATAL,e.what());
     }
 }
 
 
 void install(const std::string& url, const bool force, const bool installDependencies) {
     if (!force) {
-        std::cout << "Are you sure you want to install the library from '" << url << "'? [Y/n]: ";
-        std::string input;
-        std::getline(std::cin, input);
-        char answer = input.empty() ? 'n' : std::tolower(input[0]);
-        if (answer != 'y') {
-            console::log("installation cancelled by user");
+        if (!cli::confirm("Are you sure you want to install the library from '" + url + "'")) {
+            cli::log(INFO,"installation cancelled by user");
             return;
         }
     }
 
     if (!(utils::start_with(url, "http") || utils::start_with(url, "git@")) 
         || !utils::ends_with(url, ".git")) {
-        console::err(1,"invalid git url format");
+        cli::log(FATAL,"invalid git url format");
     }
 
     std::string repoName = url.substr(url.find_last_of('/') + 1);
@@ -60,10 +59,10 @@ void install(const std::string& url, const bool force, const bool installDepende
 
     try {
         if (!fs::create_directory(pkgPath)) {
-            console::err(2,"install failed");
+            cli::log(ERROR,"install failed");
         }
     } catch (const fs::filesystem_error& e) {
-        console::err(2,e.what());
+        cli::log(FATAL,e.what(), 2);
     }
 
     std::string command = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string()) + " &> /dev/null";
@@ -72,27 +71,28 @@ void install(const std::string& url, const bool force, const bool installDepende
     auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
 
     if (result != 0) {
-        console::err(result,"git clone failed with code " + std::to_string(result));
+        cli::log(FATAL,"git clone failed with code " + std::to_string(result), result);
     } else {
         try {
             fs::path newPath = homeDirectory / infoData["name"];
             if (fs::exists(newPath)) {
                 fs::remove_all(pkgPath);
-                console::err(1, "the library is already installed.");
+                cli::log(ERROR, "the library is already installed.");
+                exit(2);
             }
             fs::rename(pkgPath.string(), newPath);
             pkgPath = newPath;
         } catch (fs::filesystem_error& e) {
-            console::err(2,std::string("error: ") + e.what() + "\n");
+            cli::log(ERROR,std::string("error: ") + e.what() + "\n");
         }
-        console::log("library installed successfully to " + pkgPath.string());
+        cli::log(INFO,"library installed successfully to " + pkgPath.string());
     }
 
     fs::create_directories(homeDirectory / "_sys");
 
     std::ofstream pkgFile(homeDirectory / "_sys" / (infoData["name"] + "-package.yaml"));
     if (!pkgFile) {
-        console::err(2,"failed to create record: " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
+        cli::log(FATAL,"failed to create record: " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string(),2);
     } else {
         std::time_t t = std::time(nullptr);
         std::tm* now = std::localtime(&t);
@@ -107,7 +107,7 @@ void install(const std::string& url, const bool force, const bool installDepende
         pkgFile << "git-url: " << url << std::endl;
         pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
 
-        console::log("record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
+        cli::log(INFO,"record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
     }
 
     if (installDependencies && fs::exists(pkgPath / "dependencies.txt")) {
@@ -115,7 +115,7 @@ void install(const std::string& url, const bool force, const bool installDepende
         pkgFile << std::endl;
         pkgFile << "# dependencies:" << std::endl;
         for (const auto& dep : dependenciesData) {
-            console::log("installing dependency " + dep);
+            cli::log(INFO,"installing dependency " + dep);
             core::install(dep, true, false);
             pkgFile << "dependence: " << dep << std::endl;
         }
@@ -126,12 +126,8 @@ void install(const std::string& url, const bool force, const bool installDepende
 
 void uninstall(const std::string& pkgName, bool force) {
     if (!force) {
-        std::cout << "Are you sure you want to remove '" << pkgName << "' library? [Y/n]: ";
-        std::string input;
-        std::getline(std::cin, input);
-        char answer = input.empty() ? 'n' : std::tolower(input[0]);
-        if (answer != 'y') {
-            console::log("uninstallation cancelled by user");
+        if (!cli::confirm("Are you sure you want to remove '" + pkgName + "' library?")) {
+            cli::log(INFO,"uninstallation cancelled by user");
             return;
         }
     }
@@ -140,15 +136,15 @@ void uninstall(const std::string& pkgName, bool force) {
     fs::path pkgInfoFilePath = homeDirectory / "_sys" / (pkgName + "-package.yaml");
 
     if (!fs::exists(pkgPath)) {
-        console::err(1, "library '" + pkgName + "' does not exist.");
+        cli::log(ERROR, "library '" + pkgName + "' does not exist.");
     }
 
     try {
         if (fs::exists(pkgPath)) fs::remove_all(pkgPath);
         if (fs::exists(pkgInfoFilePath)) fs::remove(pkgInfoFilePath);
-        console::log("library '" + pkgName + "' removed successfully.");
+        cli::log(INFO,"library '" + pkgName + "' removed successfully.");
     } catch (const fs::filesystem_error& e) {
-        console::err(2, "error removing library: " + std::string(e.what()));
+        cli::log(FATAL, "error removing library: " + std::string(e.what()),2);
     }
 }
 
@@ -168,7 +164,7 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
     } else {
         fs::path pkgPath = homeDirectory / pkgName;
         if (!fs::exists(pkgPath)) {
-            console::err(1,"library " + pkgName +" not found\n");
+            cli::log(ERROR,"library " + pkgName +" not found\n");
         }
         packages.push_back(pkgPath);
     }
@@ -182,18 +178,18 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
         if (fs::exists(projectDirectory) || fs::is_symlink(projectDirectory)) {
             std::error_code ec_remove;
             if (fs::remove(projectDirectory, ec_remove)) {
-                console::log("disconnecting the project: " + projectDirectory.string() + "\n");
+                cli::log(INFO,"disconnecting the project: " + projectDirectory.string() + "\n");
             } else {
-                console::err(2,"error disconnecting the project: "+ ec_remove.message()+"\n");
+                cli::log(ERROR,"error disconnecting the project: "+ ec_remove.message()+"\n");
             }
         }
 
         std::error_code ec;
         fs::create_directory_symlink(pkgPath, projectDirectory, ec);
         if (ec) {
-            console::err(1,"error occurred when connecting project: " + ec.message() +"\n");
+            cli::log(FATAL,"error occurred when connecting project: " + ec.message() +"\n");
         } else {
-            console::log("package '"+ projectDirectory.string() +"' was successfully connected\n");
+            cli::log(INFO,"package '"+ projectDirectory.string() +"' was successfully connected\n");
         }
     }
 }
@@ -203,17 +199,17 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
     if (data.find(name) != data.end()){
             std::ofstream templateFile(targetDirectory / (name));
             if (!templateFile) {
-                console::err(2,"failed to create template: " + targetDirectory.string());
+                cli::log(FATAL,"failed to create template: " + targetDirectory.string(),2);
             }
             templateFile << data[name];
             templateFile.close();
 
-            console::log("template successfully created " + targetDirectory.string());
+            cli::log(INFO,"template successfully created " + targetDirectory.string());
             
         } else {
             for (const auto& [key, value] : data) {
                 std::cout << "---" << key << "---" << value << "\n";}
-            console::err(1, "template '" + name + "' does not exist");
+            cli::log(ERROR, "template '" + name + "' does not exist");
 
         }
     }
@@ -222,9 +218,9 @@ void search(const std::string& repoName){
     std::string command = "git ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null";
     int result = system(command.c_str());
     if (result == 0){
-        console::log("the library is accessible");
+        cli::log(INFO,"the library is accessible");
     } else {
-        console::warn("library is not accessible");
+        cli::log(WARN,"library is not accessible");
     }
 }
 void info(const std::string& repoName){
@@ -238,7 +234,7 @@ void info(const std::string& repoName){
     }
     std::ifstream file(homeDirectory / "_sys" / (name + suffix)); 
     if (!file.is_open()) {
-        console::err(1, "package does not exist");
+        cli::log(ERROR, "package does not exist");
     }
 
     std::string line;
@@ -265,25 +261,21 @@ void apk_clean(const bool force){
         std::getline(std::cin, input);
         char answer = input.empty() ? 'n' : std::tolower(input[0]);
         if (answer != 'y') {
-            console::log("removing cancelled by user");
+            cli::log(INFO,"removing cancelled by user");
             return;
         }
     }
     try {
         if (fs::exists(homeDirectory)) fs::remove_all(homeDirectory);
-        console::log(".clibx was removed");
+        cli::log(INFO,".clibx was removed");
     } catch (const fs::filesystem_error& e) {
-        console::err(2, "error removing .clibx: " + std::string(e.what()));
+        cli::log(ERROR, "error removing .clibx: " + std::string(e.what()));
     }
 }
 void apk_uninstall(bool force) { // apk-uninstall
     if (!force) {
-        std::cout << "Are you sure you want to uninstall CLIBX? [Y/n]: ";
-        std::string input;
-        std::getline(std::cin, input);
-        char answer = input.empty() ? 'n' : std::tolower(input[0]);
-        if (answer != 'y') {
-            console::log("uninstallation cancelled by user");
+        if (!cli::confirm("Are you sure you want to uninstall CLIBX?")) {
+            cli::log(INFO,"uninstallation cancelled by user");
             return;
         }
     }
@@ -291,14 +283,14 @@ void apk_uninstall(bool force) { // apk-uninstall
     fs::path Path = utils::getHomeDirectory() / ".local" / "bin" / "clibx";
 
     if (!fs::exists(Path)) {
-        console::err(1, "CLIBX does not exist.");
+        cli::log(FATAL, "CLIBX does not exist.",2);
     }
 
     try {
         if (fs::exists(Path)) fs::remove(Path);
-            console::log("\033[32mthe program has been successfully uninstalled, SAY GOODBYE\033[0m");
+            cli::log(INFO,"\033[32mthe program has been successfully uninstalled, SAY GOODBYE\033[0m");
     } catch (const fs::filesystem_error& e) {
-        console::err(2, "error removing CLIBX: " + std::string(e.what()));
+        cli::log(FATAL, "error removing CLIBX: " + std::string(e.what()),2);
     }
 }
 }
