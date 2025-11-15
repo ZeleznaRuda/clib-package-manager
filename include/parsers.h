@@ -57,34 +57,37 @@ namespace argvparser
 
     namespace {
         inline void help() {
-            std::cout << "Usage: clibx" << " [options]\n\n";
+            std::cout << "Usage: clibx [options]\n\n";
 
-            std::vector<std::pair<std::string, std::string>> flags;
-            std::vector<std::pair<std::string, std::string>> options;
+            std::unordered_map<std::string, std::vector<std::string>> groupedFlags;
 
             for (const auto& kv : descriptionsArguments) {
                 if (!kv.first.empty() && kv.first[0] == '-') {
-                    flags.push_back(kv);
-                } else {
-                    options.push_back(kv);
+                    groupedFlags[kv.second].push_back(kv.first);
                 }
             }
 
-            auto cmp_length = [](const auto& a, const auto& b) {
-                return a.first.length() < b.first.length();
-            };
-
-            std::sort(flags.begin(), flags.end(), cmp_length);
-            std::sort(options.begin(), options.end(), cmp_length);
-
-            if (!flags.empty()) {
+            if (!groupedFlags.empty()) {
                 std::cout << "Flags:\n";
-                for (const auto& kv : flags) {
-                    int spacing = 20 - kv.first.length();
+                for (const auto& kv : groupedFlags) {
+                    std::string names;
+                    for (size_t i = 0; i < kv.second.size(); ++i) {
+                        if (i != 0) names += ", ";
+                        names += kv.second[i];
+                    }
+
+                    int spacing = 30 - static_cast<int>(names.length());
                     if (spacing < 1) spacing = 1;
-                    std::cout << "  " << kv.first << std::string(spacing, ' ') << kv.second << "\n";
+                    std::cout << "  " << names << std::string(spacing, ' ') << kv.first << "\n";
                 }
                 std::cout << "\n";
+            }
+
+            std::vector<std::pair<std::string, std::string>> options;
+            for (const auto& kv : descriptionsArguments) {
+                if (kv.first.empty() || kv.first[0] != '-') {
+                    options.push_back(kv);
+                }
             }
 
             if (!options.empty()) {
@@ -96,6 +99,7 @@ namespace argvparser
                 }
             }
         }
+
 
 
         inline bool starts_with(const std::string& text, const std::string& prefix) {

@@ -1,3 +1,0 @@
-/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles/clibx.dir
-/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles/edit_cache.dir
-/home/ruda/Dokumenty/Programming/C++/clibx/build/CMakeFiles/rebuild_cache.dir

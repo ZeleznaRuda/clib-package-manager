@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/clibx.dir/link.d CMakeFiles/clibx.dir/sources/main.cpp.o CMakeFiles/clibx.dir/sources/core.cpp.o CMakeFiles/clibx.dir/sources/utils.cpp.o CMakeFiles/clibx.dir/sources/parsers.cpp.o CMakeFiles/clibx.dir/sources/cli.cpp.o -o /home/ruda/Dokumenty/Programming/C++/clibx/dist/bin/clibx
