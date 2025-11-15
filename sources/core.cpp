@@ -69,11 +69,6 @@ void install(const std::string& url, const bool force, const bool installDepende
     std::string command = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string()) + " &> /dev/null";
     int result = system(command.c_str());
 
-    if (!fs::exists(pkgPath / "info.yaml")) {
-        console::err(1, "library is not CLIBX-compatible (missing info.yaml). Use --wrap to force installation.");
-        
-    }
-
     auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
 
     if (result != 0) {
@@ -301,7 +296,7 @@ void apk_uninstall(bool force) { // apk-uninstall
 
     try {
         if (fs::exists(Path)) fs::remove(Path);
-        console::log("\e[32mthe program has been successfully uninstalled, SAY GOODBYE\e[0m");
+            console::log("\033[32mthe program has been successfully uninstalled, SAY GOODBYE\033[0m");
     } catch (const fs::filesystem_error& e) {
         console::err(2, "error removing CLIBX: " + std::string(e.what()));
     }

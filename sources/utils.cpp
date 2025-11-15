@@ -67,11 +67,11 @@ namespace yaml
 {
     std::string read(const fs::path& fileName) {
         if (!fs::exists(fileName))
-            console::err(1, "file " + fileName.string() + " not found");
+            console::err(-1, "file " + fileName.string() + " not found");
 
         std::ifstream file(fileName);
         if (!file.is_open())
-            console::err(1, "cannot open file");
+            console::err(-1, "cannot open file");
 
         return std::string((std::istreambuf_iterator<char>(file)),
                            std::istreambuf_iterator<char>());
