@@ -57,7 +57,7 @@ namespace argvparser
 
     namespace {
         inline void help() {
-            std::cout << "Usage: clibx [options]\n\n";
+            cli::log(INFO,"usage: clibx [options]\n");
 
             std::unordered_map<std::string, std::vector<std::string>> groupedFlags;
 
@@ -68,7 +68,7 @@ namespace argvparser
             }
 
             if (!groupedFlags.empty()) {
-                std::cout << "Flags:\n";
+                cli::log(INFO,"flags:");
                 for (const auto& kv : groupedFlags) {
                     std::string names;
                     for (size_t i = 0; i < kv.second.size(); ++i) {
@@ -91,7 +91,7 @@ namespace argvparser
             }
 
             if (!options.empty()) {
-                std::cout << "Options:\n";
+                cli::log(INFO,"options:");
                 for (const auto& kv : options) {
                     int spacing = 20 - kv.first.length();
                     if (spacing < 1) spacing = 1;

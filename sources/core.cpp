@@ -14,6 +14,7 @@
 #include "../include/utils.h"
 #include "../include/parsers.h"
 #include "../include/cli.h"
+#include "../include/templates.h"
 
 
 namespace fs = std::filesystem;
@@ -21,17 +22,21 @@ namespace fs = std::filesystem;
 namespace core {
 
 fs::path homeDirectory = utils::getHomeDirectory() / ".clibx";
-
+//_templates
 void apk_init() {
     try {
-        if (fs::create_directory(homeDirectory)) {
+        if (fs::create_directories(homeDirectory / "_sys") && fs::create_directories(homeDirectory / "_sys" / "_templates")) {
             std::ofstream READMEFile(homeDirectory / "README.md");
             READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
             READMEFile.close();
-            cli::log(INFO,"CLIBX has been successfully initialized");
-        } else {
-            cli::log(FATAL,"initialization failed");
+          
+        for (const auto& [filename, content] : templates::data) {
+            std::ofstream file(homeDirectory / "_sys" / "_templates" / filename);
+            if (!file.is_open()) cli::log(FATAL, "cannot open file", 1);
+            file << content;
         }
+        } else {cli::log(FATAL,"initialization failed");}
+        cli::log(INFO,"CLIBX has been successfully initialized");
     } catch (const fs::filesystem_error& e) {
         cli::log(FATAL,e.what());
     }
@@ -194,25 +199,35 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
     }
 }
 
-void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory, std::unordered_map<std::string, std::string>& data){
-
-    if (data.find(name) != data.end()){
-            std::ofstream templateFile(targetDirectory / (name));
-            if (!templateFile) {
-                cli::log(FATAL,"failed to create template: " + targetDirectory.string(),2);
-            }
-            templateFile << data[name];
-            templateFile.close();
-
-            cli::log(INFO,"template successfully created " + targetDirectory.string());
-            
-        } else {
-            for (const auto& [key, value] : data) {
-                std::cout << "---" << key << "---" << value << "\n";}
-            cli::log(ERROR, "template '" + name + "' does not exist");
-
+void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory) {
+    if (!name.empty() && fs::exists(homeDirectory / "_sys" / "_templates" / name)) {
+        std::ifstream file(homeDirectory / "_sys" / "_templates" / name);
+        if (!file) {
+            cli::log(FATAL, "failed to open template: " + name, 2);
+            return;
         }
+
+        std::ofstream templateFile(targetDirectory / name);
+        if (!templateFile) {
+            cli::log(FATAL, "failed to create template: " + targetDirectory.string(), 2);
+            return;
+        }
+
+        std::string line;
+        while (std::getline(file, line)) {
+            templateFile << line << '\n';  // přidání nového řádku
+        }
+
+        cli::log(INFO, "template successfully created: " + (targetDirectory / name).string());
+    } else {
+        cli::log(INFO,"Templates:");
+        for (const auto& entry : fs::directory_iterator(homeDirectory / "_sys" / "_templates")) {
+            if (!fs::is_regular_file(entry.path())) continue;
+            std::cout << "\t" << entry.path().filename().string() << '\n';
+        }
+        cli::log(ERROR, "template '" + name + "' does not exist");
     }
+}
 
 void search(const std::string& repoName){
     std::string command = "git ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null";
@@ -245,22 +260,19 @@ void info(const std::string& repoName){
     file.close();  
 }
 void ls(){
-    std::cout << "Installed library:" << std::endl;
+    cli::log(INFO,"Installed library:");
 
     for (const auto& entry : fs::directory_iterator(homeDirectory)) {
         if (!fs::is_directory(entry.path())) continue;
         std::string name = entry.path().filename().string();
         if (name == "_sys") continue;
+
         std::cout << "\t" << name << std::endl;
     }
 }
 void apk_clean(const bool force){
     if (!force) {
-        std::cout << "Are you sure you want to delete the .clibx folder? (this will delete all libraries and records) [Y/n]: ";
-        std::string input;
-        std::getline(std::cin, input);
-        char answer = input.empty() ? 'n' : std::tolower(input[0]);
-        if (answer != 'y') {
+        if (!cli::confirm("Are you sure you want to delete the .clibx folder? (this will delete all libraries and records)")) {
             cli::log(INFO,"removing cancelled by user");
             return;
         }

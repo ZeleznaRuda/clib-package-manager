@@ -108,12 +108,14 @@
         <a href="#installation">Installation</a>
         <a href="#flags">Flags</a>
         <a href="#commands">Commands</a>
+        <a href="#sol">Structure of library</a>
+        <a href="#hiw">How it works</a>
         <a href="#example-usage">Example Usage</a>
         <a href="#kits">Installing Kits</a>
         <a href="#license">License</a>
+
     </div>
 </nav>
-
 <div class="note">
     <p><strong>CLIBX</strong> is a command-line tool created by Rudolf Müller in <strong>C++</strong> for managing C/C++ libraries.</p>
     <p>Libraries can be installed from <strong>Git repositories</strong> or as part of <strong>kits</strong> (library sets). Prototype written in <strong>Python</strong>.</p>
@@ -240,6 +242,54 @@ Example structure:
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx install &lt;library_name&gt; [-f] -d</code></pre>
     </li>
 </ul> 
+
+<h2 id="hiw">How it works</h2>
+<div class="note">
+    <p>CLIBX works through a set of commands that manage libraries in a hidden <code>.clibx</code> folder in your home directory.</p>
+</div>
+
+<ul>
+    <li>
+        <strong>apk-init:</strong> Initializes CLIBX by creating the hidden <code>.clibx</code> folder in your home directory, where all libraries will be installed.
+    </li>
+    <li>
+        <strong>install:</strong> Installs a library.
+        <ul>
+            <li>Clones the repository into <code>.clibx</code>.</li>
+            <li>Checks the repository's first layer for <code>info.yaml</code> and optionally <code>dependencies.txt</code>.</li>
+            <li>Installs dependencies if needed and records metadata (name, version, author, origin, dependencies) in the <code>_sys</code> folder.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>connect:</strong> Links installed libraries to the current project directory.
+        <ul>
+            <li>Creates a <code>libs</code> folder.</li>
+            <li>Creates symbolic links for selected packages or all packages.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>ls:</strong> Lists installed libraries using the stored metadata.
+    </li>
+    <li>
+        <strong>info:</strong> Shows detailed information about a specific package.
+    </li>
+    <li>
+        <strong>uninstall:</strong> Removes a library and its record from the <code>.clibx</code> folder.
+    </li>
+    <li>
+        <strong>template:</strong> Generates files in the current directory based on the file in <code>.clibx</code>.    </li>
+    <li>
+        <strong>search:</strong> Checks if a repository exists.
+    </li>
+    <li>
+        <strong>apk-clean:</strong> Deletes the entire <code>.clibx</code> folder along with all libraries and records. Use with caution!
+    </li>
+    <li>
+        <strong>apk-uninstall:</strong> Removes CLIBX from <code>PATH</code>. The <code>.clibx</code> folder remains unless manually removed.
+    </li>
+</ul>
+
+
 <h2 id="example-usage">Example Usage</h2>
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>
     

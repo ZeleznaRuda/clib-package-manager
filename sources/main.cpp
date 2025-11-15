@@ -69,7 +69,7 @@ int main(int argc, char* argv[]){
     } else if (cmd == "connect"){
             core::connect(argvparser::get_argument_after({cmd}), fs::current_path(), _all);
     } else if (cmd == "template"){
-            core::ctemplate(argvparser::get_argument_after({cmd}),fs::current_path(),templates::data);
+            core::ctemplate(argvparser::get_argument_after({cmd}),fs::current_path());
     } else if (cmd == "search"){
             core::search(argvparser::get_argument_after({cmd}));
     } else if (cmd == "ls"){
