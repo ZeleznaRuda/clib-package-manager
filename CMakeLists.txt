@@ -19,6 +19,8 @@ set(SOURCES
     sources/utils.cpp
     sources/parsers.cpp
     sources/cli.cpp
+    sources/configf.cpp
+
 
 )
 

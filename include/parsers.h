@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -11,16 +12,17 @@
 #include <functional>
 #include <cctype>
 #include <variant>
-
 #include "../include/utils.h"
 #include "../include/cli.h"
-
 
 namespace fs = std::filesystem;
 
 namespace yaml
 {
     std::string read(const fs::path& fileName);
+    void write(fs::path filename, std::string& content);
+    void writeln(fs::path filename,std::string& key, std::string& content);
+    bool changeKey(const fs::path& filename, const std::string& key, const std::string& newValue);
     std::unordered_map<std::string, std::string> parser(const std::string& fileContent);
 }
 
@@ -52,6 +54,7 @@ namespace argvparser
 
     std::string get_argument(int index, const std::string defaultValue = "");
     bool has_argument(int index);
+    std::string argument(const std::vector<std::string>& options, const std::string& defaultValue = "") ;
     std::string get_argument_after(const std::vector<std::string>& names, const std::string defaultValue = "");
     void parser(int i = 1);
 

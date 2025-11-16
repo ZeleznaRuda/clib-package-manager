@@ -13,7 +13,6 @@
 #include <functional>
 #include <cctype>
 #include <variant>
-
 namespace fs = std::filesystem;
 
 namespace utils

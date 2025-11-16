@@ -11,7 +11,52 @@ namespace yaml
         return std::string((std::istreambuf_iterator<char>(file)),
                            std::istreambuf_iterator<char>());
     }
+    bool changeKey(const fs::path& filename, const std::string& key, const std::string& newValue) {
+        if (!fs::exists(filename))
+            cli::log(FATAL, "file " + filename.string() + " not found", -1);
 
+        std::string content = read(filename);
+        auto lines = utils::split(content, '\n');
+        bool changed = false;
+
+        for (auto& l : lines) {
+            std::string stripped = utils::strip(l);
+            if (stripped.empty() || stripped[0] == '#')
+                continue;
+
+            auto pos = stripped.find(':');
+            if (pos == std::string::npos)
+                continue;
+
+            std::string currentKey = utils::strip(stripped.substr(0, pos));
+            if (currentKey == key) {
+                l = key + ": " + newValue;
+                changed = true;
+            }
+        }
+
+        if (!changed)
+            return false;
+
+        std::string out;
+        for (const auto& line : lines)
+            out += line + "\n";
+
+        write(filename, out);
+        return true;
+    }
+    void write(fs::path filename, std::string& content){
+        std::ofstream file(filename);
+        if (!file.is_open()) {cli::log(FATAL, "cannot open file", 1);}
+        file << content;
+        file.close();
+    }
+    void writeln(fs::path filename,std::string& key, std::string& content){
+        std::ofstream file(filename, std::ios::app);
+        if (!file.is_open()) {cli::log(FATAL, "cannot open file", 1);}
+        file << key << ": " << content;
+        file.close();
+    }
     std::unordered_map<std::string, std::string> parser(const std::string& fileContent) {
         std::unordered_map<std::string, std::string> data;
         auto lines = utils::split(fileContent, '\n');
@@ -80,6 +125,15 @@ namespace argvparser
     std::string get_argument(int index, const std::string defaultValue) {
         if (index < 0 || index >= argc) return defaultValue;
         return std::string(argv[index]);
+    }
+    std::string argument(const std::vector<std::string>& options, const std::string& defaultValue) {
+        for (int i = 0; i < argc; ++i) {
+            std::string arg = argv[i];
+            for (const auto& opt : options) {
+                if (arg == opt) return arg;
+            }
+        }
+        return defaultValue;
     }
 
     bool has_argument(int index) {

@@ -15,26 +15,30 @@
 #include "../include/parsers.h"
 #include "../include/cli.h"
 #include "../include/templates.h"
-
+#include "../include/configf.h"
 
 namespace fs = std::filesystem;
 
 namespace core {
 
-fs::path homeDirectory = utils::getHomeDirectory() / ".clibx";
+
+std::string gitPath = configf::loadConfig("git-path"); 
 //_templates
 void apk_init() {
     if (fs::exists(homeDirectory)) {cli::log(WARN, "CLIBX is already initializatied.");return;}
     try {
-        if (fs::create_directories(homeDirectory / "_sys") && fs::create_directories(homeDirectory / "_sys" / "_templates")) {
+        if (fs::create_directories(homeDirectory / "_sys") && fs::create_directories(homeDirectory / "_sys" / "_templates") ) {
             std::ofstream READMEFile(homeDirectory / "README.md");
             READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
             READMEFile.close();
-          
+            std::ofstream _configFile(homeDirectory / "_sys" / "_config.yaml");
+            _configFile << "git-path: git" << std::endl;
+            _configFile.close();
         for (const auto& [filename, content] : templates::data) {
             std::ofstream file(homeDirectory / "_sys" / "_templates" / filename);
             if (!file.is_open()) cli::log(FATAL, "cannot open file", 1);
             file << content;
+            file.close();
         }
         } else {cli::log(FATAL,"initialization failed");}
         cli::log(INFO,"CLIBX has been successfully initialized");
@@ -42,7 +46,6 @@ void apk_init() {
         cli::log(FATAL,e.what());
     }
 }
-
 
 void install(const std::string& url, const bool force, const bool installDependencies) {
     if (!force) {
@@ -71,7 +74,7 @@ void install(const std::string& url, const bool force, const bool installDepende
         cli::log(FATAL,e.what(), 2);
     }
 
-    std::string command = "git clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string()) + " &> /dev/null";
+    std::string command = gitPath + " clone --depth 1 " + utils::escapeShellArg(url) + " " + utils::escapeShellArg(pkgPath.string()) + " &> /dev/null";
     int result = system(command.c_str());
 
     auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
@@ -231,7 +234,7 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
 }
 
 void search(const std::string& repoName){
-    std::string command = "git ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null";
+    std::string command = gitPath + " ls-remote "+ utils::escapeShellArg(repoName)+" &> /dev/null";
     int result = system(command.c_str());
     if (result == 0){
         cli::log(INFO,"the library is accessible");
@@ -306,6 +309,8 @@ void apk_uninstall(bool force) { // apk-uninstall
         cli::log(FATAL, "error removing CLIBX: " + std::string(e.what()),2);
     }
 }
+
+
 }
 /*    for (const auto& entry : fs::directory_iterator(path))
         std::cout << entry.path() << std::endl;*/

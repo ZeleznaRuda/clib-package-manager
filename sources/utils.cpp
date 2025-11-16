@@ -1,6 +1,5 @@
 #include "../include/utils.h"
 
-
 namespace utils
 {
     fs::path getHomeDirectory() {
