@@ -24,6 +24,7 @@ namespace core {
 fs::path homeDirectory = utils::getHomeDirectory() / ".clibx";
 //_templates
 void apk_init() {
+    if (fs::exists(homeDirectory)) {cli::log(WARN, "CLIBX is already initializatied.");return;}
     try {
         if (fs::create_directories(homeDirectory / "_sys") && fs::create_directories(homeDirectory / "_sys" / "_templates")) {
             std::ofstream READMEFile(homeDirectory / "README.md");
@@ -82,7 +83,7 @@ void install(const std::string& url, const bool force, const bool installDepende
             fs::path newPath = homeDirectory / infoData["name"];
             if (fs::exists(newPath)) {
                 fs::remove_all(pkgPath);
-                cli::log(ERROR, "the library is already installed.");
+                cli::log(WARN, "the library is already installed.");
                 exit(2);
             }
             fs::rename(pkgPath.string(), newPath);
