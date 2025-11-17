@@ -12,8 +12,8 @@
 #include <functional>
 #include <cctype>
 #include <variant>
-#include "../include/utils.h"
-#include "../include/cli.h"
+#include "../include/utilsf.h"
+#include "../include/clif.h"
 
 namespace fs = std::filesystem;
 
@@ -55,12 +55,13 @@ namespace argvparser
     std::string get_argument(int index, const std::string defaultValue = "");
     bool has_argument(int index);
     std::string argument(const std::vector<std::string>& options, const std::string& defaultValue = "") ;
+    bool is_argument(const std::string name);
     std::string get_argument_after(const std::vector<std::string>& names, const std::string defaultValue = "");
     void parser(int i = 1);
 
     namespace {
         inline void help() {
-            cli::log(INFO,"usage: clibx [options]\n");
+            clif::log(INFO,"usage: clibx [options]\n");
 
             std::unordered_map<std::string, std::vector<std::string>> groupedFlags;
 
@@ -71,7 +72,7 @@ namespace argvparser
             }
 
             if (!groupedFlags.empty()) {
-                cli::log(INFO,"flags:");
+                clif::log(INFO,"flags:");
                 for (const auto& kv : groupedFlags) {
                     std::string names;
                     for (size_t i = 0; i < kv.second.size(); ++i) {
@@ -94,7 +95,7 @@ namespace argvparser
             }
 
             if (!options.empty()) {
-                cli::log(INFO,"options:");
+                clif::log(INFO,"options:");
                 for (const auto& kv : options) {
                     int spacing = 20 - kv.first.length();
                     if (spacing < 1) spacing = 1;

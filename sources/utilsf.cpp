@@ -1,11 +1,8 @@
-#include "../include/utils.h"
+#include "../include/utilsf.h"
 
-namespace utils
+namespace utilsf
 {
-    fs::path getHomeDirectory() {
-        const char* home = std::getenv("HOME");
-        return home ? fs::path(home) : fs::path{};
-    }
+
 
     std::string escapeShellArg(const std::string& arg) {
         std::string escaped = "'";

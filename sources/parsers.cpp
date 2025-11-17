@@ -2,10 +2,10 @@
 namespace yaml
 {
     std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) cli::log(FATAL, "file " + fileName.string() + " not found", -1);
+        if (!fs::exists(fileName)) clif::log(FATAL, "file " + fileName.string() + " not found", -1);
 
         std::ifstream file(fileName);
-        if (!file.is_open()) cli::log(FATAL, "cannot open file", -1);
+        if (!file.is_open()) clif::log(FATAL, "cannot open file", -1);
 
 
         return std::string((std::istreambuf_iterator<char>(file)),
@@ -13,14 +13,14 @@ namespace yaml
     }
     bool changeKey(const fs::path& filename, const std::string& key, const std::string& newValue) {
         if (!fs::exists(filename))
-            cli::log(FATAL, "file " + filename.string() + " not found", -1);
+            clif::log(FATAL, "file " + filename.string() + " not found", -1);
 
         std::string content = read(filename);
-        auto lines = utils::split(content, '\n');
+        auto lines = utilsf::split(content, '\n');
         bool changed = false;
 
         for (auto& l : lines) {
-            std::string stripped = utils::strip(l);
+            std::string stripped = utilsf::strip(l);
             if (stripped.empty() || stripped[0] == '#')
                 continue;
 
@@ -28,7 +28,7 @@ namespace yaml
             if (pos == std::string::npos)
                 continue;
 
-            std::string currentKey = utils::strip(stripped.substr(0, pos));
+            std::string currentKey = utilsf::strip(stripped.substr(0, pos));
             if (currentKey == key) {
                 l = key + ": " + newValue;
                 changed = true;
@@ -47,35 +47,35 @@ namespace yaml
     }
     void write(fs::path filename, std::string& content){
         std::ofstream file(filename);
-        if (!file.is_open()) {cli::log(FATAL, "cannot open file", 1);}
+        if (!file.is_open()) {clif::log(FATAL, "cannot open file", 1);}
         file << content;
         file.close();
     }
     void writeln(fs::path filename,std::string& key, std::string& content){
         std::ofstream file(filename, std::ios::app);
-        if (!file.is_open()) {cli::log(FATAL, "cannot open file", 1);}
+        if (!file.is_open()) {clif::log(FATAL, "cannot open file", 1);}
         file << key << ": " << content;
         file.close();
     }
     std::unordered_map<std::string, std::string> parser(const std::string& fileContent) {
         std::unordered_map<std::string, std::string> data;
-        auto lines = utils::split(fileContent, '\n');
+        auto lines = utilsf::split(fileContent, '\n');
 
         for (auto& l : lines) {
-            l = utils::strip(l);
+            l = utilsf::strip(l);
             if (l.empty() || l[0] == '#') continue;
 
             auto hashPos = l.find('#');
             if (hashPos != std::string::npos)
                 l = l.substr(0, hashPos);
 
-            l = utils::strip(l);
+            l = utilsf::strip(l);
             if (l.empty()) continue;
 
-            auto parts = utils::split(l, ':');
+            auto parts = utilsf::split(l, ':');
             if (parts.size() >= 2) {
-                std::string key = utils::strip(parts[0]);
-                std::string value = utils::strip(l.substr(l.find(':') + 1));
+                std::string key = utilsf::strip(parts[0]);
+                std::string value = utilsf::strip(l.substr(l.find(':') + 1));
                 data[key] = value;
             }
         }
@@ -88,9 +88,9 @@ namespace yaml
 namespace lister
 {
     std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) cli::log(FATAL, "file " + fileName.string() + " not found", -1);
+        if (!fs::exists(fileName)) clif::log(FATAL, "file " + fileName.string() + " not found", -1);
         std::ifstream file(fileName);
-        if (!file.is_open()) cli::log(FATAL, "cannot open file", -1);
+        if (!file.is_open()) clif::log(FATAL, "cannot open file", -1);
         return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     }
 
@@ -99,7 +99,7 @@ namespace lister
         std::istringstream stream(fileContent);
         std::string line;
         while (std::getline(stream, line)) {
-            line = utils::strip(line);
+            line = utilsf::strip(line);
             if (!line.empty()) urls.push_back(line);
         }
         return urls;
@@ -135,7 +135,13 @@ namespace argvparser
         }
         return defaultValue;
     }
+    bool is_argument(const std::string name){
+        if (starts_with(name, "--") || starts_with(name, "-")){
+            return true;
+        }
+        return false;
 
+    }
     bool has_argument(int index) {
         return argv[index] != nullptr;
     }
@@ -155,7 +161,7 @@ namespace argvparser
             if (definedArguments.find(arg) != definedArguments.end()) {
                 definedArguments[arg]();
             } else if (starts_with(arg, "--") || starts_with(arg, "-")) {
-                cli::log(ERROR, "\033[1;91munknown argument:\033[0m " + arg + "\n");
+                clif::log(FATAL, "unknown argument: " + arg + "\n");
             }
         }
     }

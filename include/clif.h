@@ -5,7 +5,7 @@
 #include <termios.h>
 #include <unistd.h>
 enum logLevel { INFO, WARN, ERROR, DEBUG, FATAL ,HINT };
-namespace cli
+namespace clif
 {
     inline void hideCursor() { std::cout << "\033[?25l" << std::flush; };
     inline void showCursor() { std::cout << "\033[?25h" << std::flush; };

@@ -15,12 +15,12 @@ include_directories(
 
 set(SOURCES
     sources/main.cpp
-    sources/core.cpp
-    sources/utils.cpp
+    sources/utilsf.cpp
     sources/parsers.cpp
-    sources/cli.cpp
+    sources/clif.cpp
     sources/configf.cpp
-
+    sources/transactionf.cpp
+    sources/appf.cpp
 
 )
 

@@ -5,7 +5,7 @@
 #include "utils.h"
 
 namespace core {
-    inline std::filesystem::path homeDirectory = utils::getHomeDirectory() / ".clibx";
+    inline std::filesystem::path homeDirectory = utilsf::getHomeDirectory() / ".clibx";
 
     void apk_init();
     void install(const std::string& url, bool force = false, const bool installDependencies = true);

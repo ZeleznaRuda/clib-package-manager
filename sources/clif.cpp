@@ -1,5 +1,5 @@
-#include "../include/cli.h"
-namespace cli
+#include "../include/clif.h"
+namespace clif
 {
     
     void log(logLevel level, const std::string& msg, const int exitCode) {
