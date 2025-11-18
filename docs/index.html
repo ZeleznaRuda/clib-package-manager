@@ -155,14 +155,28 @@
     <tr><td><code>--web</code> / <code>-w</code></td><td>Open CLIBX website</td></tr>
     <tr><td><code>--dep</code> / <code>-d</code></td><td>Install dependencies with package</td></tr>
     <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
+    <tr><th>Configuration flags:</th><th>Description</th></tr>
+    <tr><td><code>--git-path</code></td><td>Command for configuration management</td></tr>
 </table>
 
 <h2 id="commands">Commands</h2>
 <section>
 <ul>
     <li>
-        <strong>apk-init</strong> – Initializes CLIBX.
+        <strong>app-init</strong> – Initializes CLIBX.
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx init</code></pre>
+    </li>
+    <li>
+        <strong>app-clean</strong> – Delete the .clibx folder. Supports <code>-f</code>.
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx clean [-f]</code></pre>
+    </li>
+    <li>
+        <strong>app-uninstall</strong> – Uninstall applications. Supports <code>-f</code>.
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx app-uninstall [-f]</code></pre>
+    </li>
+    <li>
+        <strong>app-config</strong> – Command for configuration management. Supports <code>-f</code>. Possible arguments "--git-path"
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx app-config &lt;argument&gt; &lt;content&gt;  [-f]</code></pre>
     </li>
     <li>
         <strong>template</strong> – Creates a project template by name.
@@ -192,14 +206,7 @@
         <strong>info</strong> – Show package information.
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx info &lt;library_name&gt;</code></pre>
     </li>
-    <li>
-        <strong>apk-clean</strong> – Delete the .clibx folder. Supports <code>-f</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx clean [-f]</code></pre>
-    </li>
-    <li>
-        <strong>apk-uninstall</strong> – Uninstall applications. Supports <code>-f</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx apk-uninstall [-f]</code></pre>
-    </li>
+
 </ul>
 </section>
 <h2 id="sol">Structure of library</h2>
@@ -250,7 +257,16 @@ Example structure:
 
 <ul>
     <li>
-        <strong>apk-init:</strong> Initializes CLIBX by creating the hidden <code>.clibx</code> folder in your home directory, where all libraries will be installed.
+        <strong>app-init:</strong> Initializes CLIBX by creating the hidden <code>.clibx</code> folder in your home directory, where all libraries will be installed.
+    </li>
+    <li>
+        <strong>app-clean:</strong> Deletes the entire <code>.clibx</code> folder along with all libraries and records. Use with caution!
+    </li>
+    <li>
+        <strong>app-uninstall:</strong> Removes CLIBX from <code>PATH</code>. The <code>.clibx</code> folder remains unless manually removed.
+    </li>
+    <li>
+        <strong>app-config:</strong> Writes to the configuration file _config.yaml
     </li>
     <li>
         <strong>install:</strong> Installs a library.
@@ -281,12 +297,6 @@ Example structure:
     <li>
         <strong>search:</strong> Checks if a repository exists.
     </li>
-    <li>
-        <strong>apk-clean:</strong> Deletes the entire <code>.clibx</code> folder along with all libraries and records. Use with caution!
-    </li>
-    <li>
-        <strong>apk-uninstall:</strong> Removes CLIBX from <code>PATH</code>. The <code>.clibx</code> folder remains unless manually removed.
-    </li>
 </ul>
 
 
@@ -311,7 +321,8 @@ g++ main.cpp libs/platform/platform.cpp -o main
 </code></pre>
 
 <h2>License</h2> <div class="note"> <pre id="license">...</pre> </div> 
-<footer> <strong>If you have any problems please <a href="https://github.com/rudolfmuller/clibx-package-manager/issues/new">write to us.</a></strong> <br> <strong>GitHub <a href="https://github.com/rudolfmuller/clibx-package-manager">https://github.com/rudolfmuller/clibx-package-manager</a></strong> <br><br> <strong>Rudolf Müller - 2025</strong> </footer> <script> document.querySelectorAll('.copy-btn').forEach(button => { button.addEventListener('click', () => { const code = button.nextElementSibling; navigator.clipboard.writeText(code.innerText).then(() => { button.textContent = 'Copied!'; setTimeout(() => button.textContent = 'Copy', 1500); }); }); }); const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/clibx-package-manager/main/LICENSE"; fetch(licenseUrl) .then(response => { if (!response.ok) throw new Error("Failed to load license"); return response.text(); }) .then(text => { document.getElementById('license').textContent = text; }) .catch(err => { document.getElementById('license').textContent = err; }); </script>
+<footer> <strong>If you have any problems please <a href="https://github.com/rudolfmuller/clibx-package-manager/issues/new">write to us.</a></strong> <br> <strong>GitHub <a href="https://github.com/rudolfmuller/clibx-package-manager">https://github.com/rudolfmuller/clibx-package-manager</a></strong> <br><br> <strong>Rudolf Müller - 2025</strong> </footer> 
+<script> document.querySelectorAll('.copy-btn').forEach(button => { button.addEventListener('click', () => { const code = button.nextElementSibling; navigator.clipboard.writeText(code.innerText).then(() => { button.textContent = 'Copied!'; setTimeout(() => button.textContent = 'Copy', 1500); }); }); }); const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/clibx-package-manager/main/LICENSE"; fetch(licenseUrl) .then(response => { if (!response.ok) throw new Error("Failed to load license"); return response.text(); }) .then(text => { document.getElementById('license').textContent = text; }) .catch(err => { document.getElementById('license').textContent = err; }); </script>
 
 </body>
 </html>
