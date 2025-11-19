@@ -53,10 +53,12 @@ commands command(std::string& command){
 }
 int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
+    bool _format = false;
     bool _force = false;
     bool _all = false;
     bool _dep = false;
-
+    std::string _format_user;
+    std::string _format_repo;
 
     argvparser::add_help("app-init",            "initializes clibx");
     argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-d' flag)");
@@ -69,6 +71,14 @@ int main(int argc, char* argv[]){
     argvparser::add_help("app-clean",           "deletes the .clibx folder            (supports the '-f' flag)");
     argvparser::add_help("app-uninstall",       "uninstall applications");
     argvparser::add_help("app-config",          "command for configuration management");
+
+    argvparser::define_argument({"--user"}, [](){}, "user flag");
+    argvparser::define_argument({"--repo"}, [](){}, "repo flag");
+    argvparser::define_argument({"-F", "--format"}, [&_format ,&_format_user ,&_format_repo](){ _format = true;
+        if (_format) {
+            _format_user = argvparser::get_argument_after({"--user"});
+            _format_repo = argvparser::get_argument_after({"--repo"});
+        }}, "format flag");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
@@ -111,6 +121,10 @@ int main(int argc, char* argv[]){
         }
 
         case commands::INSTALL:
+            if (_format) {
+                transactionf::install(("https://github.com/"+_format_user+"/"+_format_repo+".git"), _force, _dep);
+                break;
+            }
             transactionf::install(argvparser::get_argument_after({cmd}), _force, _dep);
             break;
 
@@ -127,6 +141,10 @@ int main(int argc, char* argv[]){
             break;
 
         case commands::SEARCH:
+            if (_format) {
+                transactionf::search(("https://github.com/"+_format_user+"/"+_format_repo+".git"));
+                break;
+            }
             transactionf::search(argvparser::get_argument_after({cmd}));
             break;
 
