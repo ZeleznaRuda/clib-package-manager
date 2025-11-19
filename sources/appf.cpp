@@ -3,15 +3,15 @@ namespace appf {
 void app_init() {
     if (fs::exists(homeDirectory)) {clif::log(WARN, "CLIBX is already initializatied.");return;}
     try {
-        if (fs::create_directories(homeDirectory / "_sys") && fs::create_directories(homeDirectory / "_sys" / "_templates") ) {
+        if (fs::create_directories(homeDirectory / "_sys") && fs::create_directories(homeDirectory / "_sys" / "templates") && fs::create_directories(homeDirectory / "_sys" / "libRecords")  ) {
             std::ofstream READMEFile(homeDirectory / "README.md");
             READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
             READMEFile.close();
-            std::ofstream _configFile(homeDirectory / "_sys" / "_config.yaml");
+            std::ofstream _configFile(homeDirectory / "_sys" / "config.yaml");
             _configFile << "git-path: git" << std::endl;
             _configFile.close();
         for (const auto& [filename, content] : templates::data) {
-            std::ofstream file(homeDirectory / "_sys" / "_templates" / filename);
+            std::ofstream file(homeDirectory / "_sys" / "templates" / filename);
             if (!file.is_open()) clif::log(FATAL, "cannot open file", 1);
             file << content;
             file.close();
@@ -21,7 +21,7 @@ void app_init() {
     } catch (const fs::filesystem_error& e) {
         clif::log(FATAL,e.what());
     }
-}
+}// _lib-records
 void app_clean(const bool force){
     if (!force) {
         if (!clif::confirm("Are you sure you want to delete the .clibx folder? (this will delete all libraries and records)")) {

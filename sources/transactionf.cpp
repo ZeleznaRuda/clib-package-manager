@@ -19,7 +19,7 @@ void install(const std::string& url, const bool force, const bool installDepende
     if (utilsf::ends_with(repoName, ".git"))
         repoName = repoName.substr(0, repoName.size() - 4);
 
-    fs::path pkgPath = homeDirectory / repoName;
+    fs::path pkgPath = homeDirectory / "_sys" / repoName;
 
     try {
         if (!fs::create_directory(pkgPath)) {
@@ -54,9 +54,9 @@ void install(const std::string& url, const bool force, const bool installDepende
 
     fs::create_directories(homeDirectory / "_sys");
 
-    std::ofstream pkgFile(homeDirectory / "_sys" / (infoData["name"] + "-package.yaml"));
+    std::ofstream pkgFile(homeDirectory / "_sys" / "libRecords" / (infoData["name"] + "-package.yaml"));
     if (!pkgFile) {
-        clif::log(FATAL,"failed to create record: " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string(),2);
+        clif::log(FATAL,"failed to create record: " + (homeDirectory / "_sys" / "libRecords" / (infoData["name"] + "-package.yaml")).string(),2);
     } else {
         std::time_t t = std::time(nullptr);
         std::tm* now = std::localtime(&t);
@@ -71,7 +71,7 @@ void install(const std::string& url, const bool force, const bool installDepende
         pkgFile << "git-url: " << url << std::endl;
         pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
 
-        clif::log(INFO,"record successfully created " + (homeDirectory / "_sys" / (infoData["name"] + "-package.yaml")).string());
+        clif::log(INFO,"record successfully created " + (homeDirectory / "_sys" / "libRecords" / (infoData["name"] + "-package.yaml")).string());
     }
 
     if (installDependencies && fs::exists(pkgPath / "dependencies.txt")) {
@@ -97,7 +97,7 @@ void uninstall(const std::string& pkgName, bool force) {
     }
 
     fs::path pkgPath = homeDirectory / pkgName;
-    fs::path pkgInfoFilePath = homeDirectory / "_sys" / (pkgName + "-package.yaml");
+    fs::path pkgInfoFilePath = homeDirectory / "_sys" / "libRecords" / (pkgName + "-package.yaml");
 
     if (!fs::exists(pkgPath)) {
         clif::log(ERROR, "library '" + pkgName + "' does not exist.");
@@ -159,8 +159,8 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
 }
 
 void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory) {
-    if (!name.empty() && fs::exists(homeDirectory / "_sys" / "_templates" / name)) {
-        std::ifstream file(homeDirectory / "_sys" / "_templates" / name);
+    if (!name.empty() && fs::exists(homeDirectory / "_sys" / "templates" / name)) {
+        std::ifstream file(homeDirectory / "_sys" / "templates" / name);
         if (!file) {
             clif::log(FATAL, "failed to open template: " + name, 2);
             return;
@@ -180,7 +180,7 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
         clif::log(INFO, "template successfully created: " + (targetDirectory / name).string());
     } else {
         clif::log(INFO,"Templates:");
-        for (const auto& entry : fs::directory_iterator(homeDirectory / "_sys" / "_templates")) {
+        for (const auto& entry : fs::directory_iterator(homeDirectory / "_sys" / "templates")) {
             if (!fs::is_regular_file(entry.path())) continue;
             std::cout << "\t" << entry.path().filename().string() << '\n';
         }
@@ -206,7 +206,7 @@ void info(const std::string& repoName){
             name.compare(name.size() - suffix.size(), suffix.size(), suffix) == 0) {
             name.erase(name.size() - suffix.size());
     }
-    std::ifstream file(homeDirectory / "_sys" / (name + suffix)); 
+    std::ifstream file(homeDirectory / "_sys" / "libRecords" / (name + suffix)); 
     if (!file.is_open()) {
         clif::log(ERROR, "package does not exist");
     }
