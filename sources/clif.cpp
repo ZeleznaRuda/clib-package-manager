@@ -5,23 +5,23 @@ namespace clif
     void log(logLevel level, const std::string& msg, const int exitCode) {
         switch (level) {
             case INFO:
-                std::cout << "\033[1;32minfo\033[0m: " << msg << "\n";
+                std::cout << "\033[3;1;32minfo\033[0m: " << msg << "\n";
                 break; 
             case WARN:
-                std::cout << "\033[1;33mwarning\033[0m: " << msg << "\n";
+                std::cout << "\033[3;1;33mwarning\033[0m: " << msg << "\n";
                 break; 
             case ERROR:
-                std::cout << "\033[1;31merror\033[0m: " << msg << "\n";
+                std::cout << "\033[3;1;31merror\033[0m: " << msg << "\n";
                 break;
             case FATAL:
-                std::cout << "\033[1;31mfatal\033[0m: " << msg << "\n";
+                std::cout << "\033[3;1;31mfatal\033[0m: " << msg << "\n";
                 if (exitCode != -1){exit(exitCode);}
                 break; 
             case DEBUG:
-                std::cout << "\033[1;36mdebug\033[0m: " << msg << "\n";
+                std::cout << "\033[3;1;36mdebug\033[0m: " << msg << "\n";
                 break;  
             case HINT:
-                std::cout << "\033[1;33mhint: " << msg << "\033[0m\n";
+                std::cout << "\033[3;1;33mhint: " << msg << "\033[0m\n";
                 break;  
         }
     }

@@ -1,8 +1,17 @@
 #include "../include/transactionf.h"
-std::string gitPath = configf::loadConfig("git-path"); 
 namespace transactionf
 {
+
+std::string gitPath = std::string(std::getenv("CLIBX_GIT_PATH") ? std::getenv("CLIBX_GIT_PATH") : "git");
+
 void install(const std::string& url, const bool force, const bool installDependencies) {
+
+    if (system((gitPath + " ls-remote " + utilsf::escapeShellArg(url) + " &> /dev/null").c_str()) == 0) {
+        clif::log(INFO, "the library is accessible");
+    } else {
+        clif::log(FATAL, "library is not accessible");
+    }
+
     if (!force) {
         if (!clif::confirm("Are you sure you want to install the library from '" + url + "'")) {
             clif::log(INFO,"installation cancelled by user");
@@ -42,7 +51,7 @@ void install(const std::string& url, const bool force, const bool installDepende
             if (fs::exists(newPath)) {
                 fs::remove_all(pkgPath);
                 clif::log(WARN, "the library is already installed.");
-                exit(2);
+                return;
             }
             fs::rename(pkgPath.string(), newPath);
             pkgPath = newPath;
@@ -158,7 +167,7 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
     }
 }
 
-void ctemplate(const std::string& name, const std::filesystem::path& targetDirectory) {
+void useTemplate(const std::string& name, const std::filesystem::path& targetDirectory) {
     if (!name.empty() && fs::exists(homeDirectory / "_sys" / "templates" / name)) {
         std::ifstream file(homeDirectory / "_sys" / "templates" / name);
         if (!file) {
@@ -174,7 +183,7 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
 
         std::string line;
         while (std::getline(file, line)) {
-            templateFile << line << '\n';  // přidání nového řádku
+            templateFile << line << '\n';  
         }
 
         clif::log(INFO, "template successfully created: " + (targetDirectory / name).string());
@@ -188,14 +197,17 @@ void ctemplate(const std::string& name, const std::filesystem::path& targetDirec
     }
 }
 
-void search(const std::string& repoName){
-    std::string command = gitPath + " ls-remote "+ utilsf::escapeShellArg(repoName)+" &> /dev/null";
+void search(const std::string& url){
+    std::string command = gitPath + " ls-remote "+ utilsf::escapeShellArg(url)+" &> /dev/null";
     int result = system(command.c_str());
     if (result == 0){
         clif::log(INFO,"the library is accessible");
     } else {
         clif::log(WARN,"library is not accessible");
     }
+}
+void git(const std::string& command){
+    exit(system((gitPath + " " + command).c_str()));
 }
 void info(const std::string& repoName){
     const std::string suffix = "-package.yaml";
@@ -219,14 +231,14 @@ void info(const std::string& repoName){
     file.close();  
 }
 void ls(){
-    clif::log(INFO,"Installed library:");
+    clif::log(INFO,"installed library:");
 
     for (const auto& entry : fs::directory_iterator(homeDirectory)) {
         if (!fs::is_directory(entry.path())) continue;
         std::string name = entry.path().filename().string();
         if (name == "_sys") continue;
 
-        std::cout << "\t" << name << std::endl;
+        std::cout << "-\t" << name << std::endl;
     }
 }
 }

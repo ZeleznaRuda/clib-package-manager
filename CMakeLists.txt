@@ -18,7 +18,6 @@ set(SOURCES
     sources/utilsf.cpp
     sources/parsers.cpp
     sources/clif.cpp
-    sources/configf.cpp
     sources/transactionf.cpp
     sources/appf.cpp
 
