@@ -1,4 +1,5 @@
-name: CLIBX Package Manager C/C++
+# CLIBX Package Manager C/C++
+name: clibx
 description: package manager for C/C++ libraries
 version: 1.1.8
 author: Rudolf Mueller
