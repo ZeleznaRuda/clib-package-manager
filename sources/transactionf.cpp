@@ -72,11 +72,35 @@ void install(const std::string& url, const bool force, const bool installDepende
         pkgFile << "# package information:" << std::endl;
         pkgFile << "name: " << infoData["name"] << std::endl;
         pkgFile << "description: " << infoData["description"] << std::endl;
-        pkgFile << "version: " << infoData["version"] << std::endl;
+        if (infoData.find("website") != infoData.end()) {
+            pkgFile << "website: " << infoData["website"] << std::endl;
+        }
+        pkgFile << std::endl;
+        if (infoData.find("version") != infoData.end()) {
+            pkgFile << "version: " << infoData["version"] << std::endl;
+        }
+        if (infoData.find("major-version") != infoData.end()) {
+            pkgFile << "major-version: " << infoData["major-version"] << std::endl;
+        }
+        if (infoData.find("minor-version") != infoData.end()) {
+            pkgFile << "minor-version: " << infoData["minor-version"] << std::endl;
+        }
+        if (infoData.find("patch-version") != infoData.end()) {
+            pkgFile << "patch-version: " << infoData["patch-version"] << std::endl;
+        }
 
         pkgFile << std::endl;
         pkgFile << "# origin:" << std::endl;
-        pkgFile << "author: " << infoData["author"] << std::endl;
+        if (infoData.find("author") != infoData.end()) {
+            pkgFile << "author: " << infoData["author"] << std::endl;
+        } else {
+            pkgFile << "author: unknown" << std::endl;
+        }
+
+        if (infoData.find("license") != infoData.end()) {
+            pkgFile << "license: " << infoData["license"] << std::endl;
+        }
+
         pkgFile << "git-url: " << url << std::endl;
         pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
 
@@ -99,17 +123,22 @@ void install(const std::string& url, const bool force, const bool installDepende
 
 void remove(const std::string& pkgName, bool force) {
     if (!force) {
+        if (!clif::input("To continue, you must rewrite the package name and enter it. [package name]: ") .compare(pkgName) == 0) {
+            clif::log(INFO,"removal cancelled by force");
+            return;
+        }
         if (!clif::confirm("Are you sure you want to remove '" + pkgName + "' library?")) {
             clif::log(INFO,"removal cancelled by user");
             return;
         }
+
     }
 
     fs::path pkgPath = homeDirectory / pkgName;
     fs::path pkgInfoFilePath = homeDirectory / "_sys" / "libRecords" / (pkgName + "-package.yaml");
 
     if (!fs::exists(pkgPath)) {
-        clif::log(ERROR, "library '" + pkgName + "' does not exist.");
+        clif::log(FATAL, "library '" + pkgName + "' does not exist.");
     }
 
     try {
@@ -188,7 +217,7 @@ void use_template(const std::string& name, const std::filesystem::path& targetDi
 
         clif::log(INFO, "template successfully created: " + (targetDirectory / name).string());
     } else {
-        clif::log(INFO,"Templates:");
+        clif::log(INFO,"templates:");
         for (const auto& entry : fs::directory_iterator(homeDirectory / "_sys" / "templates")) {
             if (!fs::is_regular_file(entry.path())) continue;
             std::cout << "\t" << entry.path().filename().string() << '\n';

@@ -2,6 +2,12 @@
 namespace appf {
 void purge(const bool force) { // apk-uninstall
     if (!force) {
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+        int verificationCode = rand() % 9000 + 1000;
+        if (!clif::input("To continue, you must rewrite the four-digit verification code and enter it. ["+ std::to_string(verificationCode) +"]: ") .compare(std::to_string(verificationCode)) == 0) {
+            clif::log(INFO,"purge cancelled by force");
+            return;
+        }
         if (!clif::confirm("Are you sure you want to purge CLIBX?")) {
             clif::log(INFO,"purge cancelled by user");
             return;

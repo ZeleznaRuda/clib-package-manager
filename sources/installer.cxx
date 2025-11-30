@@ -7,8 +7,7 @@
 #include <unistd.h>
 namespace fs = std::filesystem;
 std::unordered_map<std::string, std::string> data = {
-    {"CMakeLists.txt", R"(
-cmake_minimum_required(VERSION 3.10)
+    {"CMakeLists.txt", R"(cmake_minimum_required(VERSION 3.10)
 
 project(MyProject)
 
@@ -29,19 +28,15 @@ target_include_directories(main PRIVATE
 )
 )"},
 
-    {"info.yaml", R"(
-name: <name>
+    {"info.yaml", R"(name: <name>
 version: <version>
 author: <author>
 description: <description>
-
-Windows: true
-Linux: true
-Darwin: true
+website: <website>
+license: <license>
 )"},
 
-    {"dependencies.txt", R"(
-Here you can write a list of dependencies, Git addresses
+    {"dependencies.txt", R"(Here you can write a list of dependencies, Git addresses
 
 such as:
 https://github.com/ZeleznaRuda/platform-lib.git

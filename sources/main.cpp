@@ -65,6 +65,7 @@ int main(int argc, char* argv[]){
     argvparser::add_help("ls",                  "print a list of installed libraries");
     argvparser::add_help("info",                "print package information");
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
+    argvparser::add_help("report",              "report a bug or suggest a new feature");
 
     argvparser::add_help("purge",               "purge applications");
 
