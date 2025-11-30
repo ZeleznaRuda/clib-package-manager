@@ -19,32 +19,34 @@ namespace fs = std::filesystem;
 enum class commands{
         PURGE,
         INSTALL,
-        UNINSTALL,
+        REMOVE,
         CONNECT,
         TEMPLATE,
         SEARCH,
         LS,
         INFO,
         GIT,
+        REPORT,
         UNKNOWN
 };
 static const std::unordered_map<std::string, commands> commandMap = {
     {"purge", commands::PURGE},
     {"install", commands::INSTALL},
-    {"uninstall", commands::UNINSTALL},
+    {"remove", commands::REMOVE},
     {"connect", commands::CONNECT},
     {"template", commands::TEMPLATE},
     {"search", commands::SEARCH},
     {"ls", commands::LS},
     {"info", commands::INFO},
-    {"git", commands::GIT}
+    {"git", commands::GIT},
+    {"report", commands::REPORT}
 
 };
 commands command(std::string& command){
     auto it = commandMap.find(command);
     return (it != commandMap.end()) ? it->second : commands::UNKNOWN;
 }
-std::string url(const std::string& user, const std::string& repo){
+std::string repo(const std::string& user, const std::string& repo){
     return ("https://github.com/"+user+"/"+repo+".git");
 }
 int main(int argc, char* argv[]){
@@ -52,12 +54,11 @@ int main(int argc, char* argv[]){
     bool _force = false;
     bool _all = false;
     bool _dep = false;
-    std::string user;
-    std::string repo;
+
 
 
     argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-d' flag)");
-    argvparser::add_help("uninstall",           "uninstall library                    (supports the '-f' flag)");
+    argvparser::add_help("remove",              "remove library                    (supports the '-f' flag)");
     argvparser::add_help("connect",             "connect clibx to your project        (supports the '-a' flag)");
     argvparser::add_help("template",            "creates a template based on the name ");
     argvparser::add_help("search",              "checks the repository is available");
@@ -66,10 +67,6 @@ int main(int argc, char* argv[]){
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
 
     argvparser::add_help("purge",               "purge applications");
-
-
-    argvparser::define_argument({"--user"}, [&user](){user = argvparser::get_argument_after({"--user"});}, "user flag");
-    argvparser::define_argument({"--repo"}, [&repo](){repo = argvparser::get_argument_after({"--repo"});}, "repo flag");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
@@ -95,11 +92,11 @@ int main(int argc, char* argv[]){
 
 
         case commands::INSTALL:
-            transactionf::install(url(user,repo), _force, _dep);
+            transactionf::install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force, _dep);
             break;
 
-        case commands::UNINSTALL:
-            transactionf::uninstall(argvparser::get_argument_after({cmd}), _force);
+        case commands::REMOVE:
+            transactionf::remove(argvparser::get_argument_after({cmd}), _force);
             break;
 
         case commands::CONNECT:
@@ -107,11 +104,11 @@ int main(int argc, char* argv[]){
             break;
 
         case commands::TEMPLATE:
-            transactionf::useTemplate(argvparser::get_argument_after({cmd}), fs::current_path());
+            transactionf::use_template(argvparser::get_argument_after({cmd}), fs::current_path());
             break;
 
         case commands::SEARCH:
-            transactionf::search(url(user,repo));
+            transactionf::search(repo(argvparser::get_argument(2), argvparser::get_argument(3)));
             break;
 
         case commands::LS:
@@ -125,7 +122,9 @@ int main(int argc, char* argv[]){
         case commands::GIT:
             transactionf::git(argvparser::get_argument_after({cmd}));
             break;
-
+        case commands::REPORT:
+            appf::report(argvparser::get_argument(2), argvparser::get_argument(3),argvparser::get_argument(4), argvparser::get_argument(5));
+            break;
         case commands::UNKNOWN:
             if (!argvparser::is_argument(cmd))clif::log(FATAL, "unknown command: " + cmd);
         default:

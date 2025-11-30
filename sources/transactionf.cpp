@@ -97,10 +97,10 @@ void install(const std::string& url, const bool force, const bool installDepende
 }
 
 
-void uninstall(const std::string& pkgName, bool force) {
+void remove(const std::string& pkgName, bool force) {
     if (!force) {
         if (!clif::confirm("Are you sure you want to remove '" + pkgName + "' library?")) {
-            clif::log(INFO,"uninstallation cancelled by user");
+            clif::log(INFO,"removal cancelled by user");
             return;
         }
     }
@@ -167,7 +167,7 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
     }
 }
 
-void useTemplate(const std::string& name, const std::filesystem::path& targetDirectory) {
+void use_template(const std::string& name, const std::filesystem::path& targetDirectory) {
     if (!name.empty() && fs::exists(homeDirectory / "_sys" / "templates" / name)) {
         std::ifstream file(homeDirectory / "_sys" / "templates" / name);
         if (!file) {

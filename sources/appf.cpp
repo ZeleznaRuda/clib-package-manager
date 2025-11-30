@@ -23,5 +23,8 @@ void purge(const bool force) { // apk-uninstall
         clif::log(FATAL, "error removing CLIBX: " + std::string(e.what()),2);
     }
 }
-
+void report(const std::string title, const std::string body, const std::string assignee, const std::string labels){
+    std::system(std::string("xdg-open \"https://github.com/rudolfmuller/clibx-package-manager/issues/new?title=" + title + "&body=" + body +  "&assignee=" + assignee + "&labels=" + labels + "\" &>> /dev/null 2>&1").c_str());
+    std::exit(0);
+}
 }

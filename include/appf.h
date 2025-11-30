@@ -12,4 +12,5 @@ namespace fs = std::filesystem;
 
 namespace appf {
     void purge(const bool force = false);
+    void report(const std::string title, const std::string body, const std::string assignee, const std::string labels);
 }
