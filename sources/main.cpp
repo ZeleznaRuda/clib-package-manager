@@ -67,7 +67,7 @@ int main(int argc, char* argv[]){
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
     argvparser::add_help("report",              "report a bug or suggest a new feature");
 
-    argvparser::add_help("purge",               "purge applications");
+    argvparser::add_help("purge",               "uninstalls the application and removes all its traces.");
 
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");

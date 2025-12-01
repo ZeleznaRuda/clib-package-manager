@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,7 +127,7 @@
 <table>
     <tr><th>Platform</th><th>Compatibility</th></tr>
     <tr><td>Linux</td><td>Yes</td></tr>
-    <tr><td>MacOS</td><td>Partial</td></tr>
+    <tr><td>MacOS</td><td>Half</td></tr>
     <tr><td>Windows</td><td>No</td></tr>
 </table>
 
@@ -146,69 +147,63 @@
     </li>
 </ul>
 
-<h2 id="flags">Flags</h2>
-<table>
-    <tr><th>Flag</th><th>Description</th></tr>
-    <tr><td><code>--version</code> / <code>-v</code></td><td>Show current CLIBX version</td></tr>
-    <tr><td><code>--help</code> / <code>-h</code></td><td>Show help message</td></tr>
-    <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
-    <tr><td><code>--web</code> / <code>-w</code></td><td>Open CLIBX website</td></tr>
-    <tr><td><code>--dep</code> / <code>-d</code></td><td>Install dependencies with package</td></tr>
-    <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
-    <tr><th>Configuration flags:</th><th>Description</th></tr>
-    <tr><td><code>--git-path</code></td><td>Command for configuration management</td></tr>
-</table>
+    <h2 id="flags">Flags</h2>
+    <table>
+        <tr><th>Flag</th><th>Description</th></tr>
+        <tr><td><code>--version</code> / <code>-v</code></td><td>Show current CLIBX version</td></tr>
+        <tr><td><code>--help</code> / <code>-h</code></td><td>Show help message</td></tr>
+        <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
+        <tr><td><code>--web</code> / <code>-wh</code></td><td>Open CLIBX website</td></tr>
+        <tr><td><code>--dep</code> / <code>-d</code></td><td>Install dependencies with package</td></tr>
+        <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
+    </table>
 
-<h2 id="commands">Commands</h2>
-<section>
-<ul>
-    <li>
-        <strong>app-init</strong> – Initializes CLIBX.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx init</code></pre>
-    </li>
-    <li>
-        <strong>app-clean</strong> – Delete the .clibx folder. Supports <code>-f</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx clean [-f]</code></pre>
-    </li>
-    <li>
-        <strong>app-uninstall</strong> – Uninstall applications. Supports <code>-f</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx app-uninstall [-f]</code></pre>
-    </li>
-    <li>
-        <strong>app-config</strong> – Command for configuration management. Supports <code>-f</code>. Possible arguments "--git-path"
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx app-config &lt;argument&gt; &lt;content&gt;  [-f]</code></pre>
-    </li>
-    <li>
-        <strong>template</strong> – Creates a project template by name.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx template &lt;template_name&gt;</code></pre>
-    </li>
-    <li>
-        <strong>install</strong> – Installs a library. Supports <code>-f</code> and <code>-d</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx install &lt;library_name&gt; [-f] [-d]</code></pre>
-    </li>
-    <li>
-        <strong>uninstall</strong> – Uninstalls a library. Supports <code>-f</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx uninstall &lt;library_name&gt; [-f]</code></pre>
-    </li>
-    <li>
-        <strong>connect</strong> – Connects CLIBX to your project. Supports <code>-a</code>.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx connect &lt;library_name&gt; [-a]</code></pre>
-    </li>
-    <li>
-        <strong>search</strong> – Check if repository is available.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx search &lt;library_name&gt;</code></pre>
-    </li>
-    <li>
-        <strong>ls</strong> – List installed libraries.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx ls</code></pre>
-    </li>
-    <li>
-        <strong>info</strong> – Show package information.
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx info &lt;library_name&gt;</code></pre>
-    </li>
+    <h2 id="commands">Commands</h2>
+    <section>
+    <ul>
+        <li>
+            <strong>purge</strong> – Uninstall applications and purge files, Supports <code>-f</code>.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx purge [-f]</code></pre>
+        </li>
+        <li>
+            <strong>template</strong> – Creates a project template by name.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx template &lt;template_name&gt;</code></pre>
+        </li>
+        <li>
+            <strong>install</strong> – Installs a library. Supports <code>-f</code> and <code>-d</code>.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx install &lt;user&gt; &lt;repo&gt; [-f] [-d]</code></pre>
+        </li>
+        <li>
+            <strong>remove</strong> – Removes a library. Supports <code>-f</code>.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx remove &lt;library_name&gt; [-f]</code></pre>
+        </li>
+        <li>
+            <strong>connect</strong> – Connects CLIBX to your project. Supports <code>-a</code>.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx connect &lt;library_name&gt; [-a]</code></pre>
+        </li>
+        <li>
+            <strong>search</strong> – Check if repository is available.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx search &lt;user&gt; &lt;repo&gt;</code></pre>
+        </li>
+        <li>
+            <strong>ls</strong> – List installed libraries.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx ls</code></pre>
+        </li>
+        <li>
+            <strong>info</strong> – Show package information.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx info &lt;library_name&gt;</code></pre>
+        </li>
+        <li>
+            <strong>git</strong> – Git command wrapper (for debugging purposes).
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx git &lt;git_args&gt;</code></pre>
+        </li>
+        <li>
+            <strong>report</strong> – Report a bug or suggest a new feature.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx report &lt;title&gt; &lt;body&gt; &lt;assignee&gt; &lt;labels&gt;</code></pre>
+        </li>
+    </ul>
+    </section>
 
-</ul>
-</section>
 <h2 id="sol">Structure of library</h2>
 <div class="note">
 If you want to create a library, you must add the "info.yaml" file to the first layer of the project, and if it contains dependencies, add the dependencies.txt file with external libraries.
@@ -216,29 +211,6 @@ If you want a specific format, use the template command.
 </div>
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx template -h</code></pre>
 
-Example structure:
-<code>
-<ul>
-  <li>.</li>
-  <ul>
-    <li>CMakeLists.txt</li>
-    <li>include
-      <ul>
-        <li>argvparser.h</li>
-      </ul>
-    </li>
-    <li>info.yaml</li>
-    <li>README.md</li>
-    <li>src
-      <ul>
-        <li>argvparser.cpp</li>
-        <li>argvparser.inl</li>
-      </ul>
-    </li>
-  </ul>
-</ul>
-
-</code>
 <h2 id="kits">Installing Kits</h2>
 <div class="note">
     <p><strong>Note:</strong> Kits are sets of libraries that depend on each other. Names are usually uppercase.</p>
@@ -257,16 +229,7 @@ Example structure:
 
 <ul>
     <li>
-        <strong>app-init:</strong> Initializes CLIBX by creating the hidden <code>.clibx</code> folder in your home directory, where all libraries will be installed.
-    </li>
-    <li>
-        <strong>app-clean:</strong> Deletes the entire <code>.clibx</code> folder along with all libraries and records. Use with caution!
-    </li>
-    <li>
-        <strong>app-uninstall:</strong> Removes CLIBX from <code>PATH</code>. The <code>.clibx</code> folder remains unless manually removed.
-    </li>
-    <li>
-        <strong>app-config:</strong> Writes to the configuration file _config.yaml
+        <strong>purge:</strong> uninstalls the application and removes all its traces.
     </li>
     <li>
         <strong>install:</strong> Installs a library.
@@ -290,12 +253,25 @@ Example structure:
         <strong>info:</strong> Shows detailed information about a specific package.
     </li>
     <li>
-        <strong>uninstall:</strong> Removes a library and its record from the <code>.clibx</code> folder.
+        <strong>remove:</strong> Removes a library and its record from the <code>.clibx</code> folder.
     </li>
     <li>
         <strong>template:</strong> Generates files in the current directory based on the file in <code>.clibx</code>.    </li>
     <li>
         <strong>search:</strong> Checks if a repository exists.
+    </li>
+    <li>
+        <strong>git:</strong> Serves as a wrapper for git mainly for debugging, arguments passed to clibx, clibx passes to git and executes.
+    </li>
+    <li>
+        <strong>report:</strong> After passing the argument and executing the command, the program combines the arguments into the URL address of the GitHub project clibx and creates a problem report based on the arguments you entered. 
+        <ul>
+            <li>Title: The title of the issue.</li>
+            <li>Body: The detailed description of the issue.</li>
+            <li>Assignee: The person responsible for the issue.</li>
+            <li>Labels: Tags to categorize the issue.</li>
+        </ul>
+
     </li>
 </ul>
 
@@ -309,7 +285,7 @@ sudo ./install.sh
 
 mkdir my_project && cd my_project
 
-clibx install "https://github.com/rudolfmuller/platform-lib.git"
+clibx install "rudolfmuller" "platform-lib"
 
 echo '#include "libs/platform/platform.h"' &gt; main.cpp
 echo 'int main() { platform::getPlatform(); return 0; }' &gt;&gt; main.cpp
