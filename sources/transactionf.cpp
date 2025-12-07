@@ -3,7 +3,11 @@ namespace transactionf
 {
 
 std::string gitPath = std::string(std::getenv("CLIBX_GIT_PATH") ? std::getenv("CLIBX_GIT_PATH") : "git");
-
+std::string metadataFileName = std::string(
+    std::getenv("CLIBX_PACKAGE_METADATA_FILE_NAME") 
+    ? std::getenv("CLIBX_PACKAGE_METADATA_FILE_NAME")  
+    : "package.yml"
+);
 void install(const std::string& url, const bool force, const bool installDependencies) {
 
     if (system((gitPath + " ls-remote " + utilsf::escapeShellArg(url) + " &> /dev/null").c_str()) == 0) {
@@ -28,7 +32,7 @@ void install(const std::string& url, const bool force, const bool installDepende
     if (utilsf::ends_with(repoName, ".git"))
         repoName = repoName.substr(0, repoName.size() - 4);
 
-    fs::path pkgPath = homeDirectory / "_sys" / repoName;
+    fs::path pkgPath = homeDirectory / "_sys" / (repoName + ".tmp");
 
     try {
         if (!fs::create_directory(pkgPath)) {
@@ -37,17 +41,62 @@ void install(const std::string& url, const bool force, const bool installDepende
     } catch (const fs::filesystem_error& e) {
         clif::log(FATAL,e.what(), 2);
     }
-
     std::string command = gitPath + " clone --depth 1 " + utilsf::escapeShellArg(url) + " " + utilsf::escapeShellArg(pkgPath.string()) + " &> /dev/null";
     int result = system(command.c_str());
+    fs::remove_all(pkgPath / ".git");
+    auto infoData = yaml::parser(yaml::read(pkgPath / metadataFileName));
+    
+    std::ofstream pkgFile(homeDirectory / "_sys" / "libRecords" / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]) + "-package.yml"));
+    if (!pkgFile) {
+        clif::log(FATAL,"failed to create record: " + (homeDirectory / "_sys" / "libRecords" / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]) + "-package.yml")).string(),2);
+    } else {
+        std::time_t t = std::time(nullptr);
+        std::tm* now = std::localtime(&t);
+        pkgFile << "# package information:" << std::endl;
+        pkgFile << "name: " << std::get<std::string>(infoData["name"]) << std::endl;
+        pkgFile << "description: " << std::get<std::string>(infoData["description"]) << std::endl;
+        if (infoData.find("version") != infoData.end()) {
+            pkgFile << "version: " << std::get<std::string>(infoData["version"]) << std::endl;
+        }
+        if (infoData.find("authors") != infoData.end()) {
+            pkgFile << "authors: [" << utilsf::join(std::get<std::vector<std::string>>(infoData["authors"]), ", ") << "]" << std::endl;
+        } else {
+            pkgFile << "authors: unknown" << std::endl;
+        }
+        pkgFile << std::endl;
+        pkgFile << "# links:" << std::endl;
+        if (infoData.find("websites") != infoData.end()) {
+            pkgFile << "websites: [" << utilsf::join(std::get<std::vector<std::string>>(infoData["websites"]), ", ") << "]" << std::endl;
+        }
+        pkgFile << std::endl;
+        pkgFile << "# legal:" << std::endl;
+        if (infoData.find("license") != infoData.end()) {
+            pkgFile << "license: " << std::get<std::string>(infoData["license"]) << std::endl;
+        }
 
-    auto infoData = yaml::parser(yaml::read(pkgPath / "info.yaml"));
+        pkgFile << std::endl;
+        pkgFile << "# origin:" << std::endl;
+
+        pkgFile << "git-url: " << url << std::endl;
+        pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
+
+        if (infoData.find("dependencies") != infoData.end()) {
+            pkgFile << std::endl;
+            pkgFile << "# dependencies:" << std::endl;
+            pkgFile << "dependencies: [" << utilsf::join(std::get<std::vector<std::string>>(infoData["dependencies"]), ", ") << "]" << std::endl;
+            for (const auto& dep : std::get<std::vector<std::string>>(infoData["dependencies"])) {
+                exist(dep);
+            }
+        }
+        pkgFile.close();
+        clif::log(INFO,"record successfully created " + (homeDirectory / "_sys" / "libRecords" / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]) + "-package.yml")).string());
+    }
 
     if (result != 0) {
         clif::log(FATAL,"git clone failed with code " + std::to_string(result), result);
     } else {
         try {
-            fs::path newPath = homeDirectory / infoData["name"];
+            fs::path newPath = homeDirectory / fs::path(std::get<std::string>(infoData["name"])+ "@" + std::get<std::string>(infoData["version"]));
             if (fs::exists(newPath)) {
                 fs::remove_all(pkgPath);
                 clif::log(WARN, "the library is already installed.");
@@ -63,65 +112,19 @@ void install(const std::string& url, const bool force, const bool installDepende
 
     fs::create_directories(homeDirectory / "_sys");
 
-    std::ofstream pkgFile(homeDirectory / "_sys" / "libRecords" / (infoData["name"] + "-package.yaml"));
-    if (!pkgFile) {
-        clif::log(FATAL,"failed to create record: " + (homeDirectory / "_sys" / "libRecords" / (infoData["name"] + "-package.yaml")).string(),2);
-    } else {
-        std::time_t t = std::time(nullptr);
-        std::tm* now = std::localtime(&t);
-        pkgFile << "# package information:" << std::endl;
-        pkgFile << "name: " << infoData["name"] << std::endl;
-        pkgFile << "description: " << infoData["description"] << std::endl;
-        if (infoData.find("website") != infoData.end()) {
-            pkgFile << "website: " << infoData["website"] << std::endl;
-        }
-        pkgFile << std::endl;
-        if (infoData.find("version") != infoData.end()) {
-            pkgFile << "version: " << infoData["version"] << std::endl;
-        }
-        if (infoData.find("major-version") != infoData.end()) {
-            pkgFile << "major-version: " << infoData["major-version"] << std::endl;
-        }
-        if (infoData.find("minor-version") != infoData.end()) {
-            pkgFile << "minor-version: " << infoData["minor-version"] << std::endl;
-        }
-        if (infoData.find("patch-version") != infoData.end()) {
-            pkgFile << "patch-version: " << infoData["patch-version"] << std::endl;
-        }
 
-        pkgFile << std::endl;
-        pkgFile << "# origin:" << std::endl;
-        if (infoData.find("author") != infoData.end()) {
-            pkgFile << "author: " << infoData["author"] << std::endl;
-        } else {
-            pkgFile << "author: unknown" << std::endl;
-        }
-
-        if (infoData.find("license") != infoData.end()) {
-            pkgFile << "license: " << infoData["license"] << std::endl;
-        }
-
-        pkgFile << "git-url: " << url << std::endl;
-        pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
-
-        clif::log(INFO,"record successfully created " + (homeDirectory / "_sys" / "libRecords" / (infoData["name"] + "-package.yaml")).string());
-    }
-
-    if (installDependencies && fs::exists(pkgPath / "dependencies.txt")) {
-        auto dependenciesData = lister::parser(yaml::read(pkgPath / "dependencies.txt"));
-        pkgFile << std::endl;
-        pkgFile << "# dependencies:" << std::endl;
-        for (const auto& dep : dependenciesData) {
-            clif::log(INFO,"installing dependency " + dep);
-            transactionf::install(dep, true, false);
-            pkgFile << "dependence: " << dep << std::endl;
-        }
-    }
-    pkgFile.close();
 }
 
 
 void remove(const std::string& pkgName, bool force) {
+
+    fs::path pkgPath = homeDirectory / pkgName;
+    fs::path pkgInfoFilePath = homeDirectory / "_sys" / "libRecords" / (pkgName + "-package.yml");
+
+    if (!fs::exists(pkgPath)) {
+        clif::log(FATAL, "library '" + pkgName + "' does not exist.");
+    }
+
     if (!force) {
         if (!clif::input("To continue, you must rewrite the package name and enter it. [package name]: ") .compare(pkgName) == 0) {
             clif::log(INFO,"removal cancelled by force");
@@ -134,12 +137,6 @@ void remove(const std::string& pkgName, bool force) {
 
     }
 
-    fs::path pkgPath = homeDirectory / pkgName;
-    fs::path pkgInfoFilePath = homeDirectory / "_sys" / "libRecords" / (pkgName + "-package.yaml");
-
-    if (!fs::exists(pkgPath)) {
-        clif::log(FATAL, "library '" + pkgName + "' does not exist.");
-    }
 
     try {
         if (fs::exists(pkgPath)) fs::remove_all(pkgPath);
@@ -235,11 +232,22 @@ void search(const std::string& url){
         clif::log(WARN,"library is not accessible");
     }
 }
+
+void exist(const std::string& pkg){
+    fs::path pkgPath = homeDirectory / pkg;
+
+    if (fs::exists(pkgPath) ) {
+        clif::log(INFO,"library '" + pkg + "' is installed.");
+    } else {
+        clif::log(WARN,"library '" + pkg + "' is \033[1;31mnot\033[0m installed.");
+    }
+}
+
 void git(const std::string& command){
     exit(system((gitPath + " " + command).c_str()));
 }
 void info(const std::string& repoName){
-    const std::string suffix = "-package.yaml";
+    const std::string suffix = "-package.yml";
 
     std::string name = repoName;
 

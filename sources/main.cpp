@@ -23,6 +23,7 @@ enum class commands{
         CONNECT,
         TEMPLATE,
         SEARCH,
+        EXIST,
         LS,
         INFO,
         GIT,
@@ -39,7 +40,8 @@ static const std::unordered_map<std::string, commands> commandMap = {
     {"ls", commands::LS},
     {"info", commands::INFO},
     {"git", commands::GIT},
-    {"report", commands::REPORT}
+    {"report", commands::REPORT},
+    {"exist", commands::EXIST}
 
 };
 commands command(std::string& command){
@@ -54,6 +56,8 @@ int main(int argc, char* argv[]){
     bool _force = false;
     bool _all = false;
     bool _dep = false;
+    bool _url = false;
+
 
 
 
@@ -62,6 +66,7 @@ int main(int argc, char* argv[]){
     argvparser::add_help("connect",             "connect clibx to your project        (supports the '-a' flag)");
     argvparser::add_help("template",            "creates a template based on the name ");
     argvparser::add_help("search",              "checks the repository is available");
+    argvparser::add_help("exist",               "checks if the library is installed");
     argvparser::add_help("ls",                  "print a list of installed libraries");
     argvparser::add_help("info",                "print package information");
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
@@ -69,6 +74,7 @@ int main(int argc, char* argv[]){
 
     argvparser::add_help("purge",               "uninstalls the application and removes all its traces.");
 
+    argvparser::define_argument({"-U", "--url"}, [&_url](){ _url = true;}, "connects all libraries you have installed");
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
     argvparser::define_argument({"-d", "--dep"}, [&_dep](){ _dep = true;}, "installs dependencies along with the package");
@@ -81,19 +87,22 @@ int main(int argc, char* argv[]){
         clif::log(ERROR,"You don't entered a commands. ");
         clif::log(HINT,"use the --help or -h to display the commands list.");
         return 1;
+    }
+    cmd = argvparser::get_argument(1);
+    
 
-    } else {
-        cmd = argvparser::get_argument(1);
-    } 
-
-    switch (command(cmd)){
+    switch (command(cmd)) {
         case commands::PURGE:
             appf::purge(_force);
             break;
 
 
         case commands::INSTALL:
-            transactionf::install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force, _dep);
+            if (!_url && argvparser::has_argument(3)){
+                transactionf::install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force, _dep);
+                break;
+            }
+            transactionf::install(argvparser::get_argument_after({cmd}), _force, _dep);
             break;
 
         case commands::REMOVE:
@@ -111,7 +120,9 @@ int main(int argc, char* argv[]){
         case commands::SEARCH:
             transactionf::search(repo(argvparser::get_argument(2), argvparser::get_argument(3)));
             break;
-
+        case commands::EXIST:
+            transactionf::exist(argvparser::get_argument_after({cmd}));
+            break;
         case commands::LS:
             transactionf::ls();
             break;

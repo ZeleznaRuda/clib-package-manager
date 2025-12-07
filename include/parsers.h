@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <regex>
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
@@ -20,10 +21,7 @@ namespace fs = std::filesystem;
 namespace yaml
 {
     std::string read(const fs::path& fileName);
-    void write(fs::path filename, std::string& content);
-    void writeln(fs::path filename,std::string& key, std::string& content);
-    bool changeKey(const fs::path& filename, const std::string& key, const std::string& newValue);
-    std::unordered_map<std::string, std::string> parser(const std::string& fileContent);
+    std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> parser(const std::string& fileContent);
 }
 
 namespace lister

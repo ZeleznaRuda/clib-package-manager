@@ -42,4 +42,14 @@ namespace utilsf
         while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) --end;
         return s.substr(start, end - start);
     }
+
+    std::string join(const std::vector<std::string>& vec, const std::string& delim) {
+        std::string result;
+        for (size_t i = 0; i < vec.size(); ++i) {
+            result += vec[i];
+            if (i != vec.size() - 1) result += delim;
+        }
+        return result;
+    }
+
 }

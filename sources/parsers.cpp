@@ -1,64 +1,19 @@
 #include "../include/parsers.h"
 namespace yaml
 {
+    
     std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) clif::log(FATAL, "file " + fileName.string() + " not found", -1);
+        if (!fs::exists(fileName)) clif::log(FATAL, "file " + fileName.string() + " not found", 1);
 
         std::ifstream file(fileName);
-        if (!file.is_open()) clif::log(FATAL, "cannot open file", -1);
-
+        if (!file.is_open()) clif::log(FATAL, "cannot open file", 1);
 
         return std::string((std::istreambuf_iterator<char>(file)),
                            std::istreambuf_iterator<char>());
     }
-    bool changeKey(const fs::path& filename, const std::string& key, const std::string& newValue) {
-        if (!fs::exists(filename))
-            clif::log(FATAL, "file " + filename.string() + " not found", -1);
 
-        std::string content = read(filename);
-        auto lines = utilsf::split(content, '\n');
-        bool changed = false;
-
-        for (auto& l : lines) {
-            std::string stripped = utilsf::strip(l);
-            if (stripped.empty() || stripped[0] == '#')
-                continue;
-
-            auto pos = stripped.find(':');
-            if (pos == std::string::npos)
-                continue;
-
-            std::string currentKey = utilsf::strip(stripped.substr(0, pos));
-            if (currentKey == key) {
-                l = key + ": " + newValue;
-                changed = true;
-            }
-        }
-
-        if (!changed)
-            return false;
-
-        std::string out;
-        for (const auto& line : lines)
-            out += line + "\n";
-
-        write(filename, out);
-        return true;
-    }
-    void write(fs::path filename, std::string& content){
-        std::ofstream file(filename);
-        if (!file.is_open()) {clif::log(FATAL, "cannot open file", 1);}
-        file << content;
-        file.close();
-    }
-    void writeln(fs::path filename,std::string& key, std::string& content){
-        std::ofstream file(filename, std::ios::app);
-        if (!file.is_open()) {clif::log(FATAL, "cannot open file", 1);}
-        file << key << ": " << content;
-        file.close();
-    }
-    std::unordered_map<std::string, std::string> parser(const std::string& fileContent) {
-        std::unordered_map<std::string, std::string> data;
+    std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> parser(const std::string& fileContent) {
+        std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> data;
         auto lines = utilsf::split(fileContent, '\n');
 
         for (auto& l : lines) {
@@ -72,17 +27,43 @@ namespace yaml
             l = utilsf::strip(l);
             if (l.empty()) continue;
 
-            auto parts = utilsf::split(l, ':');
-            if (parts.size() >= 2) {
-                std::string key = utilsf::strip(parts[0]);
-                std::string value = utilsf::strip(l.substr(l.find(':') + 1));
-                data[key] = value;
+            auto parts = l.find(':');
+            if (parts != std::string::npos) {
+                std::string key = utilsf::strip(l.substr(0, parts));
+                std::string value = utilsf::strip(l.substr(parts + 1));
+
+                if (!value.empty() && value.front() == '[' && value.back() == ']') {
+                    value = utilsf::strip(value.substr(1, value.size() - 2));
+                    auto items = utilsf::split(value, ',');
+
+                    std::vector<std::string> vectorContent;
+
+                    for (auto &item : items) {
+                        item = utilsf::strip(item);
+                        if (!item.empty() && item.front() == '"' && item.back() == '"') {
+                            item = item.substr(1, item.size() - 2); 
+                        }
+                        if (!item.empty())
+                            vectorContent.push_back(item);
+                    }
+
+                    data[key] = vectorContent;
+                    continue;
+
+                } else { 
+                    if (!value.empty() && value.front() == '"' && value.back() == '"') {
+                        value = value.substr(1, value.size() - 2);
+                    }
+                    data[key] = value;
+                }
             }
         }
 
         return data;
     }
+
 }
+
 
 
 namespace lister

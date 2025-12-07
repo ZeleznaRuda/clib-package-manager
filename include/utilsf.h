@@ -22,5 +22,5 @@ namespace utilsf
     bool start_with(const std::string& str, const std::string& prefix);
     std::vector<std::string> split(const std::string& text, char delimiter);
     std::string strip(const std::string& s);
-
+    std::string join(const std::vector<std::string>& vec, const std::string& delim);
 }

@@ -35,13 +35,6 @@ description: <description>
 website: <website>
 license: <license>
 )"},
-
-    {"dependencies.txt", R"(Here you can write a list of dependencies, Git addresses
-
-such as:
-https://github.com/ZeleznaRuda/platform-lib.git
-https://github.com/ZeleznaRuda/argvparser-engine.git
-)"}
 };
 int main(){
     if (geteuid() == 0) {
@@ -58,28 +51,6 @@ int main(){
             fs::create_directories(outputDirectory);
         }
         fs::copy_file(binPath, outputDirectory / "clibx", fs::copy_options::overwrite_existing);
-
-        std::ifstream bashIn(home + std::string("/.bashrc"));
-        std::string bashContent;
-        if (bashIn.is_open()) {
-            bashContent.assign((std::istreambuf_iterator<char>(bashIn)),
-                               std::istreambuf_iterator<char>());
-            bashIn.close();
-        } else {
-            std::cerr << "\033[31;1;3minstall error\033[0m: cannot open .bashrc file" << std::endl;
-            return 1;
-        }
-
-        if (bashContent.find("# clibx initialization") == std::string::npos) {
-            std::ofstream bashOut(home + std::string("/.bashrc"), std::ios::app);
-            if (!bashOut.is_open()) {
-                std::cerr << "\033[31;1;3minstall error\033[0m: cannot open .bashrc file for writing" << std::endl;
-                return 1;
-            }
-            bashOut << "\n# clibx initialization\n# If you don't know what these environmental factors affect, don't change anything!\n";
-            bashOut << "export CLIBX_GIT_PATH=\"git\"\nexport CLIBX_HOME=\"" << homeDirectory.string() << "\"\n";
-            bashOut.close();
-        }
 
         fs::permissions((outputDirectory / "clibx"),
                         fs::perms::owner_all |
