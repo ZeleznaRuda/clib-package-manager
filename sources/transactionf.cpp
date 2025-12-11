@@ -1,132 +1,175 @@
 #include "../include/transactionf.h"
+
 namespace transactionf
 {
-
-std::string gitPath = std::string(std::getenv("CLIBX_GIT_PATH") ? std::getenv("CLIBX_GIT_PATH") : "git");
 std::string metadataFileName = std::string(
     std::getenv("CLIBX_PACKAGE_METADATA_FILE_NAME") 
     ? std::getenv("CLIBX_PACKAGE_METADATA_FILE_NAME")  
     : "package.yml"
 );
-void install(const std::string& url, const bool force, const bool installDependencies) {
+std::string gitPath = std::string(std::getenv("CLIBX_GIT_PATH") ? std::getenv("CLIBX_GIT_PATH") : "git");
+std::string gccPath = std::string(std::getenv("CLIBX_GCC_PATH") ? std::getenv("CLIBX_GCC_PATH") : "gcc");
+std::string gxxPath = std::string(std::getenv("CLIBX_GXX_PATH") ? std::getenv("CLIBX_GXX_PATH") : "g++");
+std::string arPath  = std::string(std::getenv("CLIBX_AR_PATH")  ? std::getenv("CLIBX_AR_PATH")  : "ar");
 
-    if (system((gitPath + " ls-remote " + utilsf::escapeShellArg(url) + " &> /dev/null").c_str()) == 0) {
+void install(const std::string& url, const bool force, const bool installDependencies) {
+    if (sysf({gitPath,"ls-remote",stringf::escape(url), "> /dev/null 2>&1"}) == 0) {
         clif::log(INFO, "the library is accessible");
     } else {
         clif::log(FATAL, "library is not accessible");
     }
 
+    if (!(stringf::starts_with(url, "http") || stringf::starts_with(url, "git@")) || !stringf::ends_with(url, ".git")) {
+        clif::log(FATAL, "invalid git url format");
+    }
+
     if (!force) {
         if (!clif::confirm("Are you sure you want to install the library from '" + url + "'")) {
-            clif::log(INFO,"installation cancelled by user");
+            clif::log(INFO, "installation cancelled by user");
             return;
         }
     }
 
-    if (!(utilsf::start_with(url, "http") || utilsf::start_with(url, "git@")) 
-        || !utilsf::ends_with(url, ".git")) {
-        clif::log(FATAL,"invalid git url format");
+    fs::path tmpPath = HOME_DIRECTORY / "_sys" / (".tmp");
+    if (!fs::create_directory(tmpPath)) {
+        clif::log(FATAL, "install failed");
     }
+    int cloneResult = sysf({gitPath, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string()), "> /dev/null 2>&1"});
+    auto infoData = yaml::parser(yaml::read(tmpPath / metadataFileName));
 
-    std::string repoName = url.substr(url.find_last_of('/') + 1);
-    if (utilsf::ends_with(repoName, ".git"))
-        repoName = repoName.substr(0, repoName.size() - 4);
-
-    fs::path pkgPath = homeDirectory / "_sys" / (repoName + ".tmp");
-
-    try {
-        if (!fs::create_directory(pkgPath)) {
-            clif::log(ERROR,"install failed");
-        }
-    } catch (const fs::filesystem_error& e) {
-        clif::log(FATAL,e.what(), 2);
-    }
-    std::string command = gitPath + " clone --depth 1 " + utilsf::escapeShellArg(url) + " " + utilsf::escapeShellArg(pkgPath.string()) + " &> /dev/null";
-    int result = system(command.c_str());
-    fs::remove_all(pkgPath / ".git");
-    auto infoData = yaml::parser(yaml::read(pkgPath / metadataFileName));
-    
-    std::ofstream pkgFile(homeDirectory / "_sys" / "libRecords" / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]) + "-package.yml"));
-    if (!pkgFile) {
-        clif::log(FATAL,"failed to create record: " + (homeDirectory / "_sys" / "libRecords" / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]) + "-package.yml")).string(),2);
-    } else {
-        std::time_t t = std::time(nullptr);
-        std::tm* now = std::localtime(&t);
-        pkgFile << "# package information:" << std::endl;
-        pkgFile << "name: " << std::get<std::string>(infoData["name"]) << std::endl;
-        pkgFile << "description: " << std::get<std::string>(infoData["description"]) << std::endl;
-        if (infoData.find("version") != infoData.end()) {
-            pkgFile << "version: " << std::get<std::string>(infoData["version"]) << std::endl;
-        }
-        if (infoData.find("authors") != infoData.end()) {
-            pkgFile << "authors: [" << utilsf::join(std::get<std::vector<std::string>>(infoData["authors"]), ", ") << "]" << std::endl;
-        } else {
-            pkgFile << "authors: unknown" << std::endl;
-        }
-        pkgFile << std::endl;
-        pkgFile << "# links:" << std::endl;
-        if (infoData.find("websites") != infoData.end()) {
-            pkgFile << "websites: [" << utilsf::join(std::get<std::vector<std::string>>(infoData["websites"]), ", ") << "]" << std::endl;
-        }
-        pkgFile << std::endl;
-        pkgFile << "# legal:" << std::endl;
-        if (infoData.find("license") != infoData.end()) {
-            pkgFile << "license: " << std::get<std::string>(infoData["license"]) << std::endl;
-        }
-
-        pkgFile << std::endl;
-        pkgFile << "# origin:" << std::endl;
-
-        pkgFile << "git-url: " << url << std::endl;
-        pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << std::endl;
-
-        if (infoData.find("dependencies") != infoData.end()) {
-            pkgFile << std::endl;
-            pkgFile << "# dependencies:" << std::endl;
-            pkgFile << "dependencies: [" << utilsf::join(std::get<std::vector<std::string>>(infoData["dependencies"]), ", ") << "]" << std::endl;
-            for (const auto& dep : std::get<std::vector<std::string>>(infoData["dependencies"])) {
-                exist(dep);
-            }
-        }
-        pkgFile.close();
-        clif::log(INFO,"record successfully created " + (homeDirectory / "_sys" / "libRecords" / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]) + "-package.yml")).string());
-    }
-
-    if (result != 0) {
-        clif::log(FATAL,"git clone failed with code " + std::to_string(result), result);
+    if (cloneResult != 0) {
+        clif::log(FATAL, "git clone failed with code " + std::to_string(cloneResult), cloneResult);
     } else {
         try {
-            fs::path newPath = homeDirectory / fs::path(std::get<std::string>(infoData["name"])+ "@" + std::get<std::string>(infoData["version"]));
-            if (fs::exists(newPath)) {
-                fs::remove_all(pkgPath);
-                clif::log(WARN, "the library is already installed.");
-                return;
+            fs::path pkgPath = HOME_DIRECTORY / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]));
+            fs::create_directory(pkgPath);
+            fs::create_directory(pkgPath / "build");
+            fs::create_directory(pkgPath / "include");
+
+            if (infoData.find("build-dependencies") != infoData.end()) {
+                for (const auto& dep : std::get<std::vector<std::string>>(infoData["build-dependencies"])) {
+                    exist(dep);
+                }
             }
-            fs::rename(pkgPath.string(), newPath);
-            pkgPath = newPath;
+
+            std::string compilerPath = (std::get<std::string>(infoData["build-compiler"]) == "gcc") ? gccPath :
+                                       (std::get<std::string>(infoData["build-compiler"]) == "g++") ? gxxPath : "";
+            std::string name = std::get<std::string>(infoData["name"]);
+            std::string mode = std::get<std::string>(infoData["build-mode"]);
+            std::string includeDirectory = (tmpPath / std::get<std::string>(infoData["build-include-directory"])).string();
+            std::vector<std::string> cflags = 
+                std::holds_alternative<std::vector<std::string>>(infoData["build-cflags"])
+                ? std::get<std::vector<std::string>>(infoData["build-cflags"])
+                : std::vector<std::string>{ std::get<std::string>(infoData["build-cflags"]) };
+            
+            for (const auto& file : std::get<std::vector<std::string>>(infoData["build-source-files"])) {
+                if (!fs::exists(tmpPath / file)) {
+                    clif::log(FATAL, "source file '" + (tmpPath / file).string() + "' not found", 1);
+                }
+                std::vector<std::string> argv = {
+                    compilerPath,
+                    "-fPIC",
+                    "-I" + includeDirectory,
+                    "-c",
+                    (tmpPath / file).string(),
+                    "-o",
+                    (pkgPath / "build" / (fs::path(file).stem().string() + ".o")).string(), 
+                    "> /dev/null 2>&1"
+                    
+                };
+                argv.insert(argv.begin() + 2, cflags.begin(), cflags.end());
+
+                sysf(argv);
+
+                
+            }
+            if (mode == "shared"){
+                std::vector<std::string> args = { compilerPath, "-shared", "-o", (pkgPath / ("lib" + name + ".so")).string() };
+                for (const auto& entry : fs::directory_iterator(pkgPath / "build")) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".o") {
+                        args.push_back(entry.path().string());
+                    }
+                }
+                args.push_back("> /dev/null 2>&1");
+                sysf(args);
+            }
+            if (mode == "static"){
+                std::vector<std::string> args = { arPath, "rcs", (pkgPath / ("lib" + name + ".a")).string() };
+                for (const auto& entry : fs::directory_iterator(pkgPath / "build")) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".o") {
+                        args.push_back(entry.path().string());
+                    }
+                }
+                args.push_back("> /dev/null 2>&1");
+                sysf(args);
+            }
+
+            fs::copy(tmpPath / includeDirectory, pkgPath / "include");
+            fs::remove_all(tmpPath);
+
+            std::ofstream pkgFile(HOME_DIRECTORY / "_sys" / "registry" / (name + "@" + std::get<std::string>(infoData["version"]) + "-package.yml"));
+            if (!pkgFile) {
+                clif::log(FATAL, "failed to create record", 2);
+            } else {
+                std::time_t t = std::time(nullptr);
+                std::tm* now = std::localtime(&t);
+
+                pkgFile << "# package information:\n";
+                pkgFile << "name: " << name << "\n";
+                pkgFile << "description: " << std::get<std::string>(infoData["description"]) << "\n";
+                if (infoData.find("version") != infoData.end()) {
+                    pkgFile << "version: " << std::get<std::string>(infoData["version"]) << "\n";
+                }
+                if (infoData.find("authors") != infoData.end()) {
+                    pkgFile << "authors: [" << stringf::join(std::get<std::vector<std::string>>(infoData["authors"]), ", ") << "]\n";
+                } else {
+                    pkgFile << "authors: unknown\n";
+                }
+
+                pkgFile << "\n# links:\n";
+                if (infoData.find("websites") != infoData.end()) {
+                    pkgFile << "websites: [" << stringf::join(std::get<std::vector<std::string>>(infoData["websites"]), ", ") << "]\n";
+                }
+
+                pkgFile << "\n# legal:\n";
+                if (infoData.find("license") != infoData.end()) {
+                    pkgFile << "license: " << std::get<std::string>(infoData["license"]) << "\n";
+                }
+
+                pkgFile << "\n# origin:\n";
+                pkgFile << "git-url: " << url << "\n";
+                pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << "\n";
+
+                if (infoData.find("dependencies") != infoData.end()) {
+                    pkgFile << "\n# dependencies:\n";
+                    pkgFile << "dependencies: [" << stringf::join(std::get<std::vector<std::string>>(infoData["dependencies"]), ", ") << "]\n";
+                    for (const auto& dep : std::get<std::vector<std::string>>(infoData["dependencies"])) {
+                        exist(dep);
+                    }
+                }
+
+                pkgFile.close();
+                clif::log(INFO, "record successfully created");
+            }
+
         } catch (fs::filesystem_error& e) {
-            clif::log(ERROR,std::string("error: ") + e.what() + "\n");
+            clif::log(ERROR, std::string("error: ") + e.what() + "\n");
         }
-        clif::log(INFO,"library installed successfully to " + pkgPath.string());
+
+        clif::log(INFO, "library installed successfully");
     }
-
-    fs::create_directories(homeDirectory / "_sys");
-
-
 }
 
-
 void remove(const std::string& pkgName, bool force) {
-
-    fs::path pkgPath = homeDirectory / pkgName;
-    fs::path pkgInfoFilePath = homeDirectory / "_sys" / "libRecords" / (pkgName + "-package.yml");
+    fs::path pkgPath = HOME_DIRECTORY / pkgName;
+    fs::path pkgInfoFilePath = HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml");
 
     if (!fs::exists(pkgPath)) {
         clif::log(FATAL, "library '" + pkgName + "' does not exist.");
     }
 
     if (!force) {
-        if (!clif::input("To continue, you must rewrite the package name and enter it. [package name]: ") .compare(pkgName) == 0) {
+        if (!clif::input("To continue, you must rewrite the package name and enter it. [package name]: ").compare(pkgName) == 0) {
             clif::log(INFO,"removal cancelled by force");
             return;
         }
@@ -134,9 +177,7 @@ void remove(const std::string& pkgName, bool force) {
             clif::log(INFO,"removal cancelled by user");
             return;
         }
-
     }
-
 
     try {
         if (fs::exists(pkgPath)) fs::remove_all(pkgPath);
@@ -151,17 +192,15 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
     std::vector<fs::path> packages;
 
     if (all) {
-        for (auto& entry : fs::directory_iterator(homeDirectory)) {
+        for (auto& entry : fs::directory_iterator(HOME_DIRECTORY)) {
             if (fs::is_directory(entry.path())) {
                 std::string name = entry.path().filename().string();
-                if (name.empty() || name[0] == '_') {
-                    continue; 
-                }
+                if (name.empty() || name[0] == '_') continue;
                 packages.push_back(entry.path());
             }
         }
     } else {
-        fs::path pkgPath = homeDirectory / pkgName;
+        fs::path pkgPath = HOME_DIRECTORY / pkgName;
         if (!fs::exists(pkgPath)) {
             clif::log(ERROR,"library " + pkgName +" not found\n");
         }
@@ -194,8 +233,8 @@ void connect(const std::string& pkgName, const fs::path& targetDirectory, const 
 }
 
 void use_template(const std::string& name, const std::filesystem::path& targetDirectory) {
-    if (!name.empty() && fs::exists(homeDirectory / "_sys" / "templates" / name)) {
-        std::ifstream file(homeDirectory / "_sys" / "templates" / name);
+    if (!name.empty() && fs::exists(HOME_DIRECTORY / "_sys" / "templates" / name)) {
+        std::ifstream file(HOME_DIRECTORY / "_sys" / "templates" / name);
         if (!file) {
             clif::log(FATAL, "failed to open template: " + name, 2);
             return;
@@ -215,7 +254,7 @@ void use_template(const std::string& name, const std::filesystem::path& targetDi
         clif::log(INFO, "template successfully created: " + (targetDirectory / name).string());
     } else {
         clif::log(INFO,"templates:");
-        for (const auto& entry : fs::directory_iterator(homeDirectory / "_sys" / "templates")) {
+        for (const auto& entry : fs::directory_iterator(HOME_DIRECTORY / "_sys" / "templates")) {
             if (!fs::is_regular_file(entry.path())) continue;
             std::cout << "\t" << entry.path().filename().string() << '\n';
         }
@@ -224,8 +263,7 @@ void use_template(const std::string& name, const std::filesystem::path& targetDi
 }
 
 void search(const std::string& url){
-    std::string command = gitPath + " ls-remote "+ utilsf::escapeShellArg(url)+" &> /dev/null";
-    int result = system(command.c_str());
+    int result = sysf({gitPath, "ls-remote", stringf::escape(url), "> /dev/null 2>&1"});
     if (result == 0){
         clif::log(INFO,"the library is accessible");
     } else {
@@ -234,7 +272,7 @@ void search(const std::string& url){
 }
 
 void exist(const std::string& pkg){
-    fs::path pkgPath = homeDirectory / pkg;
+    fs::path pkgPath = HOME_DIRECTORY / pkg;
 
     if (fs::exists(pkgPath) ) {
         clif::log(INFO,"library '" + pkg + "' is installed.");
@@ -244,18 +282,19 @@ void exist(const std::string& pkg){
 }
 
 void git(const std::string& command){
-    exit(system((gitPath + " " + command).c_str()));
+    sysf({gitPath, command});
 }
+
 void info(const std::string& repoName){
     const std::string suffix = "-package.yml";
-
     std::string name = repoName;
 
     if (name.size() >= suffix.size() &&
             name.compare(name.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            name.erase(name.size() - suffix.size());
+        name.erase(name.size() - suffix.size());
     }
-    std::ifstream file(homeDirectory / "_sys" / "libRecords" / (name + suffix)); 
+
+    std::ifstream file(HOME_DIRECTORY / "_sys" / "registry" / (name + suffix)); 
     if (!file.is_open()) {
         clif::log(ERROR, "package does not exist");
     }
@@ -264,18 +303,18 @@ void info(const std::string& repoName){
     while (std::getline(file, line)) {  
         std::cout << line << std::endl;
     }
-
     file.close();  
 }
+
 void ls(){
     clif::log(INFO,"installed library:");
 
-    for (const auto& entry : fs::directory_iterator(homeDirectory)) {
+    for (const auto& entry : fs::directory_iterator(HOME_DIRECTORY)) {
         if (!fs::is_directory(entry.path())) continue;
         std::string name = entry.path().filename().string();
         if (name == "_sys") continue;
-
         std::cout << "-\t" << name << std::endl;
     }
 }
-}
+
+} // namespace transactionf

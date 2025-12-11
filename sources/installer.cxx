@@ -28,12 +28,21 @@ target_include_directories(main PRIVATE
 )
 )"},
 
-    {"info.yaml", R"(name: <name>
-version: <version>
-author: <author>
-description: <description>
-website: <website>
-license: <license>
+    {"package.yml", R"(name: 
+description: 
+version: 
+
+authors: [...]
+license: MIT
+websites: [...]
+
+
+build-mode: # shared | static | simple
+build-compiler: # g++ | gcc
+build-cflags: [...]
+build-dependencies: [...]
+build-include-directory: 
+build-source-files: [...]
 )"},
 };
 int main(){
@@ -60,7 +69,7 @@ int main(){
 
         if (fs::create_directories(homeDirectory / "_sys") &&
             fs::create_directories(homeDirectory / "_sys" / "templates") &&
-            fs::create_directories(homeDirectory / "_sys" / "libRecords")) {
+            fs::create_directories(homeDirectory / "_sys" / "registry")) {
 
             std::ofstream READMEFile(homeDirectory / "README.md");
             READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
@@ -74,7 +83,7 @@ int main(){
             }
         }
 
-        std::cout << "\033[32;1minstallation completed (after restarting the device or executing the 'rc' files: clibx will be fully functional ;) )\033[0m" << std::endl;
+        std::cout << "\033[32;1minstallation completed (clibx: hello world)\033[0m" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "\033[31;1;3minstall error\033[0m: " << e.what() << std::endl;
     }

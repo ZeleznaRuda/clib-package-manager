@@ -1,10 +1,30 @@
-#include "../include/utilsf.h"
+#include "../include/toolsf.h"
 
-namespace utilsf
+
+int sysf(const std::vector<std::string>& argv){
+        std::string command;
+        for (const std::string& arg : argv){
+            (stringf::starts_with(arg, "\"") && stringf::ends_with(arg, "\"")) ? command += arg : command += arg + " ";
+        }
+
+        char buffer[128];
+        std::string output;
+
+        FILE* pipe = popen(command.c_str(), "r");
+        if (!pipe) return 1;
+
+        while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+           output += buffer;
+        }
+        int state = pclose(pipe);
+        if (WIFEXITED(state)) {
+            return WEXITSTATUS(state);
+        }else return -1;
+}
+
+namespace stringf
 {
-
-
-    std::string escapeShellArg(const std::string& arg) {
+    std::string escape(const std::string& arg) {
         std::string escaped = "'";
         for (char c : arg) {
             if (c == '\'')
@@ -16,15 +36,14 @@ namespace utilsf
         return escaped;
     }
 
-    bool ends_with(const std::string& str, const std::string& suffix) {
-        return str.size() >= suffix.size() &&
-               str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+    bool starts_with(const std::string& str, const std::string& prefix) {
+        return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
     }
 
-    bool start_with(const std::string& str, const std::string& prefix) {
-        return str.size() >= prefix.size() &&
-               str.compare(0, prefix.size(), prefix) == 0;
+    bool ends_with(const std::string& str, const std::string& suffix) {
+        return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
+
 
     std::vector<std::string> split(const std::string& text, char delimiter) {
         std::vector<std::string> result;
@@ -51,5 +70,5 @@ namespace utilsf
         }
         return result;
     }
+} // namespace stringf
 
-}

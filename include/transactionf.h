@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <vector>
+#include <variant>
 #include <sstream>
 #include <fstream>
 #include <unordered_map>
@@ -12,13 +13,12 @@
 #include <regex>
 
 #include "../include/constants.h"
-#include "../include/utilsf.h"
-#include "../include/parsers.h"
+#include "../include/toolsf.h"
+#include "../include/yamlparserf.h"
 #include "../include/clif.h"
 
 namespace transactionf
 {
-
     void install(const std::string& url, bool force = false, const bool installDependencies = true);
     void remove(const std::string& pkgName, bool force = false);
     void connect(const std::string& pkgName, const std::filesystem::path& targetDirectory, const bool all);

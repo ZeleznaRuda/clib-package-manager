@@ -13,22 +13,11 @@
 #include <functional>
 #include <cctype>
 #include <variant>
-#include "../include/utilsf.h"
+
+#include "../include/toolsf.h"
 #include "../include/clif.h"
 
 namespace fs = std::filesystem;
-
-namespace yaml
-{
-    std::string read(const fs::path& fileName);
-    std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> parser(const std::string& fileContent);
-}
-
-namespace lister
-{
-    std::string read(const fs::path& fileName);
-    std::vector<std::string> parser(const std::string& fileContent);
-}
 
 namespace argvparser
 {
@@ -59,7 +48,7 @@ namespace argvparser
 
     namespace {
         inline void help() {
-            clif::log(INFO,"usage: clibx [options]\n");
+            clif::log(INFO,"usage: clibx <options> [flag]\n");
 
             std::unordered_map<std::string, std::vector<std::string>> groupedFlags;
 

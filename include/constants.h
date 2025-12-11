@@ -5,11 +5,6 @@
 
 namespace fs = std::filesystem;
 
-inline fs::path getUserHomeDirectory() {
-    const char* home = getenv("HOME");
-    return home ? fs::path(home) : fs::current_path();
-}
-
-inline std::string version = "1.1.8";
-inline fs::path homeDirectory = getUserHomeDirectory() / ".clibx";
-inline fs::path userHomeDirectory = getUserHomeDirectory();
+inline constexpr std::string_view VERSION = "2.0.1";
+inline const     fs::path HOME = fs::path(getenv("HOME"));
+inline const     fs::path HOME_DIRECTORY = HOME / ".clibx";

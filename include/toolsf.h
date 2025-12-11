@@ -15,12 +15,15 @@
 
 namespace fs = std::filesystem;
 
-namespace utilsf
+int sysf(const std::vector<std::string>& argv);
+
+namespace stringf
 {
-    std::string escapeShellArg(const std::string& arg);
+    std::string escape(const std::string& arg);
+    bool starts_with(const std::string& str, const std::string& prefix);
     bool ends_with(const std::string& str, const std::string& suffix);
-    bool start_with(const std::string& str, const std::string& prefix);
     std::vector<std::string> split(const std::string& text, char delimiter);
     std::string strip(const std::string& s);
     std::string join(const std::vector<std::string>& vec, const std::string& delim);
-}
+
+} // namespace stringf

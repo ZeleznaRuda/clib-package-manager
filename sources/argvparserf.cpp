@@ -1,4 +1,4 @@
-#include "../include/parsers.h"
+#include "../include/argvparserf.h"
 namespace yaml
 {
     
@@ -14,32 +14,32 @@ namespace yaml
 
     std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> parser(const std::string& fileContent) {
         std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> data;
-        auto lines = utilsf::split(fileContent, '\n');
+        auto lines = stringf::split(fileContent, '\n');
 
         for (auto& l : lines) {
-            l = utilsf::strip(l);
+            l = stringf::strip(l);
             if (l.empty() || l[0] == '#') continue;
 
             auto hashPos = l.find('#');
             if (hashPos != std::string::npos)
                 l = l.substr(0, hashPos);
 
-            l = utilsf::strip(l);
+            l = stringf::strip(l);
             if (l.empty()) continue;
 
             auto parts = l.find(':');
             if (parts != std::string::npos) {
-                std::string key = utilsf::strip(l.substr(0, parts));
-                std::string value = utilsf::strip(l.substr(parts + 1));
+                std::string key = stringf::strip(l.substr(0, parts));
+                std::string value = stringf::strip(l.substr(parts + 1));
 
                 if (!value.empty() && value.front() == '[' && value.back() == ']') {
-                    value = utilsf::strip(value.substr(1, value.size() - 2));
-                    auto items = utilsf::split(value, ',');
+                    value = stringf::strip(value.substr(1, value.size() - 2));
+                    auto items = stringf::split(value, ',');
 
                     std::vector<std::string> vectorContent;
 
                     for (auto &item : items) {
-                        item = utilsf::strip(item);
+                        item = stringf::strip(item);
                         if (!item.empty() && item.front() == '"' && item.back() == '"') {
                             item = item.substr(1, item.size() - 2); 
                         }
@@ -62,29 +62,6 @@ namespace yaml
         return data;
     }
 
-}
-
-
-
-namespace lister
-{
-    std::string read(const fs::path& fileName) {
-        if (!fs::exists(fileName)) clif::log(FATAL, "file " + fileName.string() + " not found", -1);
-        std::ifstream file(fileName);
-        if (!file.is_open()) clif::log(FATAL, "cannot open file", -1);
-        return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    }
-
-    std::vector<std::string> parser(const std::string& fileContent) {
-        std::vector<std::string> urls;
-        std::istringstream stream(fileContent);
-        std::string line;
-        while (std::getline(stream, line)) {
-            line = utilsf::strip(line);
-            if (!line.empty()) urls.push_back(line);
-        }
-        return urls;
-    }
 }
 
 namespace argvparser
