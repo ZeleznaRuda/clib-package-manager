@@ -16,8 +16,8 @@ include_directories(
 set(SOURCES
     sources/main.cpp
     sources/toolsf.cpp
-    sources/argvparserf.cpp
-    sources/yamlparserf.cpp
+    sources/argvparser.cpp
+    sources/yamlparser.cpp
     sources/clif.cpp
     sources/transactionf.cpp
     sources/appf.cpp
