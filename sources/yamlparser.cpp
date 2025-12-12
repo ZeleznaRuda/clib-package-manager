@@ -13,7 +13,7 @@ namespace yaml
                            std::istreambuf_iterator<char>());
     }
 
-    std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> parser(const std::string& fileContent) {
+    yaml_t parser(const std::string& fileContent) {
         std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> data;
         auto lines = stringf::split(fileContent, '\n');
 

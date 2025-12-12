@@ -37,7 +37,7 @@ void install(const std::string& url, const bool force, const bool installDepende
         clif::log(FATAL, "install failed");
     }
     int cloneResult = sysf({gitPath, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string()), "> /dev/null 2>&1"});
-    auto infoData = yaml::parser(yaml::read(tmpPath / metadataFileName));
+    yaml_t infoData = yaml::parser(yaml::read(tmpPath / metadataFileName));
 
     if (cloneResult != 0) {
         clif::log(FATAL, "git clone failed with code " + std::to_string(cloneResult), cloneResult);

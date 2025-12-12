@@ -19,8 +19,9 @@
 
 namespace fs = std::filesystem;
 
+typedef std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> yaml_t;
 namespace yaml
 {
     std::string read(const fs::path& fileName);
-    std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> parser(const std::string& fileContent);
+    yaml_t parser(const std::string& fileContent);
 }
