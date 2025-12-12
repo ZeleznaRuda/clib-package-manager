@@ -37,12 +37,27 @@ license: MIT
 websites: [...]
 
 
-build-mode: # shared | static | simple
+build-mode: # shared | static 
 build-compiler: # g++ | gcc
 build-cflags: [...]
 build-dependencies: [...]
 build-include-directory: 
 build-source-files: [...]
+)"},{"run.sh", R"(#!/bin/bash
+set -e
+
+# setup:
+COMPILLER="g++"             # < here you choose which compiler you want to use.
+INPUT="main.cpp"            # < here you choose which file you want to compile.
+OUTPUT="main"               # < here you choose which file you want to out.
+PKG="foo-lib@x.y.z"         # < here you choose which package you want to use 
+LIB="foo"                   # < here you choose which libary you want to use (.so OR .a)
+
+$COMPILLER $INPUT -I$HOME/.clibx/$PKG/include/ \
+    -L$HOME/.clibx/$PKG -l$LIB \
+    -Wl,-rpath,$HOME/.clibx/$PKG -o $OUTPUT \
+    && ./$OUTPUT
+
 )"},
 };
 int main(){
