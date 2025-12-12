@@ -31,19 +31,32 @@ void install(const std::string& url, const bool force, const bool installDepende
             return;
         }
     }
-
-    fs::path tmpPath = HOME_DIRECTORY / "_sys" / (".tmp");
+    fs::path tmpPath = HOME_DIRECTORY / "_sys" / (std::to_string(std::time(nullptr)) + ".tmp");
     if (!fs::create_directory(tmpPath)) {
         clif::log(FATAL, "install failed");
     }
     int cloneResult = sysf({gitPath, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string()), "> /dev/null 2>&1"});
     yaml_t infoData = yaml::parser(yaml::read(tmpPath / metadataFileName));
 
+    const std::vector<std::string> requiredKeys = {
+        "name", "version", "description", "build-compiler",
+        "build-mode", "build-include-directory", "build-source-files"
+    };
+    for (const auto& key : requiredKeys) {
+        if (infoData.find(key) == infoData.end()) {
+            clif::log(FATAL, "metadata missing key: " + key);
+            return ;
+        }
+    } 
+
     if (cloneResult != 0) {
         clif::log(FATAL, "git clone failed with code " + std::to_string(cloneResult), cloneResult);
     } else {
         try {
             fs::path pkgPath = HOME_DIRECTORY / (std::get<std::string>(infoData["name"]) + "@" + std::get<std::string>(infoData["version"]));
+            if (fs::exists(pkgPath)){
+                fs::remove_all(pkgPath);
+            }
             fs::create_directory(pkgPath);
             fs::create_directory(pkgPath / "build");
             fs::create_directory(pkgPath / "include");
@@ -105,7 +118,6 @@ void install(const std::string& url, const bool force, const bool installDepende
                 args.push_back("> /dev/null 2>&1");
                 sysf(args);
             }
-
             fs::copy(tmpPath / includeDirectory, pkgPath / "include");
             fs::remove_all(tmpPath);
 
@@ -155,11 +167,12 @@ void install(const std::string& url, const bool force, const bool installDepende
             }
 
         } catch (fs::filesystem_error& e) {
-            clif::log(ERROR, std::string("error: ") + e.what() + "\n");
-        }
+            clif::log(FATAL, std::string("error: ") + e.what() + "\n");
+        } 
 
-        clif::log(INFO, "library installed successfully");
     }
+    clif::log(INFO, "library installed successfully");
+
 }
 
 void remove(const std::string& pkgName, bool force) {
