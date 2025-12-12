@@ -3,13 +3,15 @@
 namespace transactionf
 {
 std::string metadataFileName = std::string(
-    std::getenv("CLIBX_PACKAGE_METADATA_FILE_NAME") 
-    ? std::getenv("CLIBX_PACKAGE_METADATA_FILE_NAME")  
+    std::getenv("CLIBX_LIBRARY_METADATA_FILE_NAME") 
+    ? std::getenv("CLIBX_LIBRARY_METADATA_FILE_NAME")  
     : "package.yml"
 );
 std::string gitPath = std::string(std::getenv("CLIBX_GIT_PATH") ? std::getenv("CLIBX_GIT_PATH") : "git");
+
 std::string gccPath = std::string(std::getenv("CLIBX_GCC_PATH") ? std::getenv("CLIBX_GCC_PATH") : "gcc");
 std::string gxxPath = std::string(std::getenv("CLIBX_GXX_PATH") ? std::getenv("CLIBX_GXX_PATH") : "g++");
+
 std::string arPath  = std::string(std::getenv("CLIBX_AR_PATH")  ? std::getenv("CLIBX_AR_PATH")  : "ar");
 
 void install(const std::string& url, const bool force, const bool installDependencies) {
