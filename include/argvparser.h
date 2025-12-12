@@ -89,6 +89,7 @@ namespace argvparser
                     std::cout << "  " << kv.first << std::string(spacing, ' ') << kv.second << "\n";
                 }
             }
+            clif::log(NONE,"\nMade by Rudolf Mueller\n");
         }
 
 

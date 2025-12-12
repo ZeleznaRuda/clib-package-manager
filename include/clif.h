@@ -4,7 +4,7 @@
 #include <thread>
 #include <termios.h>
 #include <unistd.h>
-enum logLevel { INFO, WARN, ERROR, DEBUG, FATAL ,HINT };
+enum logLevel { INFO, WARN, ERROR, DEBUG, FATAL ,HINT, NONE };
 namespace clif
 {
     inline void hideCursor() { std::cout << "\033[?25l" << std::flush; };

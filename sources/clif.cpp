@@ -22,6 +22,9 @@ namespace clif
                 break;  
             case HINT:
                 std::cout << "\033[3;1;33mhint: " << msg << "\033[0m\n";
+                break; 
+            case NONE:
+                std::cout << msg << std::endl;
                 break;  
         }
     }
