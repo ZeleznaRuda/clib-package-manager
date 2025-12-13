@@ -13,9 +13,13 @@
 #include <cctype>
 #include <variant>
 
+#include "constants.h"
+
 namespace fs = std::filesystem;
 
-int sysf(const std::vector<std::string>& argv);
+
+typedef std::pair<int,std::string> sysf_t;
+sysf_t sysf(const std::vector<std::string>& argv);
 
 namespace stringf
 {

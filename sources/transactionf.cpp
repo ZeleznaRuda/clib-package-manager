@@ -15,7 +15,7 @@ std::string gxxPath = std::string(std::getenv("CLIBX_GXX_PATH") ? std::getenv("C
 std::string arPath  = std::string(std::getenv("CLIBX_AR_PATH")  ? std::getenv("CLIBX_AR_PATH")  : "ar");
 
 void install(const std::string& url, const bool force, const bool installDependencies) {
-    if (sysf({gitPath,"ls-remote",stringf::escape(url), "> /dev/null 2>&1"}) == 0) {
+    if (sysf({gitPath,"ls-remote",stringf::escape(url)}).first == 0) {
         clif::log(INFO, "the library is accessible");
     } else {
         clif::log(FATAL, "library is not accessible");
@@ -35,7 +35,7 @@ void install(const std::string& url, const bool force, const bool installDepende
     if (!fs::create_directory(tmpPath)) {
         clif::log(FATAL, "install failed");
     }
-    int cloneResult = sysf({gitPath, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string()), "> /dev/null 2>&1"});
+    int cloneResult = sysf({gitPath, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string())}).first;
     yaml_t infoData = yaml::parser(yaml::read(tmpPath / metadataFileName));
 
     const std::vector<std::string> requiredKeys = {
@@ -89,7 +89,7 @@ void install(const std::string& url, const bool force, const bool installDepende
                     (tmpPath / file).string(),
                     "-o",
                     (pkgPath / "build" / (fs::path(file).stem().string() + ".o")).string(), 
-                    "> /dev/null 2>&1"
+                    
                     
                 };
                 argv.insert(argv.begin() + 2, cflags.begin(), cflags.end());
@@ -105,7 +105,6 @@ void install(const std::string& url, const bool force, const bool installDepende
                         args.push_back(entry.path().string());
                     }
                 }
-                args.push_back("> /dev/null 2>&1");
                 sysf(args);
             }
             if (mode == "static"){
@@ -115,7 +114,6 @@ void install(const std::string& url, const bool force, const bool installDepende
                         args.push_back(entry.path().string());
                     }
                 }
-                args.push_back("> /dev/null 2>&1");
                 sysf(args);
             }
             fs::copy(tmpPath / includeDirectory, pkgPath / "include");
@@ -278,7 +276,7 @@ void use_template(const std::string& name, const std::filesystem::path& targetDi
 }
 
 void search(const std::string& url){
-    int result = sysf({gitPath, "ls-remote", stringf::escape(url), "> /dev/null 2>&1"});
+    int result = sysf({gitPath, "ls-remote", stringf::escape(url)}).first;
     if (result == 0){
         clif::log(INFO,"the library is accessible");
     } else {

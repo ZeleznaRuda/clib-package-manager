@@ -1,25 +1,22 @@
 #include "../include/toolsf.h"
 
 
-int sysf(const std::vector<std::string>& argv){
+sysf_t sysf(const std::vector<std::string>& argv){
         std::string command;
+        std::string output;
         for (const std::string& arg : argv){
             (stringf::starts_with(arg, "\"") && stringf::ends_with(arg, "\"")) ? command += arg : command += arg + " ";
         }
+        fs::path logPath = HOME_DIRECTORY / "_sys"/ "logs" / (std::to_string(std::time(nullptr)) + ".log");
+        int result = std::system((command + "&>" + logPath.string()).c_str());
 
-        char buffer[128];
-        std::string output;
-
-        FILE* pipe = popen(command.c_str(), "r");
-        if (!pipe) return 1;
-
-        while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-           output += buffer;
+        std::ifstream log(logPath);
+        if (log) {
+            output = std::string((std::istreambuf_iterator<char>(log)),
+                                std::istreambuf_iterator<char>());
         }
-        int state = pclose(pipe);
-        if (WIFEXITED(state)) {
-            return WEXITSTATUS(state);
-        }else return -1;
+    
+        return {result, output};
 }
 
 namespace stringf

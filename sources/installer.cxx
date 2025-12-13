@@ -84,6 +84,7 @@ int main(){
 
         if (fs::create_directories(homeDirectory / "_sys") &&
             fs::create_directories(homeDirectory / "_sys" / "templates") &&
+            fs::create_directories(homeDirectory / "_sys" / "logs") &&
             fs::create_directories(homeDirectory / "_sys" / "registry")) {
 
             std::ofstream READMEFile(homeDirectory / "README.md");
