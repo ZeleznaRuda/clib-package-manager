@@ -6,7 +6,7 @@ Libraries can be installed directly from **Git repositories**, or you can use **
 The early prototype of CCLM was written in **Python**.
 
 
-For more information, visit our website: https://rudolfmuller.github.io/clibx-package-manager/
+For more information, visit our website: https://rudolfmuller.github.io/cclm-library-manager/
 
 ### Rudolf Müller - 2025
 
