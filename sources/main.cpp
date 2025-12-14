@@ -68,14 +68,13 @@ int main(int argc, char* argv[]){
     argvparser::add_help("ls",                  "print a list of installed libraries");
     argvparser::add_help("info",                "print package information");
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
-    argvparser::add_help("report",              "report a bug or suggest a new feature");
+    argvparser::add_help("report",              "report a libary");
 
     argvparser::add_help("purge",               "uninstalls the application and removes all its traces.");
 
     argvparser::define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
-    argvparser::define_argument({"-W", "--web"}, [](){ sysf({"xdg-open", "'https://github.com/rudolfmuller/cclm-library-manager' ;","xdg-open", "'https://rudolfmuller.github.io/cclm-library-manager/'"}); }, "opens the CCLM website");
     argvparser::define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
     argvparser::parser();
     
@@ -132,7 +131,7 @@ int main(int argc, char* argv[]){
             transactionf::git(argvparser::get_argument_after({cmd}));
             break;
         case commands::REPORT:
-            appf::report(argvparser::get_argument(2), argvparser::get_argument(3),argvparser::get_argument(4), argvparser::get_argument(5));
+            transactionf::report(argvparser::get_argument_after({cmd}));
             break;
         case commands::UNKNOWN:
             if (!argvparser::is_argument(cmd))clif::log(FATAL, "unknown command: " + cmd);

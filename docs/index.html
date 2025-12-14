@@ -133,7 +133,7 @@
 <h2 id="installation">Installation</h2>
 <ul>
     <li>Clone the repository:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/CCLM-package-manager.git"</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/cclm-package-manager.git"</code></pre>
     </li>
     <li>Navigate to the installer:
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cd cclm-package-manager/compiled/dist/linux/</code></pre>
@@ -142,7 +142,7 @@
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>chmod +x install.sh && ./install.sh</code></pre>
     </li>
     <li>All-in-one line:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/CCLM-package-manager.git" && ./CCLM-package-manager/compiled/dist/linux/install.sh && rm -rf ./CCLM-package-manager</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/cclm-package-manager.git" && ./cclm-package-manager/dist/linux/install && rm -rf ./cclm-package-manager</code></pre>
     </li>
 </ul>
 
@@ -152,7 +152,6 @@
         <tr><td><code>--version</code> / <code>-v</code></td><td>Show current CCLM version</td></tr>
         <tr><td><code>--help</code> / <code>-h</code></td><td>Show help message</td></tr>
         <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
-        <tr><td><code>--web</code> / <code>-W</code></td><td>Open CCLM website</td></tr>
         <tr><td><code>--url</code> / <code>-u</code></td><td>Otakes the raw url address instead of the author and package name</td></tr>
         <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
     </table>
@@ -197,8 +196,8 @@
             <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm git &lt;git_args&gt;</code></pre>
         </li>
         <li>
-            <strong>report</strong> – Report a bug or suggest a new feature.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm report &lt;title&gt; &lt;body&gt; &lt;assignee&gt; &lt;labels&gt;</code></pre>
+            <strong>report</strong> – Report a libary.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm report &lt;library_name&gt;</code></pre>
         </li>
     </ul>
     </section>

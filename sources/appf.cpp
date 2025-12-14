@@ -29,7 +29,4 @@ void purge(const bool force) { // apk-uninstall
         clif::log(FATAL, "error removing CCLM: " + std::string(e.what()),2);
     }
 }
-void report(const std::string title, const std::string body, const std::string assignee, const std::string labels){
-    sysf({"xdg-open",stringf::escape("https://github.com/rudolfmuller/cclm-library-manager/issues/new?title=" + title + "&body=" + body +  "&assignee=" + assignee + "&labels=" + labels + "/"), "&>> /dev/null 2>&1"});
-}
 }

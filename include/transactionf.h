@@ -27,5 +27,6 @@ namespace transactionf
     void git(const std::string& command);
     void info(const std::string& repoName);
     void ls();
+    void report(const std::string& url);
     void exist(const std::string& pkgName);
 } // namespace transactionf

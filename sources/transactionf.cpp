@@ -294,6 +294,15 @@ void exist(const std::string& pkg){
     }
 }
 
+void report(const std::string& pkgName){
+    yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml")));
+    std::string url = std::get<std::string>(infoData["git-url"]);
+    if (stringf::ends_with(url, ".git")){
+        url.erase(url.size() - 4);
+    }
+    sysf({"xdg-open",stringf::escape(url+"/issues/new/")});
+}
+
 void git(const std::string& command){
     std::cout << sysf({gitPath, command}).second << std::endl;
 }
