@@ -4,11 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="CLIBX Command-Line Tool Documentation – návod k instalaci a použití pro C/C++ knihovny.">
+<meta name="description" content="CCLM Command-Line Tool Documentation – návod k instalaci a použití pro C/C++ knihovny.">
 <meta name="author" content="Rudolf Müller">
-<meta name="keywords" content="CLIBX, C++, package manager, documentation, command line, libraries">
-<link rel="icon" type="image/png" href="assets/clibxlogo.png">
-<title>CLIBX Command-Line Tool Documentation</title>
+<meta name="keywords" content="CCLM, C++, package manager, documentation, command line, libraries">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<title>CCLM Command-Line Tool Documentation</title>
 <style>
     body {
         font-family: "Segoe UI", Arial, sans-serif;
@@ -97,11 +97,11 @@
 <body>
 
 <a href="index.html">
-    <img src="assets/clibxlogo.png" alt="CLIBX Logo" 
+    <img src="assets/logo.png" alt="CCLM Logo" 
          style="position: fixed; top: 2px; right: 20px; width: 95px; height: auto; z-index: 1000;">
 </a>
 
-<h1 id="top">CLIBX Command-Line Tool Documentation</h1>
+<h1 id="top">CCLM Command-Line Tool Documentation</h1>
 
 <nav>
     <div style="text-align: center;margin-bottom: 20px;font-family: monospace;">
@@ -111,14 +111,13 @@
         <a href="#commands">Commands</a>
         <a href="#sol">Structure of library</a>
         <a href="#hiw">How it works</a>
-        <a href="#example-usage">Example Usage</a>
         <a href="#kits">Installing Kits</a>
         <a href="#license">License</a>
 
     </div>
 </nav>
 <div class="note">
-    <p><strong>CLIBX</strong> is a command-line tool created by Rudolf Müller in <strong>C++</strong> for managing C/C++ libraries.</p>
+    <p><strong>CCLM</strong> is a command-line tool created by Rudolf Müller in <strong>C++</strong> for managing C/C++ libraries.</p>
     <p>Libraries can be installed from <strong>Git repositories</strong> or as part of <strong>kits</strong> (library sets). Prototype written in <strong>Python</strong>.</p>
     <p><strong>POSIX</strong> only</p>
 </div>
@@ -134,27 +133,27 @@
 <h2 id="installation">Installation</h2>
 <ul>
     <li>Clone the repository:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/clibx-package-manager.git"</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/CCLM-package-manager.git"</code></pre>
     </li>
     <li>Navigate to the installer:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cd clibx-package-manager/compiled/dist/linux/</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cd cclm-package-manager/compiled/dist/linux/</code></pre>
     </li>
     <li>Run the installer (may need permission):
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>chmod +x install.sh && ./install.sh</code></pre>
     </li>
     <li>All-in-one line:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/clibx-package-manager.git" && ./clibx-package-manager/compiled/dist/linux/install.sh && rm -rf ./clibx-package-manager</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/CCLM-package-manager.git" && ./CCLM-package-manager/compiled/dist/linux/install.sh && rm -rf ./CCLM-package-manager</code></pre>
     </li>
 </ul>
 
     <h2 id="flags">Flags</h2>
     <table>
         <tr><th>Flag</th><th>Description</th></tr>
-        <tr><td><code>--version</code> / <code>-v</code></td><td>Show current CLIBX version</td></tr>
+        <tr><td><code>--version</code> / <code>-v</code></td><td>Show current CCLM version</td></tr>
         <tr><td><code>--help</code> / <code>-h</code></td><td>Show help message</td></tr>
         <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
-        <tr><td><code>--web</code> / <code>-wh</code></td><td>Open CLIBX website</td></tr>
-        <tr><td><code>--dep</code> / <code>-d</code></td><td>Install dependencies with package</td></tr>
+        <tr><td><code>--web</code> / <code>-W</code></td><td>Open CCLM website</td></tr>
+        <tr><td><code>--url</code> / <code>-u</code></td><td>Otakes the raw url address instead of the author and package name</td></tr>
         <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
     </table>
 
@@ -163,43 +162,43 @@
     <ul>
         <li>
             <strong>purge</strong> – Uninstall applications and purge files, Supports <code>-f</code>.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx purge [-f]</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm purge [-f]</code></pre>
         </li>
         <li>
             <strong>template</strong> – Creates a project template by name.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx template &lt;template_name&gt;</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm template &lt;template_name&gt;</code></pre>
         </li>
         <li>
-            <strong>install</strong> – Installs a library. Supports <code>-f</code> and <code>-d</code>.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx install &lt;user&gt; &lt;repo&gt; [-f] [-d]</code></pre>
+            <strong>install</strong> – Installs a library. Supports <code>-f</code>.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm install &lt;user&gt; &lt;repo&gt; [-f]</code></pre>
         </li>
         <li>
             <strong>remove</strong> – Removes a library. Supports <code>-f</code>.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx remove &lt;library_name&gt; [-f]</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm remove &lt;library_name&gt; [-f]</code></pre>
         </li>
         <li>
-            <strong>connect</strong> – Connects CLIBX to your project. Supports <code>-a</code>.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx connect &lt;library_name&gt; [-a]</code></pre>
+            <strong>connect</strong> – Connects CCLM to your project. Supports <code>-a</code>.
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm connect &lt;library_name&gt; [-a]</code></pre>
         </li>
         <li>
             <strong>search</strong> – Check if repository is available.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx search &lt;user&gt; &lt;repo&gt;</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm search &lt;user&gt; &lt;repo&gt;</code></pre>
         </li>
         <li>
             <strong>ls</strong> – List installed libraries.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx ls</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm ls</code></pre>
         </li>
         <li>
             <strong>info</strong> – Show package information.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx info &lt;library_name&gt;</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm info &lt;library_name&gt;</code></pre>
         </li>
         <li>
             <strong>git</strong> – Git command wrapper (for debugging purposes).
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx git &lt;git_args&gt;</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm git &lt;git_args&gt;</code></pre>
         </li>
         <li>
             <strong>report</strong> – Report a bug or suggest a new feature.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx report &lt;title&gt; &lt;body&gt; &lt;assignee&gt; &lt;labels&gt;</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm report &lt;title&gt; &lt;body&gt; &lt;assignee&gt; &lt;labels&gt;</code></pre>
         </li>
     </ul>
     </section>
@@ -209,7 +208,7 @@
 If you want to create a library, you must add the "info.yaml" file to the first layer of the project, and if it contains dependencies, add the dependencies.txt file with external libraries.
 If you want a specific format, use the template command.
 </div>
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx template -h</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>CCLM template -h</code></pre>
 
 <h2 id="kits">Installing Kits</h2>
 <div class="note">
@@ -218,13 +217,13 @@ If you want a specific format, use the template command.
 <ul>
     <li>
         <p>Install a kit or library with dependencies:</p>
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>clibx install &lt;library_name&gt; [-f] -d</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>CCLM install &lt;library_name&gt; [-f] -d</code></pre>
     </li>
 </ul> 
 
 <h2 id="hiw">How it works</h2>
 <div class="note">
-    <p>CLIBX works through a set of commands that manage libraries in a hidden <code>.clibx</code> folder in your home directory.</p>
+    <p>CCLM works through a set of commands that manage libraries in a hidden <code>.CCLM</code> folder in your home directory.</p>
 </div>
 
 <ul>
@@ -234,7 +233,7 @@ If you want a specific format, use the template command.
     <li>
         <strong>install:</strong> Installs a library.
         <ul>
-            <li>Clones the repository into <code>.clibx</code>.</li>
+            <li>Clones the repository into <code>.CCLM</code>.</li>
             <li>Checks the repository's first layer for <code>info.yaml</code> and optionally <code>dependencies.txt</code>.</li>
             <li>Installs dependencies if needed and records metadata (name, version, author, origin, dependencies) in the <code>_sys</code> folder.</li>
         </ul>
@@ -253,18 +252,18 @@ If you want a specific format, use the template command.
         <strong>info:</strong> Shows detailed information about a specific package.
     </li>
     <li>
-        <strong>remove:</strong> Removes a library and its record from the <code>.clibx</code> folder.
+        <strong>remove:</strong> Removes a library and its record from the <code>.CCLM</code> folder.
     </li>
     <li>
-        <strong>template:</strong> Generates files in the current directory based on the file in <code>.clibx</code>.    </li>
+        <strong>template:</strong> Generates files in the current directory based on the file in <code>.CCLM</code>.    </li>
     <li>
         <strong>search:</strong> Checks if a repository exists.
     </li>
     <li>
-        <strong>git:</strong> Serves as a wrapper for git mainly for debugging, arguments passed to clibx, clibx passes to git and executes.
+        <strong>git:</strong> Serves as a wrapper for git mainly for debugging, arguments passed to CCLM, CCLM passes to git and executes.
     </li>
     <li>
-        <strong>report:</strong> After passing the argument and executing the command, the program combines the arguments into the URL address of the GitHub project clibx and creates a problem report based on the arguments you entered. 
+        <strong>report:</strong> After passing the argument and executing the command, the program combines the arguments into the URL address of the GitHub project CCLM and creates a problem report based on the arguments you entered. 
         <ul>
             <li>Title: The title of the issue.</li>
             <li>Body: The detailed description of the issue.</li>
@@ -275,30 +274,9 @@ If you want a specific format, use the template command.
     </li>
 </ul>
 
-
-<h2 id="example-usage">Example Usage</h2>
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>
-    
-git clone https://github.com/rudolfmuller/clibx-package-manager.git
-cd clibx-package-manager
-sudo ./install.sh
-
-mkdir my_project && cd my_project
-
-clibx install "rudolfmuller" "platform-lib"
-
-echo '#include "libs/platform/platform.h"' &gt; main.cpp
-echo 'int main() { platform::getPlatform(); return 0; }' &gt;&gt; main.cpp
-
-clibx connect platform
-
-g++ main.cpp libs/platform/platform.cpp -o main
-./main
-</code></pre>
-
 <h2>License</h2> <div class="note"> <pre id="license">...</pre> </div> 
-<footer> <strong>If you have any problems please <a href="https://github.com/rudolfmuller/clibx-package-manager/issues/new">write to us.</a></strong> <br> <strong>GitHub <a href="https://github.com/rudolfmuller/clibx-package-manager">https://github.com/rudolfmuller/clibx-package-manager</a></strong> <br><br> <strong>Rudolf Müller - 2025</strong> </footer> 
-<script> document.querySelectorAll('.copy-btn').forEach(button => { button.addEventListener('click', () => { const code = button.nextElementSibling; navigator.clipboard.writeText(code.innerText).then(() => { button.textContent = 'Copied!'; setTimeout(() => button.textContent = 'Copy', 1500); }); }); }); const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/clibx-package-manager/main/LICENSE"; fetch(licenseUrl) .then(response => { if (!response.ok) throw new Error("Failed to load license"); return response.text(); }) .then(text => { document.getElementById('license').textContent = text; }) .catch(err => { document.getElementById('license').textContent = err; }); </script>
+<footer> <strong>If you have any problems please <a href="https://github.com/rudolfmuller/cclm-library-manager/issues/new">write to us.</a></strong> <br> <strong>GitHub <a href="https://github.com/rudolfmuller/cclm-library-manager">https://github.com/rudolfmuller/cclm-library-manager</a></strong> <br><br> <strong>Rudolf Müller - 2025</strong> </footer> 
+<script> document.querySelectorAll('.copy-btn').forEach(button => { button.addEventListener('click', () => { const code = button.nextElementSibling; navigator.clipboard.writeText(code.innerText).then(() => { button.textContent = 'Copied!'; setTimeout(() => button.textContent = 'Copy', 1500); }); }); }); const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/cclm-library-manager/refs/heads/main/LICENSE"; fetch(licenseUrl) .then(response => { if (!response.ok) throw new Error("Failed to load license"); return response.text(); }) .then(text => { document.getElementById('license').textContent = text; }) .catch(err => { document.getElementById('license').textContent = err; }); </script>
 
 </body>
 </html>

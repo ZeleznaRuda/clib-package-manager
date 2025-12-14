@@ -53,9 +53,9 @@ OUTPUT="main"               # < here you choose which file you want to out.
 PKG="foo-lib@x.y.z"         # < here you choose which package you want to use 
 LIB="foo"                   # < here you choose which libary you want to use (.so OR .a)
 
-$COMPILLER $INPUT -I$HOME/.clibx/$PKG/include/ \
-    -L$HOME/.clibx/$PKG -l$LIB \
-    -Wl,-rpath,$HOME/.clibx/$PKG -o $OUTPUT \
+$COMPILLER $INPUT -I$HOME/.cclm/$PKG/include/ \
+    -L$HOME/.cclm/$PKG -l$LIB \
+    -Wl,-rpath,$HOME/.cclm/$PKG -o $OUTPUT \
     && ./$OUTPUT
 
 )"},
@@ -67,16 +67,16 @@ int main(){
     }
     try {
         const char* home = getenv("HOME");
-        fs::path homeDirectory = fs::path(home) / ".clibx";
+        fs::path homeDirectory = fs::path(home) / ".cclm";
 
         fs::path outputDirectory = fs::path(home) / ".local" / "bin";
-        fs::path binPath = fs::canonical("/proc/self/exe").parent_path().parent_path() / "bin" / "clibx";
+        fs::path binPath = fs::canonical("/proc/self/exe").parent_path().parent_path() / "bin" / "cclm";
         if (!fs::exists(outputDirectory)){
             fs::create_directories(outputDirectory);
         }
-        fs::copy_file(binPath, outputDirectory / "clibx", fs::copy_options::overwrite_existing);
+        fs::copy_file(binPath, outputDirectory / "cclm", fs::copy_options::overwrite_existing);
 
-        fs::permissions((outputDirectory / "clibx"),
+        fs::permissions((outputDirectory / "cclm"),
                         fs::perms::owner_all |
                         fs::perms::group_read | fs::perms::group_exec |
                         fs::perms::others_read | fs::perms::others_exec,
@@ -99,7 +99,7 @@ int main(){
             }
         }
 
-        std::cout << "\033[32;1minstallation completed (clibx: hello world)\033[0m" << std::endl;
+        std::cout << "\033[32;1minstallation completed (cclm: hello world)\033[0m" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "\033[31;1;3minstall error\033[0m: " << e.what() << std::endl;
     }

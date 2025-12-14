@@ -8,28 +8,28 @@ void purge(const bool force) { // apk-uninstall
             clif::log(INFO,"purge cancelled by force");
             return;
         }
-        if (!clif::confirm("Are you sure you want to purge CLIBX?")) {
+        if (!clif::confirm("Are you sure you want to purge CCLM?")) {
             clif::log(INFO,"purge cancelled by user");
             return;
         }
     }
 
-    fs::path appPath = HOME / ".local" / "bin" / "clibx";
+    fs::path appPath = HOME / ".local" / "bin" / "cclm";
     if (!fs::exists(appPath)) {
-        clif::log(FATAL, "CLIBX does not exist.",2);
+        clif::log(FATAL, "CCLM does not exist.",2);
     }
 
     try {
         if (fs::exists(HOME_DIRECTORY))fs::remove_all(HOME_DIRECTORY);
-        clif::log(INFO,".clibx was removed");
+        clif::log(INFO,".cclm was removed");
         fs::remove(appPath);
         clif::log(INFO,"\033[32mthe program has been successfully purged, SAY GOODBYE\033[0m");
 
     } catch (const fs::filesystem_error& e) {
-        clif::log(FATAL, "error removing CLIBX: " + std::string(e.what()),2);
+        clif::log(FATAL, "error removing CCLM: " + std::string(e.what()),2);
     }
 }
 void report(const std::string title, const std::string body, const std::string assignee, const std::string labels){
-    sysf({"xdg-open",stringf::escape("https://github.com/rudolfmuller/clibx-package-manager/issues/new?title=" + title + "&body=" + body +  "&assignee=" + assignee + "&labels=" + labels + "/"), "&>> /dev/null 2>&1"});
+    sysf({"xdg-open",stringf::escape("https://github.com/rudolfmuller/cclm-library-manager/issues/new?title=" + title + "&body=" + body +  "&assignee=" + assignee + "&labels=" + labels + "/"), "&>> /dev/null 2>&1"});
 }
 }

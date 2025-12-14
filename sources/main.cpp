@@ -59,9 +59,9 @@ int main(int argc, char* argv[]){
 
     
 
-    argvparser::add_help("install",             "install library                      (supports the '-f' flag && supports the '-d' flag)");
+    argvparser::add_help("install",             "install library                      (supports the '-f' flag)");
     argvparser::add_help("remove",              "remove library                       (supports the '-f' flag)");
-    argvparser::add_help("connect",             "connect clibx to your project        (supports the '-a' flag)");
+    argvparser::add_help("connect",             "connect cclm to your project        (supports the '-a' flag)");
     argvparser::add_help("template",            "creates a template based on the name ");
     argvparser::add_help("search",              "checks the repository is available");
     argvparser::add_help("exist",               "checks if the library is installed");
@@ -75,8 +75,8 @@ int main(int argc, char* argv[]){
     argvparser::define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
     argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
-    argvparser::define_argument({"-W", "--web"}, [](){ sysf({"xdg-open", "'https://github.com/rudolfmuller/clibx-package-manager' ;","xdg-open", "'https://rudolfmuller.github.io/clibx-package-manager/'"}); }, "opens the CLIBX website");
-    argvparser::define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CLIBX versions");
+    argvparser::define_argument({"-W", "--web"}, [](){ sysf({"xdg-open", "'https://github.com/rudolfmuller/cclm-library-manager' ;","xdg-open", "'https://rudolfmuller.github.io/cclm-library-manager/'"}); }, "opens the CCLM website");
+    argvparser::define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
     argvparser::parser();
     
     std::string cmd;

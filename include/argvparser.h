@@ -48,7 +48,7 @@ namespace argvparser
 
     namespace {
         inline void help() {
-            clif::log(INFO,"usage: clibx <options> [flag]\n");
+            clif::log(INFO,"usage: cclm <options> [flag]\n");
 
             std::unordered_map<std::string, std::vector<std::string>> groupedFlags;
 
