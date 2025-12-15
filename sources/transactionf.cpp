@@ -196,50 +196,6 @@ void remove(const std::string& pkgName, bool force) {
     }
 }
 
-void connect(const std::string& pkgName, const fs::path& targetDirectory, const bool all) {
-    std::vector<fs::path> packages;
-
-    if (all) {
-        for (auto& entry : fs::directory_iterator(HOME_DIRECTORY)) {
-            if (fs::is_directory(entry.path())) {
-                std::string name = entry.path().filename().string();
-                if (name.empty() || name[0] == '_') continue;
-                packages.push_back(entry.path());
-            }
-        }
-    } else {
-        fs::path pkgPath = HOME_DIRECTORY / pkgName;
-        if (!fs::exists(pkgPath)) {
-            clif::log(ERROR,"library " + pkgName +" not found\n");
-        }
-        packages.push_back(pkgPath);
-    }
-
-    for (auto& pkgPath : packages) {
-        std::string name = pkgPath.filename().string();
-        fs::path projectDirectory = targetDirectory / "libs" / name;
-
-        fs::create_directories(projectDirectory.parent_path());
-
-        if (fs::exists(projectDirectory) || fs::is_symlink(projectDirectory)) {
-            std::error_code ec_remove;
-            if (fs::remove(projectDirectory, ec_remove)) {
-                clif::log(INFO,"disconnecting the project: " + projectDirectory.string() + "\n");
-            } else {
-                clif::log(ERROR,"error disconnecting the project: "+ ec_remove.message()+"\n");
-            }
-        }
-
-        std::error_code ec;
-        fs::create_directory_symlink(pkgPath, projectDirectory, ec);
-        if (ec) {
-            clif::log(FATAL,"error occurred when connecting project: " + ec.message() +"\n");
-        } else {
-            clif::log(INFO,"package '"+ projectDirectory.string() +"' was successfully connected\n");
-        }
-    }
-}
-
 void use_template(const std::string& name, const std::filesystem::path& targetDirectory) {
     if (!name.empty() && fs::exists(HOME_DIRECTORY / "_sys" / "templates" / name)) {
         std::ifstream file(HOME_DIRECTORY / "_sys" / "templates" / name);

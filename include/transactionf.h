@@ -21,7 +21,6 @@ namespace transactionf
 {
     void install(const std::string& url, bool force = false, const bool installDependencies = true);
     void remove(const std::string& pkgName, bool force = false);
-    void connect(const std::string& pkgName, const std::filesystem::path& targetDirectory, const bool all);
     void use_template(const std::string& name, const std::filesystem::path& targetDirectory);
     void search(const std::string& repoName);
     void git(const std::string& command);

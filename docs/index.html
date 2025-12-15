@@ -176,10 +176,6 @@
             <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm remove &lt;library_name&gt; [-f]</code></pre>
         </li>
         <li>
-            <strong>connect</strong> – Connects CCLM to your project. Supports <code>-a</code>.
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm connect &lt;library_name&gt; [-a]</code></pre>
-        </li>
-        <li>
             <strong>search</strong> – Check if repository is available.
             <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm search &lt;user&gt; &lt;repo&gt;</code></pre>
         </li>
@@ -235,13 +231,6 @@ If you want a specific format, use the template command.
             <li>Clones the repository into <code>.CCLM</code>.</li>
             <li>Checks the repository's first layer for <code>info.yaml</code> and optionally <code>dependencies.txt</code>.</li>
             <li>Installs dependencies if needed and records metadata (name, version, author, origin, dependencies) in the <code>_sys</code> folder.</li>
-        </ul>
-    </li>
-    <li>
-        <strong>connect:</strong> Links installed libraries to the current project directory.
-        <ul>
-            <li>Creates a <code>libs</code> folder.</li>
-            <li>Creates symbolic links for selected packages or all packages.</li>
         </ul>
     </li>
     <li>
