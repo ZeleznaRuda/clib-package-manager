@@ -2,20 +2,10 @@
 
 namespace transactionf
 {
-std::string metadataFileName = std::string(
-    std::getenv("CCLM_LIBRARY_METADATA_FILE_NAME") 
-    ? std::getenv("CCLM_LIBRARY_METADATA_FILE_NAME")  
-    : "package.yml"
-);
-std::string gitPath = std::string(std::getenv("CCLM_GIT_PATH") ? std::getenv("CCLM_GIT_PATH") : "git");
 
-std::string gccPath = std::string(std::getenv("CCLM_GCC_PATH") ? std::getenv("CCLM_GCC_PATH") : "gcc");
-std::string gxxPath = std::string(std::getenv("CCLM_GXX_PATH") ? std::getenv("CCLM_GXX_PATH") : "g++");
-
-std::string arPath  = std::string(std::getenv("CCLM_AR_PATH")  ? std::getenv("CCLM_AR_PATH")  : "ar");
 
 void install(const std::string& url, const bool force, const bool installDependencies) {
-    if (sysf({gitPath,"ls-remote",stringf::escape(url)}).first == 0) {
+    if (sysf({GIT_PATH,"ls-remote",stringf::escape(url)}).first == 0) {
         clif::log(INFO, "the library is accessible");
     } else {
         clif::log(FATAL, "library is not accessible");
@@ -35,8 +25,8 @@ void install(const std::string& url, const bool force, const bool installDepende
     if (!fs::create_directory(tmpPath)) {
         clif::log(FATAL, "install failed");
     }
-    int cloneResult = sysf({gitPath, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string())}).first;
-    yaml_t infoData = yaml::parser(yaml::read(tmpPath / metadataFileName));
+    int cloneResult = sysf({GIT_PATH, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string())}).first;
+    yaml_t infoData = yaml::parser(yaml::read(tmpPath / PACKAGE_FILE));
 
     const std::vector<std::string> requiredKeys = {
         "name", "version", "description", "build-compiler",
@@ -67,8 +57,8 @@ void install(const std::string& url, const bool force, const bool installDepende
                 }
             }
 
-            std::string compilerPath = (std::get<std::string>(infoData["build-compiler"]) == "gcc") ? gccPath :
-                                       (std::get<std::string>(infoData["build-compiler"]) == "g++") ? gxxPath : "";
+            std::string compilerPath = (std::get<std::string>(infoData["build-compiler"]) == "gcc") ? GCC_PATH :
+                                       (std::get<std::string>(infoData["build-compiler"]) == "g++") ? GXX_PATH : "";
             std::string name = std::get<std::string>(infoData["name"]);
             std::string mode = std::get<std::string>(infoData["build-mode"]);
             std::string includeDirectory = (tmpPath / std::get<std::string>(infoData["build-include-directory"])).string();
@@ -108,7 +98,7 @@ void install(const std::string& url, const bool force, const bool installDepende
                 sysf(args);
             }
             if (mode == "static"){
-                std::vector<std::string> args = { arPath, "rcs", (pkgPath / ("lib" + name + ".a")).string() };
+                std::vector<std::string> args = { AR_PATH, "rcs", (pkgPath / ("lib" + name + ".a")).string() };
                 for (const auto& entry : fs::directory_iterator(pkgPath / "build")) {
                     if (entry.is_regular_file() && entry.path().extension() == ".o") {
                         args.push_back(entry.path().string());
@@ -276,7 +266,7 @@ void use_template(const std::string& name, const std::filesystem::path& targetDi
 }
 
 void search(const std::string& url){
-    int result = sysf({gitPath, "ls-remote", stringf::escape(url)}).first;
+    int result = sysf({GIT_PATH, "ls-remote", stringf::escape(url)}).first;
     if (result == 0){
         clif::log(INFO,"the library is accessible");
     } else {
@@ -304,7 +294,7 @@ void report(const std::string& pkgName){
 }
 
 void git(const std::string& command){
-    std::cout << sysf({gitPath, command}).second << std::endl;
+    std::cout << sysf({GIT_PATH, command}).second << std::endl;
 }
 
 void info(const std::string& repoName){
