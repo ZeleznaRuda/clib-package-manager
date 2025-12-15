@@ -165,7 +165,12 @@ void install(const std::string& url, const bool force, const bool installDepende
 
 void remove(const std::string& pkgName, bool force) {
     fs::path pkgPath = HOME_DIRECTORY / pkgName;
-    fs::path pkgInfoFilePath = HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml");
+    if (fs::exists(pkgPath) ) {
+        clif::log(INFO,"library '" + pkgName + "' is installed.");
+    } else {
+        clif::log(FATAL,"library '" + pkgName + "' is \033[1;31mnot\033[0m installed.");
+    }
+    fs::path infoPath = HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml");
 
     if (!fs::exists(pkgPath)) {
         clif::log(FATAL, "library '" + pkgName + "' does not exist.");
@@ -184,7 +189,7 @@ void remove(const std::string& pkgName, bool force) {
 
     try {
         if (fs::exists(pkgPath)) fs::remove_all(pkgPath);
-        if (fs::exists(pkgInfoFilePath)) fs::remove(pkgInfoFilePath);
+        if (fs::exists(infoPath)) fs::remove(infoPath);
         clif::log(INFO,"library '" + pkgName + "' removed successfully.");
     } catch (const fs::filesystem_error& e) {
         clif::log(FATAL, "error removing library: " + std::string(e.what()),2);
