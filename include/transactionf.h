@@ -19,7 +19,7 @@
 
 namespace transactionf
 {
-    void install(const std::string& url, bool force = false, const bool installDependencies = true);
+    void install(const std::string& url, bool force = false);
     void remove(const std::string& pkgName, bool force = false);
     void use_template(const std::string& name, const std::filesystem::path& targetDirectory);
     void search(const std::string& repoName);

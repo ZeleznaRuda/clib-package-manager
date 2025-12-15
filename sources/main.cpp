@@ -52,7 +52,6 @@ int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
     bool _force = false;
     bool _all = false;
-    bool _dep = false;
     bool _url = false;
 
     
@@ -92,10 +91,10 @@ int main(int argc, char* argv[]){
 
         case commands::INSTALL:
             if (!_url && argvparser::has_argument(3)){
-                transactionf::install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force, _dep);
+                transactionf::install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force);
                 break;
             }
-            transactionf::install(argvparser::get_argument_after({cmd}), _force, _dep);
+            transactionf::install(argvparser::get_argument_after({cmd}), _force);
             break;
 
         case commands::REMOVE:

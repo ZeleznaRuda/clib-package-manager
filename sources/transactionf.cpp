@@ -4,7 +4,7 @@ namespace transactionf
 {
 
 
-void install(const std::string& url, const bool force, const bool installDependencies) {
+void install(const std::string& url, const bool force) {
     if (sysf({GIT_PATH,"ls-remote",stringf::escape(url)}).first == 0) {
         clif::log(INFO, "the library is accessible");
     } else {
