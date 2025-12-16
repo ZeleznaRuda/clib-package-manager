@@ -25,6 +25,7 @@ enum class commands{
         LS,
         INFO,
         GIT,
+        WEBSITE,
         REPORT,
         UNKNOWN
 };
@@ -38,6 +39,7 @@ static const std::unordered_map<std::string, commands> commandMap = {
     {"info", commands::INFO},
     {"git", commands::GIT},
     {"report", commands::REPORT},
+    {"website", commands::WEBSITE},
     {"exist", commands::EXIST}
 
 };
@@ -65,6 +67,8 @@ int main(int argc, char* argv[]){
     argvparser::add_help("info",                "print package information");
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
     argvparser::add_help("report",              "report a libary");
+    argvparser::add_help("website",             "open websites of the library");
+
 
     argvparser::add_help("purge",               "uninstalls the application and removes all its traces.");
 
@@ -122,9 +126,15 @@ int main(int argc, char* argv[]){
         case commands::GIT:
             transactionf::git(argvparser::get_argument_after({cmd}));
             break;
+
         case commands::REPORT:
             transactionf::report(argvparser::get_argument_after({cmd}));
             break;
+
+        case commands::WEBSITE:
+            transactionf::website(argvparser::get_argument_after({cmd}));
+            break;
+
         case commands::UNKNOWN:
             if (!argvparser::is_argument(cmd))clif::log(FATAL, "unknown command: " + cmd);
         default:

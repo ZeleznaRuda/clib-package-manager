@@ -246,12 +246,30 @@ void exist(const std::string& pkg){
 }
 
 void report(const std::string& pkgName){
+    if (!fs::exists(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml"))){
+        clif::log(FATAL, "library is not installed");
+    }
     yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml")));
     std::string url = std::get<std::string>(infoData["git-url"]);
     if (stringf::ends_with(url, ".git")){
         url.erase(url.size() - 4);
     }
     sysf({"xdg-open",stringf::escape(url+"/issues/new/")});
+}
+
+void website(const std::string& pkgName){
+    if (!fs::exists(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml"))){
+        clif::log(FATAL, "library is not installed");
+    }
+    yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml")));
+    if (infoData.find("websites") == infoData.end()){
+        clif::log(FATAL,"missing websites key");
+    }
+    std::vector<std::string> websites = std::get<std::vector<std::string>>(infoData["websites"]);
+
+    for (auto& website : websites){
+        sysf({"xdg-open",stringf::escape(website)});
+    }
 }
 
 void git(const std::string& command){

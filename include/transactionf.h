@@ -27,5 +27,6 @@ namespace transactionf
     void info(const std::string& repoName);
     void ls();
     void report(const std::string& url);
+    void website(const std::string& pkgName);
     void exist(const std::string& pkgName);
 } // namespace transactionf
