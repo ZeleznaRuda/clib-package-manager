@@ -58,15 +58,15 @@ int main(int argc, char* argv[]){
 
     
 
-    argvparser::add_help("install",             "install library                      (supports the '-f' flag)");
-    argvparser::add_help("remove",              "remove library                       (supports the '-f' flag)");
+    argvparser::add_help("install",             "install library\t\t\t(supports the '-f' flag)");
+    argvparser::add_help("remove",              "remove library\t\t\t(supports the '-f' flag)");
     argvparser::add_help("template",            "creates a template based on the name ");
     argvparser::add_help("search",              "checks the repository is available");
     argvparser::add_help("exist",               "checks if the library is installed");
     argvparser::add_help("ls",                  "print a list of installed libraries");
     argvparser::add_help("info",                "print package information");
     argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
-    argvparser::add_help("report",              "report a libary");
+    argvparser::add_help("report",              "report a library");
     argvparser::add_help("website",             "open websites of the library");
 
 
