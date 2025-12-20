@@ -109,7 +109,7 @@ void install(const std::string& url, const bool force) {
             fs::copy(tmpPath / includeDirectory, pkgPath / "include");
             fs::remove_all(tmpPath);
 
-            std::ofstream pkgFile(HOME_DIRECTORY / "_sys" / "registry" / (name + "@" + std::get<std::string>(infoData["version"]) + "-package.yml"));
+            std::ofstream pkgFile(HOME_DIRECTORY / "_sys" / "registry" / (name + "@" + std::get<std::string>(infoData["version"]) + "-metadata.yml"));
             if (!pkgFile) {
                 clif::log(FATAL, "failed to create record", 2);
             } else {
@@ -170,7 +170,7 @@ void remove(const std::string& pkgName, bool force) {
     } else {
         clif::log(FATAL,"library '" + pkgName + "' is \033[1;31mnot\033[0m installed.");
     }
-    fs::path infoPath = HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml");
+    fs::path infoPath = HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml");
 
     if (!fs::exists(pkgPath)) {
         clif::log(FATAL, "library '" + pkgName + "' does not exist.");
@@ -308,10 +308,10 @@ void exist(const std::string& pkg){
 }
 
 void report(const std::string& pkgName){
-    if (!fs::exists(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml"))){
+    if (!fs::exists(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml"))){
         clif::log(FATAL, "library is not installed");
     }
-    yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml")));
+    yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml")));
     std::string url = std::get<std::string>(infoData["git-url"]);
     if (stringf::ends_with(url, ".git")){
         url.erase(url.size() - 4);
@@ -320,10 +320,10 @@ void report(const std::string& pkgName){
 }
 
 void website(const std::string& pkgName){
-    if (!fs::exists(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml"))){
+    if (!fs::exists(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml"))){
         clif::log(FATAL, "library is not installed");
     }
-    yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-package.yml")));
+    yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml")));
     if (infoData.find("websites") == infoData.end()){
         clif::log(FATAL,"missing websites key");
     }
@@ -339,7 +339,7 @@ void git(const std::string& command){
 }
 
 void info(const std::string& repoName){
-    const std::string suffix = "-package.yml";
+    const std::string suffix = "-metadata.yml";
     std::string name = repoName;
 
     if (name.size() >= suffix.size() &&
