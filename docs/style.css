@@ -7,7 +7,6 @@
         padding: 0;
     }
     code {
-        background-color: #e8e8e8;
         padding: 3px 6px;
         border-radius: 4px;
     }
@@ -70,7 +69,6 @@
         width: 95%;
         border-collapse: collapse;
         margin-bottom: 25px;
-        
     
     }
     th, td {
@@ -100,17 +98,15 @@
         padding: 3px 8px;
         cursor: pointer;
     }
-    .copy-btn:active {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        padding: 3px 8px;
-        cursor: pointer;    
-    }
+
     pre {
+        width: 95%;
+
         position: relative;
-        background-color: #ecf0f1;
+        border: 1px solid ;
+        background-color: #a8d4f4;
         padding: 10px;
+        padding-right: 15px;
         border-radius: 5px;
         overflow-x: auto;
     }
