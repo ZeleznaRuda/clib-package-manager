@@ -19,6 +19,7 @@ enum class commands{
         PURGE,
         INSTALL,
         REMOVE,
+        RUN,
         TEMPLATE,
         SEARCH,
         EXIST,
@@ -32,6 +33,7 @@ enum class commands{
 static const std::unordered_map<std::string, commands> commandMap = {
     {"purge", commands::PURGE},
     {"install", commands::INSTALL},
+    {"run", commands::RUN},
     {"remove", commands::REMOVE},
     {"template", commands::TEMPLATE},
     {"search", commands::SEARCH},
@@ -60,6 +62,7 @@ int main(int argc, char* argv[]){
 
     argvparser::add_help("install",             "install library\t\t\t(supports the '-f' flag)");
     argvparser::add_help("remove",              "remove library\t\t\t(supports the '-f' flag)");
+    argvparser::add_help("run",                 "compile and run your project");
     argvparser::add_help("template",            "creates a template based on the name ");
     argvparser::add_help("search",              "checks the repository is available");
     argvparser::add_help("exist",               "checks if the library is installed");
@@ -104,7 +107,9 @@ int main(int argc, char* argv[]){
         case commands::REMOVE:
             transactionf::remove(argvparser::get_argument_after({cmd}), _force);
             break;
-
+        case commands::RUN:
+            transactionf::run();
+            break;
         case commands::TEMPLATE:
             transactionf::use_template(argvparser::get_argument_after({cmd}), fs::current_path());
             break;

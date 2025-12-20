@@ -82,7 +82,7 @@ void install(const std::string& url, const bool force) {
                     
                     
                 };
-                argv.insert(argv.begin() + 2, cflags.begin(), cflags.end());
+                argv.insert(argv.begin() + 1, cflags.begin(), cflags.end());
 
                 sysf(argv);
 
@@ -195,6 +195,81 @@ void remove(const std::string& pkgName, bool force) {
         clif::log(FATAL, "error removing library: " + std::string(e.what()),2);
     }
 }
+
+void run() {
+    if (!fs::exists(CURRENT_PATH / BUILD_FILE)) {
+        clif::log(FATAL, "build file not found");
+    }
+
+    yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / BUILD_FILE));
+    const std::vector<std::string> requiredKeys = {
+       "name", "sources-files", "output-directory", "compiler", "library"
+    };
+
+    for (const auto& key : requiredKeys) {
+        if (buildData.find(key) == buildData.end()) {
+            clif::log(FATAL, "metadata missing key: " + key);
+            return;
+        }
+    }
+
+    try {
+        std::string name = std::get<std::string>(buildData["name"]);
+
+        std::vector<std::string> librarys = std::get<std::vector<std::string>>(buildData["library"]);
+        std::string compiler = (std::get<std::string>(buildData["compiler"]) == "gcc") ? GCC_PATH :
+                               (std::get<std::string>(buildData["compiler"]) == "g++") ? GXX_PATH : "";
+        if (compiler.empty()) clif::log(FATAL, "unsupported compiler");
+
+        std::vector<std::string> sources = 
+            std::holds_alternative<std::vector<std::string>>(buildData["sources-files"])
+            ? std::get<std::vector<std::string>>(buildData["sources-files"])
+            : std::vector<std::string>{ std::get<std::string>(buildData["sources-files"]) };
+
+        fs::path output = CURRENT_PATH / std::get<std::string>(buildData["output-directory"]) / name;
+
+        std::vector<std::string> cflags = 
+                std::holds_alternative<std::vector<std::string>>(buildData["cflags"])
+                ? std::get<std::vector<std::string>>(buildData["cflags"])
+                : std::vector<std::string>{ std::get<std::string>(buildData["cflags"]) };
+
+        std::vector<std::string> argv = {
+            compiler
+        };
+        argv.insert(argv.end(), sources.begin(), sources.end());
+
+        for (const auto& lib : librarys) {
+            fs::path libDirectory = HOME_DIRECTORY / lib;
+            std::string library = stringf::split(libDirectory.filename().string(), '@')[0];
+
+            argv.push_back("-I" + (libDirectory / "include").string());
+
+            argv.push_back("-L" + libDirectory.string());
+            argv.push_back("-l" + library);
+            argv.push_back("-Wl,-rpath," + libDirectory.string());
+            argv.push_back("-Wl,--enable-new-dtags");
+        }
+        argv.insert(argv.begin() + 2, cflags.begin(), cflags.end());
+
+
+        argv.push_back("-o");
+        argv.push_back(output.string());
+
+        sysf_t result = sysf(argv);
+        if (result.first != 0) {
+            clif::log(FATAL, '\n' + result.second, 2);
+        }
+
+        clif::log(INFO, "compilation successfully");
+        sysf({output});
+
+        clif::log(INFO, "program run successfully");
+
+    } catch (const fs::filesystem_error& e) {
+        clif::log(FATAL, std::string("file system error: ") + e.what(), 2);
+    }
+}
+
 
 void use_template(const std::string& name, const std::filesystem::path& targetDirectory) {
     if (!name.empty() && fs::exists(HOME_DIRECTORY / "_sys" / "templates" / name)) {
