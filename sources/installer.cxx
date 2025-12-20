@@ -7,7 +7,7 @@
 #include <unistd.h>
 namespace fs = std::filesystem;
 std::unordered_map<std::string, std::string> data = {
-    {"CMakeLists.txt", R"(cmake_minimum_required(VERSION 3.10)
+{"CMakeLists.txt", R"(cmake_minimum_required(VERSION 3.10)
 
 project(MyProject)
 
@@ -27,8 +27,7 @@ target_link_libraries(main PRIVATE mylib)
 target_include_directories(main PRIVATE
 )
 )"},
-
-    {"package.yml", R"(name: 
+{"package.yml", R"(name: 
 description: 
 version: 
 
@@ -43,21 +42,14 @@ build-cflags: [...]
 build-dependencies: [...]
 build-include-directory: 
 build-source-files: [...]
-)"},{"run.sh", R"(#!/bin/bash
-set -e
+)"},
+{"cclm.yml",R"(name: 
+sources-files: [...]
+output-directory: 
 
-# setup:
-COMPILLER="g++"             # < here you choose which compiler you want to use.
-INPUT="main.cpp"            # < here you choose which file you want to compile.
-OUTPUT="main"               # < here you choose which file you want to out.
-PKG="foo-lib@x.y.z"         # < here you choose which package you want to use 
-LIB="foo"                   # < here you choose which libary you want to use (.so OR .a)
-
-$COMPILLER $INPUT -I$HOME/.cclm/$PKG/include/ \
-    -L$HOME/.cclm/$PKG -l$LIB \
-    -Wl,-rpath,$HOME/.cclm/$PKG -o $OUTPUT \
-    && ./$OUTPUT
-
+compiler: # gcc | g++
+cflags: [...]
+library: [...]
 )"},
 };
 int main(){
