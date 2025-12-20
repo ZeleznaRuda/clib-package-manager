@@ -273,31 +273,18 @@ void run() {
 
 void use_template(const std::string& name, const std::filesystem::path& targetDirectory) {
     if (!name.empty() && fs::exists(HOME_DIRECTORY / "_sys" / "templates" / name)) {
-        std::ifstream file(HOME_DIRECTORY / "_sys" / "templates" / name);
-        if (!file) {
-            clif::log(FATAL, "failed to open template: " + name, 2);
-            return;
-        }
-
-        std::ofstream templateFile(targetDirectory / name);
-        if (!templateFile) {
-            clif::log(FATAL, "failed to create template: " + targetDirectory.string(), 2);
-            return;
-        }
-
-        std::string line;
-        while (std::getline(file, line)) {
-            templateFile << line << '\n';  
-        }
-
+        fs::copy(HOME_DIRECTORY / "_sys" / "templates" / name, CURRENT_PATH);
         clif::log(INFO, "template successfully created: " + (targetDirectory / name).string());
     } else {
+
         clif::log(INFO,"templates:");
         for (const auto& entry : fs::directory_iterator(HOME_DIRECTORY / "_sys" / "templates")) {
             if (!fs::is_regular_file(entry.path())) continue;
             std::cout << "\t" << entry.path().filename().string() << '\n';
         }
-        clif::log(ERROR, "template '" + name + "' does not exist");
+        if (!name.empty()){
+            clif::log(ERROR, "template '" + name + "' does not exist");
+        }
     }
 }
 
