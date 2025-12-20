@@ -27,7 +27,7 @@ target_link_libraries(main PRIVATE mylib)
 target_include_directories(main PRIVATE
 )
 )"},
-{"package.yml", R"(name: 
+{"cclm-library.yml", R"(name: 
 description: 
 version: 
 

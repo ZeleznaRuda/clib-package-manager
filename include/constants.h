@@ -5,7 +5,7 @@
 
 namespace fs = std::filesystem;
 
-inline constexpr std::string_view VERSION = "3.3.1";
+inline constexpr std::string_view VERSION = "3.3.2";
 inline const     fs::path HOME = fs::path(getenv("HOME"));
 inline const     fs::path HOME_DIRECTORY = HOME / ".cclm";
 inline const     fs::path CURRENT_PATH = fs::current_path();
@@ -13,7 +13,7 @@ inline const     fs::path CURRENT_PATH = fs::current_path();
 inline const std::string PACKAGE_FILE = std::string(
     std::getenv("CCLM_LIBRARY_METADATA_FILE_NAME") 
     ? std::getenv("CCLM_LIBRARY_METADATA_FILE_NAME")  
-    : "cclm.yml"
+    : "cclm-library.yml"
 );
 inline const std::string BUILD_FILE = std::string(
     std::getenv("CCLM_BUILD_FILE_NAME") 
