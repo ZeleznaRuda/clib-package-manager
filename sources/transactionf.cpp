@@ -203,7 +203,7 @@ void run() {
 
     yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / BUILD_FILE));
     const std::vector<std::string> requiredKeys = {
-       "name", "sources-files", "output-directory", "compiler", "library"
+       "name", "sources-files", "output-directory", "compiler"
     };
 
     for (const auto& key : requiredKeys) {
@@ -216,7 +216,14 @@ void run() {
     try {
         std::string name = std::get<std::string>(buildData["name"]);
 
-        std::vector<std::string> librarys = std::get<std::vector<std::string>>(buildData["library"]);
+        std::vector<std::string> librarys;
+        if (std::holds_alternative<std::vector<std::string>>(buildData["library"])) {
+            librarys = std::get<std::vector<std::string>>(buildData["library"]);
+        } else {
+            librarys = {}; 
+        }
+
+
         std::string compiler = (std::get<std::string>(buildData["compiler"]) == "gcc") ? GCC_PATH :
                                (std::get<std::string>(buildData["compiler"]) == "g++") ? GXX_PATH : "";
         if (compiler.empty()) clif::log(FATAL, "unsupported compiler");
@@ -237,19 +244,20 @@ void run() {
             compiler
         };
         argv.insert(argv.end(), sources.begin(), sources.end());
+        if (!librarys.empty()){
+            for (const auto& lib : librarys) {
+                fs::path libDirectory = HOME_DIRECTORY / lib;
+                std::string library = stringf::split(libDirectory.filename().string(), '@')[0];
 
-        for (const auto& lib : librarys) {
-            fs::path libDirectory = HOME_DIRECTORY / lib;
-            std::string library = stringf::split(libDirectory.filename().string(), '@')[0];
+                argv.push_back("-I" + (libDirectory / "include").string());
 
-            argv.push_back("-I" + (libDirectory / "include").string());
-
-            argv.push_back("-L" + libDirectory.string());
-            argv.push_back("-l" + library);
-            argv.push_back("-Wl,-rpath," + libDirectory.string());
-            argv.push_back("-Wl,--enable-new-dtags");
+                argv.push_back("-L" + libDirectory.string());
+                argv.push_back("-l" + library);
+                argv.push_back("-Wl,-rpath," + libDirectory.string());
+                argv.push_back("-Wl,--enable-new-dtags");
+            }
         }
-        argv.insert(argv.begin() + 2, cflags.begin(), cflags.end());
+        argv.insert(argv.begin() + 1, cflags.begin(), cflags.end());
 
 
         argv.push_back("-o");
