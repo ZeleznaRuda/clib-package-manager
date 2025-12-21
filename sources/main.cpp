@@ -7,13 +7,15 @@
 #include <filesystem>
 #include <cstdlib>
 
-#include "../include/argvparser.h"
+#include "../include/argvf.h"
 #include "../include/constants.h"
 #include "../include/clif.h"
 #include "../include/transactionf.h"
 #include "../include/appf.h"
 
 namespace fs = std::filesystem;
+using namespace transactionf;
+using namespace argvparser;
 
 enum class commands{
         PURGE,
@@ -60,25 +62,25 @@ int main(int argc, char* argv[]){
 
     
 
-    argvparser::add_help("install",             "install library\t\t\t(supports the '-f' flag)");
-    argvparser::add_help("remove",              "remove library\t\t\t(supports the '-f' flag)");
-    argvparser::add_help("run",                 "compile and run your project");
-    argvparser::add_help("template",            "creates a template based on the name ");
-    argvparser::add_help("search",              "checks the repository is available");
-    argvparser::add_help("exist",               "checks if the library is installed");
-    argvparser::add_help("ls",                  "print a list of installed libraries");
-    argvparser::add_help("info",                "print package information");
-    argvparser::add_help("git",                 "git command wrapper (for debugging purposes)");
-    argvparser::add_help("report",              "report a library");
-    argvparser::add_help("website",             "open websites of the library");
+    add_help("install",             "install library\t\t\t(supports the '-f' flag)");
+    add_help("remove",              "remove library\t\t\t(supports the '-f' flag)");
+    add_help("run",                 "compile and run your project");
+    add_help("template",            "creates a template based on the name ");
+    add_help("search",              "checks the repository is available");
+    add_help("exist",               "checks if the library is installed");
+    add_help("ls",                  "print a list of installed libraries");
+    add_help("info",                "print package information");
+    add_help("git",                 "git command wrapper (for debugging purposes)");
+    add_help("report",              "report a library");
+    add_help("website",             "open websites of the library");
 
 
-    argvparser::add_help("purge",               "uninstalls the application and removes all its traces.");
+    add_help("purge",               "uninstalls the application and removes all its traces.");
 
-    argvparser::define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
-    argvparser::define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
-    argvparser::define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
-    argvparser::define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
+    define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
+    define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
+    define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
+    define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
     argvparser::parser();
     
     std::string cmd;
@@ -98,46 +100,46 @@ int main(int argc, char* argv[]){
 
         case commands::INSTALL:
             if (!_url && argvparser::has_argument(3)){
-                transactionf::install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force);
+                install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force);
                 break;
             }
-            transactionf::install(argvparser::get_argument_after({cmd}), _force);
+            install(argvparser::get_argument_after({cmd}), _force);
             break;
 
         case commands::REMOVE:
-            transactionf::remove(argvparser::get_argument_after({cmd}), _force);
+            remove(argvparser::get_argument_after({cmd}), _force);
             break;
         case commands::RUN:
-            transactionf::run();
+            run();
             break;
         case commands::TEMPLATE:
-            transactionf::use_template(argvparser::get_argument_after({cmd}), fs::current_path());
+            use_template(argvparser::get_argument_after({cmd}), fs::current_path());
             break;
 
         case commands::SEARCH:
-            transactionf::search(repo(argvparser::get_argument(2), argvparser::get_argument(3)));
+            search(repo(argvparser::get_argument(2), argvparser::get_argument(3)));
             break;
         case commands::EXIST:
-            transactionf::exist(argvparser::get_argument_after({cmd}));
+            exist(argvparser::get_argument_after({cmd}));
             break;
         case commands::LS:
-            transactionf::ls();
+            ls();
             break;
 
         case commands::INFO:
-            transactionf::info(argvparser::get_argument_after({cmd}));
+            info(argvparser::get_argument_after({cmd}));
             break;
 
         case commands::GIT:
-            transactionf::git(argvparser::get_argument_after({cmd}));
+            git(argvparser::get_argument_after({cmd}));
             break;
 
         case commands::REPORT:
-            transactionf::report(argvparser::get_argument_after({cmd}));
+            report(argvparser::get_argument_after({cmd}));
             break;
 
         case commands::WEBSITE:
-            transactionf::website(argvparser::get_argument_after({cmd}));
+            website(argvparser::get_argument_after({cmd}));
             break;
 
         case commands::UNKNOWN:
