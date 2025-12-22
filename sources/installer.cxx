@@ -27,7 +27,7 @@ target_link_libraries(main PRIVATE mylib)
 target_include_directories(main PRIVATE
 )
 )"},
-{"cclm-library.yml", R"(name: 
+{".library", R"(name: 
 description: 
 version: 
 
@@ -43,7 +43,7 @@ build-dependencies: [...]
 build-include-directory: 
 build-source-files: [...]
 )"},
-{"cclm.yml",R"(name: 
+{".project",R"(name: 
 sources-files: [...]
 output-directory: 
 

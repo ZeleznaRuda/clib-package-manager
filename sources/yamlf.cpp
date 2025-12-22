@@ -16,7 +16,9 @@ namespace yaml
     yaml_t parser(const std::string& fileContent) {
         std::unordered_map<std::string, std::variant<std::string, std::vector<std::string>>> data;
         auto lines = stringf::split(fileContent, '\n');
-
+        if (!lines.empty() && lines[0].rfind("# @", 0) == 0) {
+            data["@"] = lines[0];
+        }
         for (auto& l : lines) {
             l = stringf::strip(l);
             if (l.empty() || l[0] == '#') continue;

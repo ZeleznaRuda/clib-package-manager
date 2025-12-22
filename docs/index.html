@@ -26,6 +26,7 @@
         <a href="#documentation">Documentation</a>
         <a href="#installation">Installation</a>
         <a href="#environmental variables">Environmental variables</a>
+        <a herf="@concepts">Concepts</a>
         <a href="#commands">Commands</a>
         <a href="#license">License</a>
     </nav>
@@ -40,7 +41,7 @@
     <tr><th>Platform</th><th>Compatibility</th></tr>
     <tr><td>Linux</td><td>✔️ Yes</td></tr>
     <tr><td>MacOS</td><td>⚙️ Untested</td></tr>
-    <tr><td>Windows</td><td>❌ Definitely not</td></tr> <!--flip windows-->
+    <tr><td>Windows</td><td>❌ Definitely not</td></tr> <!--flip concepts windows-->
 </table>
 </div>
 
@@ -101,6 +102,16 @@
     </table>
     <strong>Example:</strong>
     <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>export CCLM_GIT_PATH=/usr/bin/git</code></pre>
+</div>
+
+<h2 id="concepts">Concepts</h2>
+<div class="note">
+<table>
+    <tr><th>Concept</th><th>Explanation</th></tr>
+    <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format "# @..." This must be strictly adhered to and is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write "# @project," and if you want to use the library, write "# @library."  </td></tr>
+    <tr><td>file .library</td><td>It is a file that provides instructions and information about the library.</td></tr>
+    <tr><td>file .project</td><td>This is a file that contains instructions for the program on how to run and compile the project.</td></tr> 
+</table>
 </div>
 
 <h2 id="commands">Commands</h2>

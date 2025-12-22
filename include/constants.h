@@ -5,20 +5,20 @@
 
 namespace fs = std::filesystem;
 
-inline constexpr std::string_view VERSION = "3.3.3";
+inline constexpr std::string_view VERSION = "4.0.1";
 inline const     fs::path HOME = fs::path(getenv("HOME"));
 inline const     fs::path HOME_DIRECTORY = HOME / ".cclm";
 inline const     fs::path CURRENT_PATH = fs::current_path();
 
-inline const std::string PACKAGE_FILE = std::string(
-    std::getenv("CCLM_LIBRARY_METADATA_FILE_NAME") 
-    ? std::getenv("CCLM_LIBRARY_METADATA_FILE_NAME")  
-    : "cclm-library.yml"
+inline const std::string LIBRARY_FILE = std::string(
+    std::getenv("CCLM_LIBRARY_FILE_NAME") 
+    ? std::getenv("CCLM_LIBRARY_FILE_NAME")  
+    : ".library"
 );
-inline const std::string BUILD_FILE = std::string(
-    std::getenv("CCLM_BUILD_FILE_NAME") 
-    ? std::getenv("CCLM_BUILD_FILE_NAME")  
-    : "cclm.yml"
+inline const std::string PROJECT_FILE = std::string(
+    std::getenv("CCLM_PROJECT_FILE_NAME") 
+    ? std::getenv("CCLM_PROJECT_FILE_NAME")  
+    : ".project"
 );
 inline const fs::path GIT_PATH = fs::path(std::getenv("CCLM_GIT_PATH") ? std::getenv("CCLM_GIT_PATH") : "git");
 

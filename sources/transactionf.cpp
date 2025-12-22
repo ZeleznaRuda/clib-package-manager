@@ -26,12 +26,14 @@ void install(const std::string& url, const bool force) {
         clif::log(FATAL, "install failed");
     }
     int cloneResult = sysf({GIT_PATH, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string())}).first;
-    yaml_t infoData = yaml::parser(yaml::read(tmpPath / PACKAGE_FILE));
+    yaml_t infoData = yaml::parser(yaml::read(tmpPath / LIBRARY_FILE));
 
     const std::vector<std::string> requiredKeys = {
-        "name", "version", "description", "build-compiler",
+        "@", "name", "version", "description", "build-compiler",
         "build-mode", "build-include-directory", "build-source-files"
     };
+    if (std::get<std::string>(infoData["@"]) != "# @library"){clif::log(FATAL, "this library cannot be installed (try changing the project type).");}
+
     for (const auto& key : requiredKeys) {
         if (infoData.find(key) == infoData.end()) {
             clif::log(FATAL, "metadata missing key: " + key);
@@ -197,22 +199,21 @@ void remove(const std::string& pkgName, bool force) {
 }
 
 void run() {
-    if (!fs::exists(CURRENT_PATH / BUILD_FILE)) {
+    if (!fs::exists(CURRENT_PATH / PROJECT_FILE)) {
         clif::log(FATAL, "build file not found");
     }
 
-    yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / BUILD_FILE));
+    yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / PROJECT_FILE));
     const std::vector<std::string> requiredKeys = {
-       "name", "sources-files", "output-directory", "compiler"
+       "@", "name", "sources-files", "output-directory", "compiler"
     };
-
     for (const auto& key : requiredKeys) {
         if (buildData.find(key) == buildData.end()) {
             clif::log(FATAL, "metadata missing key: " + key);
             return;
         }
     }
-
+    if (std::get<std::string>(buildData["@"]) != "# @project"){clif::log(FATAL, "this project cannot be compiled (try changing the project type).");}
     try {
         std::string name = std::get<std::string>(buildData["name"]);
 
@@ -269,8 +270,8 @@ void run() {
         }
 
         clif::log(INFO, "compilation successfully");
-        sysf({output});
-
+        std::system(std::string(output.string()).c_str());
+        clif::log(NONE, "");
         clif::log(INFO, "program run successfully");
 
     } catch (const fs::filesystem_error& e) {
