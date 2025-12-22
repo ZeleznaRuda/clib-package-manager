@@ -27,7 +27,8 @@ target_link_libraries(main PRIVATE mylib)
 target_include_directories(main PRIVATE
 )
 )"},
-{".library", R"(name: 
+{".library", R"(# @library
+name: 
 description: 
 version: 
 
@@ -43,7 +44,8 @@ build-dependencies: [...]
 build-include-directory: 
 build-source-files: [...]
 )"},
-{".project",R"(name: 
+{".project",R"(# @project
+name: 
 sources-files: [...]
 output-directory: 
 
