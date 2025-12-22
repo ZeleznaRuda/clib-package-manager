@@ -19,6 +19,7 @@ using namespace argvparser;
 
 enum class commands{
         PURGE,
+        INIT,
         INSTALL,
         REMOVE,
         RUN,
@@ -34,6 +35,7 @@ enum class commands{
 };
 static const std::unordered_map<std::string, commands> commandMap = {
     {"purge", commands::PURGE},
+    {"init", commands::INIT},
     {"install", commands::INSTALL},
     {"run", commands::RUN},
     {"remove", commands::REMOVE},
@@ -59,9 +61,9 @@ int main(int argc, char* argv[]){
     bool _force = false;
     bool _all = false;
     bool _url = false;
-
+    bool _lib = false;
     
-
+    add_help("init",                "initalizon the cclm project");
     add_help("install",             "install library\t\t\t(supports the '-f' flag)");
     add_help("remove",              "remove library\t\t\t(supports the '-f' flag)");
     add_help("run",                 "compile and run your project");
@@ -80,6 +82,7 @@ int main(int argc, char* argv[]){
     define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
     define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
+    define_argument({"-L", "--lib"}, [&_lib](){ _lib = true; }, "switch init mode to library");
     define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
     argvparser::parser();
     
@@ -97,6 +100,9 @@ int main(int argc, char* argv[]){
             appf::purge(_force);
             break;
 
+        case commands::INIT:
+            init(_lib);
+            break;
 
         case commands::INSTALL:
             if (!_url && argvparser::has_argument(3)){

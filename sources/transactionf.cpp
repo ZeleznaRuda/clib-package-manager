@@ -3,6 +3,60 @@
 namespace transactionf
 {
 
+void init(const bool lib){
+    if (!lib){
+    fs::create_directory(CURRENT_PATH / "dist");
+    fs::create_directory(CURRENT_PATH / "src");
+    std::ofstream main(CURRENT_PATH / "src" / "main.cpp");
+    main << R"(#include <iostream>
+
+int main(){
+    std::cout << "Hello, world!" << std::endl;
+    return 0;
+})";
+    main.close();
+    std::ofstream project(CURRENT_PATH / ".project");
+    project << R"(# @project
+name: main
+sources-files: ["src/main.cpp"]
+output-directory: dist/
+
+compiler: g++ 
+cflags: [-O2]
+library: [])";
+    project.close();
+    } else {
+    fs::create_directory(CURRENT_PATH / "sources");
+    fs::create_directory(CURRENT_PATH / "include");
+    std::ofstream addh(CURRENT_PATH / "include" / "add.hpp");
+    addh << R"(#pragma once
+
+int add(int a, int b);)";
+    addh.close();
+    std::ofstream add(CURRENT_PATH / "sources" / "add.cpp");
+    add << R"(#include "../include/add.hpp"
+
+int add(int a, int b) {
+    return a + b;
+})";
+    add.close();
+    std::ofstream library(CURRENT_PATH / ".library");
+    library << R"(# @library
+name: math
+description: math for cpp
+version: 1.0.0
+
+# authors: []
+license: MIT
+
+build-mode: shared
+build-compiler: g++ 
+build-cflags: [-O2]
+build-include-directory: include/
+build-source-files: [sources/add.cpp])";
+    library.close();
+    }
+}
 
 void install(const std::string& url, const bool force) {
     if (sysf({GIT_PATH,"ls-remote",stringf::escape(url)}).first == 0) {
@@ -271,7 +325,6 @@ void run() {
 
         clif::log(INFO, "compilation successfully");
         std::system(std::string(output.string()).c_str());
-        clif::log(NONE, "");
         clif::log(INFO, "program run successfully");
 
     } catch (const fs::filesystem_error& e) {
