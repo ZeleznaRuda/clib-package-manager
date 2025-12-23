@@ -25,44 +25,90 @@
     <nav class="header-nav">
         <a href="#documentation">Documentation</a>
         <a href="#installation">Installation</a>
-        <a href="#environmental variables">Environmental variables</a>
-        <a herf="@concepts">Concepts</a>
+        <a href="#quick-start">Quick Start</a>
+        <a href="#environmental-variables">Environmental variables</a>
+        <a herf="#concepts">Concepts</a>
         <a href="#commands">Commands</a>
         <a href="#license">License</a>
     </nav>
 </header>
+<main>
 <h2 id="documentation">Documentation</h2>
 <div class="note">
     <p><strong>CCLM</strong> is a command-line tool created by Rudolf Müller in <strong>C++</strong> for managing C/C++ libraries.</p>
-    <p>Libraries can be installed from <strong>Git repositories</strong> or as part of <strong>kits</strong> (library sets). Prototype written in <strong>Python</strong>.</p>
+    <p>Libraries can be installed from <strong>Git repositories</strong> Prototype written in <strong>Python</strong>.</p>
     <p><strong>POSIX</strong> only</p>
 
 <table>
     <tr><th>Platform</th><th>Compatibility</th></tr>
     <tr><td>Linux</td><td>✔️ Yes</td></tr>
-    <tr><td>MacOS</td><td>⚙️ Untested</td></tr>
-    <tr><td>Windows</td><td>❌ Definitely not</td></tr> <!--flip concepts windows-->
+    <tr><td>macOS</td><td>⚙️ Untested</td></tr>
+    <tr><td>Windows</td><td>❌ Definitely not</td></tr> <!--flip windows-->
 </table>
 </div>
 
 <h2 id="installation">Installation</h2>
 <div class="note">
+    <div class="important">
+        The installer installs to a folder (so that it can be accessed as a command), so before installing, please make sure you have the <code>$HOME/.local</code> folder.<br>
+        We want to make sure we don't break your system<br>
+        „and I think it's unnecessary to install it to the system when we can install it to <code>$HOME/.local</code> and it has the same effect in the end“ - Rudolf Müller 2025
+    </div>
+    <br>
+    <br>
     Clone the repository:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/cclm-package-manager.git"</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git"</code></pre>
     
     Navigate to the installer:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cd cclm-package-manager/compiled/dist/linux/</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cd cclm-package-manager/compiled/dist/linux/</code></pre>
     
     Run the installer (may need permission):
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>chmod +x install.sh && ./install.sh</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ chmod +x install.sh && ./install.sh</code></pre>
     
     All-in-one line:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>git clone "https://github.com/rudolfmuller/cclm-package-manager.git" && ./cclm-package-manager/dist/linux/install && rm -rf ./cclm-package-manager</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git" && ./cclm-package-manager/dist/linux/install && rm -rf ./cclm-package-manager</code></pre>
     
 </div>
 
-<h2 id="environmental variables">Environmental variables</h2>
+<h2 id="quick-start">Quick Start</h2>
 <div class="note">
+    <div class="important">
+        The init command may fail if the folder is not empty.<br>
+        Before using it, please make sure that the folder you want to initialize is really empty (there could be a collision of names).
+    </div>
+    <br>
+    <h3>Using and Installing a Library</h3>
+    <ol>
+        <li>Install the necessary library:
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install "rudolfmuller" "ctml-lib"</code></pre>
+        </li>
+        <li>Initialize your project:
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm init</code></pre>
+            and edit the configuration file as needed.
+        </li>
+        <li>Run your project:
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm run</code></pre>
+        </li>
+    </ol>
+
+    <h3>Creating a Library</h3>
+    <ol>
+        <li>Initialize the library:
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm init --lib</code></pre>
+            and edit the configuration file as needed.
+        </li>
+        <li>Upload it to GitHub, ideally with the suffix <code>-lib</code> to indicate that it is a library.</li>
+    </ol>
+</div>
+
+<h2 id="environmental-variables">Environmental variables</h2>
+<div class="note">
+<div class="important">
+    All default paths are based on <code>$PATH</code><br>
+    so if you store programs in <code>$PATH</code>, you will need to use export.
+</div>
+<br>
+<br>
     <table>
         <tr>
             <th>Environment variable</th>
@@ -70,13 +116,13 @@
             <th>Description</th>
         </tr>
         <tr>
-            <td><code>CCLM_LIBRARY_METADATA_FILE_NAME</code></td>
-            <td><code>cclm.yml</code></td>
+            <td><code>CCLM_LIBRARY_FILE_NAME</code></td>
+            <td><code>.library</code></td>
             <td>Name of the package metadata file</td>
         </tr>
         <tr>
-            <td><code>CCLM_BUILD_FILE_NAME</code></td>
-            <td><code>cclm.yml</code></td>
+            <td><code>CCLM_PROJECT_FILE_NAME</code></td>
+            <td><code>.project</code></td>
             <td>Name of the build configuration file</td>
         </tr>
         <tr>
@@ -101,16 +147,16 @@
         </tr>
     </table>
     <strong>Example:</strong>
-    <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>export CCLM_GIT_PATH=/usr/bin/git</code></pre>
+    <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ export CCLM_GIT_PATH=/usr/bin/git</code></pre>
 </div>
 
 <h2 id="concepts">Concepts</h2>
 <div class="note">
 <table>
     <tr><th>Concept</th><th>Explanation</th></tr>
-    <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format "# @..." This must be strictly adhered to and is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write "# @project," and if you want to use the library, write "# @library."  </td></tr>
-    <tr><td>file .library</td><td>It is a file that provides instructions and information about the library.</td></tr>
-    <tr><td>file .project</td><td>This is a file that contains instructions for the program on how to run and compile the project.</td></tr> 
+    <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format <code># @[project/library]</code> This must be strictly adhered to and is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write <code># @project</code>, and if you want to use the library, write <code># @library</code>.  </td></tr>
+    <tr><td><code>.library</code></td><td>It is a file that provides instructions and information about the library.</td></tr>
+    <tr><td><code>.project</code></td><td>This is a file that contains instructions for the program on how to run and compile the project.</td></tr> 
 </table>
 </div>
 
@@ -121,61 +167,63 @@
         <tr><td><code>--version</code> / <code>-v</code></td><td>Show current CCLM version</td></tr>
         <tr><td><code>--help</code> / <code>-h</code></td><td>Show help message</td></tr>
         <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
-        <tr><td><code>--url</code> / <code>-u</code></td><td>Otakes the raw url address instead of the author and package name</td></tr>
+        <tr><td><code>--url</code> / <code>-u</code></td><td>Takes the raw url address instead of the author and package name</td></tr>
         <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
     </table>
 
 <strong>install</strong> – Downloads a repository from GitHub, stores it in the <code>.cclm</code> folder, and compiles it. Supports <code>-f</code>.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm install &lt;user&gt; &lt;repo&gt; [-f]</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install &lt;user&gt; &lt;repo&gt; [-f]</code></pre>
 
 <strong>remove</strong> – Removes a library and its metadata. Supports <code>-f</code>.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm remove &lt;library_name&gt; [-f]</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm remove &lt;library_name&gt; [-f]</code></pre>
 
 <strong>run</strong> – Compile and run your project.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm run</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm run</code></pre>
 
 
 <strong>purge</strong> – Deletes binaries and residual files of a library. Supports <code>-f</code>.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm purge [-f]</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm purge [-f]</code></pre>
 
 <strong>template</strong> – Copies a file from the <code>templates</code> folder to create a project template.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm template &lt;template_name&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm template &lt;template_name&gt;</code></pre>
 
 <strong>search</strong> – Checks if a repository exists on GitHub.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm search &lt;user&gt; &lt;repo&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm search &lt;user&gt; &lt;repo&gt;</code></pre>
 
 <strong>exist</strong> – Checks if a library is installed.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm exist &lt;library_name&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm exist &lt;library_name&gt;</code></pre>
 
 <strong>ls</strong> – Lists all libraries in the <code>.cclm</code> folder.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm ls</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm ls</code></pre>
 
 <strong>git</strong> – Calls the <code>git</code> command and passes arguments (for debugging purposes).
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm git &lt;git_args&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm git &lt;git_args&gt;</code></pre>
 
 <strong>info</strong> – Displays library metadata.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm info &lt;library_name&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm info &lt;library_name&gt;</code></pre>
 
 <strong>report</strong> – Opens the library's GitHub repository to report issues in the browser.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm report &lt;library_name&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm report &lt;library_name&gt;</code></pre>
 
 <strong>website</strong> – Opens the library's website in the browser.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>cclm website &lt;library_name&gt;</code></pre>
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm website &lt;library_name&gt;</code></pre>
 
 </div>      
 
 <h2>License</h2> <div class="note"> <pre id="license">...</pre> </div> 
 
+</main>
+<footer>
+    <a href="https://github.com/rudolfmuller/cclm-library-manager" target="_blank">
+        <button style="border: none; background: none; cursor: pointer;">
+            <img src="assets/github.svg" alt="GitHub" width="40" height="40">
+        </button>
+    </a>
+    <br><br>
+    <strong >Rudolf Müller - 2025</strong>
+</footer>
 
-<footer style="font-family: monospace;"> 
-    <strong>If you have any problems please <a href="https://github.com/rudolfmuller/cclm-library-manager/issues/new">write to us.</a></strong> 
-    <br> 
-    <strong>GitHub <a href="https://github.com/rudolfmuller/cclm-library-manager">https://github.com/rudolfmuller/cclm-library-manager</a>
-    </strong> 
-    <br>
-    <br> 
-    <strong>Rudolf Müller - 2025</strong> 
-</footer> 
+
 
 <script src="script.js"></script>
 

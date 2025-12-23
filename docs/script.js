@@ -2,13 +2,12 @@ const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/cclm-library-
 document.querySelectorAll('.copy-btn').forEach(button => {
     button.addEventListener('click', async () => {
         const code = button.parentElement.querySelector('code');
-        const text = code.innerText.trim();
+        const text = code.innerText.trim().replace(/^\$ /, '');
 
         try {
             if (navigator.clipboard) {
                 await navigator.clipboard.writeText(text);
             } else {
-                // Fallback for older browsers
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 document.body.appendChild(textarea);
