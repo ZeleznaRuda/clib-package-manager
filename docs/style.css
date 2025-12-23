@@ -47,7 +47,7 @@
         color: #2d3436;
         margin-top: 40px;
         padding: 16px 24px;
-        border-top: 10px solid 2980b9;
+        border-top: 10px solid #0073bf;
     }
     .header-nav {
         margin-top: 10px;
@@ -107,29 +107,53 @@
         border: none;
         outline: none;
     }
-.important {
-    position: relative;
-    display: inline-block;
-    border: 2px solid #2e7d32;
-    background-color: #e8f5e9;
-    color: #1b5e20;
-    padding: 20px;
-    padding-top: 44px;
-}
+    .important {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #2e7d32;
+        background-color: #e8f5e9;
+        color: #1b5e20;
+        padding: 20px;
+        padding-top: 44px;
+    }
 
-.important::before {
-    content: "Important";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #2e7d32;
-    color: white;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: none;
-}
+    .important::before {
+        content: "! Important";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #2e7d32;
+        color: white;
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: none;
+    }
+
+    .errorbox {
+        position: relative;
+        display: inline-block;
+        border: 2px solid #7d2e2e;
+        background-color: #e8f5e9;
+        color: #5e1b1b;
+        padding: 20px;
+        padding-top: 44px;
+    }
+
+    .errorbox::before {
+        content: "X Incorrect use ";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #7d2e2e;
+        color: white;
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: none;
+    }
 
 
     pre {

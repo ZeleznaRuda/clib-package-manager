@@ -1,4 +1,3 @@
-const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/cclm-library-manager/refs/heads/main/LICENSE"; fetch(licenseUrl) .then(response => { if (!response.ok) throw new Error("Failed to load license"); return response.text(); }) .then(text => { document.getElementById('license').textContent = text; }) .catch(err => { document.getElementById('license').textContent = err; });
 document.querySelectorAll('.copy-btn').forEach(button => {
     button.addEventListener('click', async () => {
         const code = button.parentElement.querySelector('code');

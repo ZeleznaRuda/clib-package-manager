@@ -81,8 +81,7 @@ int main(int argc, char* argv[]){
 
     define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
     define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
-    define_argument({"-a", "--all"}, [&_all](){ _all = true;}, "connects all libraries you have installed");
-    define_argument({"-L", "--lib"}, [&_lib](){ _lib = true; }, "switch init mode to library");
+    define_argument({"-L", "--lib"}, [&_lib](){ _lib = true; }, "switch for init mode to library");
     define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
     argvparser::parser();
     

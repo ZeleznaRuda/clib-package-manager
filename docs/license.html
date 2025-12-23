@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<head>
+    <title>License</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+</head>
+<body>
+    <h2>License:</h2> <pre id="license">idk bro.</pre>
+    <script>
+        const licenseUrl = "https://raw.githubusercontent.com/rudolfmuller/cclm-library-manager/refs/heads/main/LICENSE"; 
+        fetch(licenseUrl) .then(response => { if (!response.ok) throw new Error("Failed to load license"); 
+        return response.text(); }) .then(text => { document.getElementById('license').textContent = text; }) .catch(err => { document.getElementById('license').textContent = err; });
+    </script>
+</body>

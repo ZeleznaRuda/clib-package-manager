@@ -24,12 +24,13 @@
 
     <nav class="header-nav">
         <a href="#documentation">Documentation</a>
+        <a href="#why-cclm">Why CCLM</a>
         <a href="#installation">Installation</a>
         <a href="#quick-start">Quick Start</a>
         <a href="#environmental-variables">Environmental variables</a>
-        <a herf="#concepts">Concepts</a>
+        <a href="#concepts">Concepts</a>
         <a href="#commands">Commands</a>
-        <a href="#license">License</a>
+        <a href="license.html" target="_blank">License</a>
     </nav>
 </header>
 <main>
@@ -47,12 +48,41 @@
 </table>
 </div>
 
+<h2 id="why-cclm">Why CCLM</h2>
+<div class="note">
+    <h3>+ Advantages</h3>
+    <ul>
+        <li>Works for both C and C++ projects</li>
+        <li>Highly flexible configuration system</li>
+        <li>Simple and predictable command-line usage</li>
+        <li>Relies only on proven POSIX tools</li>
+        <li>Safety</li>
+        <li>Supports library versioning</li>
+        <li>Can build both static and shared libraries</li>
+        <li>No external dependencies</li>
+        <li>Install-and-start philosophy</li>
+        <li>Open-source under the MIT license</li>
+        <li>Clean and readable documentation</li>
+        <li>CCLM is built entirely from scratch without external libraries (except for the use of shell commands). </li>
+    </ul><!--of course, it's just a fliping commercial message, sorry xd-->
+
+    <h3>- Disadvantages</h3>
+    <ul>
+        <li>POSIX-only (Linux focused)</li>
+        <li>Still young project with possible bugs</li>
+        <li>Small community</li>
+        <li>No official centralized package database</li>
+        <li>Requires an internet connection for installs</li>
+    </ul>
+</div>
+
+
 <h2 id="installation">Installation</h2>
 <div class="note">
     <div class="important">
         The installer installs to a folder (so that it can be accessed as a command), so before installing, please make sure you have the <code>$HOME/.local</code> folder.<br>
         We want to make sure we don't break your system<br>
-        „and I think it's unnecessary to install it to the system when we can install it to <code>$HOME/.local</code> and it has the same effect in the end“ - Rudolf Müller 2025
+        „I think it's unnecessary to install it to the system when we can install it to <code>$HOME/.local</code> and it has the same effect in the end“ - Rudolf Müller 2025
     </div>
     <br>
     <br>
@@ -72,11 +102,6 @@
 
 <h2 id="quick-start">Quick Start</h2>
 <div class="note">
-    <div class="important">
-        The init command may fail if the folder is not empty.<br>
-        Before using it, please make sure that the folder you want to initialize is really empty (there could be a collision of names).
-    </div>
-    <br>
     <h3>Using and Installing a Library</h3>
     <ol>
         <li>Install the necessary library:
@@ -105,7 +130,7 @@
 <div class="note">
 <div class="important">
     All default paths are based on <code>$PATH</code><br>
-    so if you store programs in <code>$PATH</code>, you will need to use export.
+    so if you store programs in <code>$PATH</code>, you will don't need to use export.
 </div>
 <br>
 <br>
@@ -116,32 +141,32 @@
             <th>Description</th>
         </tr>
         <tr>
-            <td><code>CCLM_LIBRARY_FILE_NAME</code></td>
+            <td><code>$CCLM_LIBRARY_FILE_NAME</code></td>
             <td><code>.library</code></td>
             <td>Name of the package metadata file</td>
         </tr>
         <tr>
-            <td><code>CCLM_PROJECT_FILE_NAME</code></td>
+            <td><code>$CCLM_PROJECT_FILE_NAME</code></td>
             <td><code>.project</code></td>
             <td>Name of the build configuration file</td>
         </tr>
         <tr>
-            <td><code>CCLM_GIT_PATH</code></td>
+            <td><code>$CCLM_GIT_PATH</code></td>
             <td><code>git</code></td>
             <td>Path to the git executable</td>
         </tr>
         <tr>
-            <td><code>CCLM_GCC_PATH</code></td>
+            <td><code>$CCLM_GCC_PATH</code></td>
             <td><code>gcc</code></td>
             <td>Path to the GCC C compiler</td>
         </tr>
         <tr>
-            <td><code>CCLM_GXX_PATH</code></td>
+            <td><code>$CCLM_GXX_PATH</code></td>
             <td><code>g++</code></td>
             <td>Path to the GCC C++ compiler</td>
         </tr>
         <tr>
-            <td><code>CCLM_AR_PATH</code></td>
+            <td><code>$CCLM_AR_PATH</code></td>
             <td><code>ar</code></td>
             <td>Path to the static library archiver</td>
         </tr>
@@ -154,13 +179,14 @@
 <div class="note">
 <table>
     <tr><th>Concept</th><th>Explanation</th></tr>
-    <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format <code># @[project/library]</code> This must be strictly adhered to and is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write <code># @project</code>, and if you want to use the library, write <code># @library</code>.  </td></tr>
-    <tr><td><code>.library</code></td><td>It is a file that provides instructions and information about the library.</td></tr>
-    <tr><td><code>.project</code></td><td>This is a file that contains instructions for the program on how to run and compile the project.</td></tr> 
+    <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format <code># @[project/library]</code> This must be strictly adhered to, is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write <code># @project</code>, and if you want to do the library, write <code># @library</code>.  </td></tr>
+    <tr><td>file: <code>.library</code></td><td>It is a file that provides instructions and information about the library.</td></tr>
+    <tr><td>file: <code>.project</code></td><td>This is a file that contains instructions for the program on how to run and compile the project.</td></tr> 
 </table>
 </div>
 
 <h2 id="commands">Commands</h2>
+
 <div class="note">
     <table>
         <tr><th>Flag</th><th>Description</th></tr>
@@ -168,11 +194,50 @@
         <tr><td><code>--help</code> / <code>-h</code></td><td>Show help message</td></tr>
         <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
         <tr><td><code>--url</code> / <code>-u</code></td><td>Takes the raw url address instead of the author and package name</td></tr>
-        <tr><td><code>--all</code> / <code>-a</code></td><td>Connect all installed libraries</td></tr>
+        <tr><td><code>--lib</code> / <code>-L</code></td><td>Switch for init mode to library</td></tr>
     </table>
+<div class="important">
+    Always place switches at the end of the command. 
+</div><br>
 
-<strong>install</strong> – Downloads a repository from GitHub, stores it in the <code>.cclm</code> folder, and compiles it. Supports <code>-f</code>.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install &lt;user&gt; &lt;repo&gt; [-f]</code></pre>
+<div class="errorbox">
+    <pre><code>$ cclm install -u "https://github.com/rudolfmuller/ctml-lib.git"</code></pre>
+    output:
+    <pre><code>fatal: library is not accessible</code></pre>
+    log:
+    <pre><code>error: unknown switch `u'
+usage: git ls-remote [--branches] [--tags] [--refs] [--upload-pack=&lt;exec&gt;]
+                     [-q | --quiet] [--exit-code] [--get-url] [--sort=&lt;key&gt;]
+                     [--symref] [&lt;repository&gt; [&lt;patterns&gt;...]]
+
+    -q, --[no-]quiet      do not print remote URL
+    --[no-]upload-pack &lt;exec&gt;
+                        path of git-upload-pack on the remote host
+    -t, --[no-]tags       limit to tags
+    -b, --[no-]branches   limit to branches
+    --[no-]refs           do not show peeled tags
+    --[no-]get-url        take url.&lt;base&gt;.insteadOf into account
+    --[no-]sort &lt;key&gt;     field name to sort on
+    --[no-]exit-code      exit with exit code 2 if no matching refs are found
+    --[no-]symref         show underlying ref in addition to the object pointed by it
+    -o, --[no-]server-option &lt;server-specific&gt;
+                        option to transmit
+</code></pre>
+</div>
+<br>
+<br>
+
+
+
+<strong>init</strong> – Initalizon the cclm project. Supports <code>-L</code>.
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm init [-L]</code></pre>
+<div class="important">
+        The init command may fail if the folder is not empty.<br>
+        Before using it, please make sure that the folder you want to initialize is really empty (there could be a collision of names).
+</div>
+<br>
+<strong>install</strong> – Downloads a repository from GitHub, stores it in the <code>.cclm</code> folder, and compiles it. Supports <code>-f</code> <code>-u</code>.
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install &lt;user&gt; &lt;repo&gt; [-f] [-u]</code></pre>
 
 <strong>remove</strong> – Removes a library and its metadata. Supports <code>-f</code>.
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm remove &lt;library_name&gt; [-f]</code></pre>
@@ -209,8 +274,6 @@
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm website &lt;library_name&gt;</code></pre>
 
 </div>      
-
-<h2>License</h2> <div class="note"> <pre id="license">...</pre> </div> 
 
 </main>
 <footer>
