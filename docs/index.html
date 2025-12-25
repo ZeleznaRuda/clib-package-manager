@@ -141,14 +141,9 @@
             <th>Description</th>
         </tr>
         <tr>
-            <td><code>$CCLM_LIBRARY_FILE_NAME</code></td>
-            <td><code>.library</code></td>
-            <td>Name of the package metadata file</td>
-        </tr>
-        <tr>
-            <td><code>$CCLM_PROJECT_FILE_NAME</code></td>
-            <td><code>.project</code></td>
-            <td>Name of the build configuration file</td>
+            <td><code>$CCLM_CCLM_FILE_NAME</code></td>
+            <td><code>ccfile.yml</code></td>
+            <td>Name of the library metadata file</td>
         </tr>
         <tr>
             <td><code>$CCLM_GIT_PATH</code></td>
@@ -180,8 +175,7 @@
 <table>
     <tr><th>Concept</th><th>Explanation</th></tr>
     <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format <code># @[project/library]</code> This must be strictly adhered to, is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write <code># @project</code>, and if you want to do the library, write <code># @library</code>.  </td></tr>
-    <tr><td>file: <code>.library</code></td><td>It is a file that provides instructions and information about the library.</td></tr>
-    <tr><td>file: <code>.project</code></td><td>This is a file that contains instructions for the program on how to run and compile the project.</td></tr> 
+    <tr><td>file: <code>ccfile.yml</code></td><td>A file containing instructions and metadata for a program.</td></tr>
 </table>
 </div>
 
@@ -195,6 +189,7 @@
         <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
         <tr><td><code>--url</code> / <code>-u</code></td><td>Takes the raw url address instead of the author and package name</td></tr>
         <tr><td><code>--lib</code> / <code>-L</code></td><td>Switch for init mode to library</td></tr>
+        <tr><td><code>--file</code> / <code>-F</code></td><td>Switch for install to file mode</td></tr>
     </table>
 <div class="important">
     Always place switches at the end of the command. 
@@ -260,6 +255,9 @@ usage: git ls-remote [--branches] [--tags] [--refs] [--upload-pack=&lt;exec&gt;]
 
 <strong>ls</strong> – Lists all libraries in the <code>.cclm</code> folder.
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm ls</code></pre>
+
+<strong>type</strong> – Print what type is the <code>ccfile.yml</code>.
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm type</code></pre>
 
 <strong>git</strong> – Calls the <code>git</code> command and passes arguments (for debugging purposes).
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm git &lt;git_args&gt;</code></pre>
