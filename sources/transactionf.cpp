@@ -58,15 +58,11 @@ build-source-files: [sources/add.cpp])";
     }
 }
 
-void install(const std::string& url, const bool force) {
-    if (sysf({GIT_PATH,"ls-remote",stringf::escape(url)}).first == 0) {
+void install(const std::string& url, const bool force, const bool file) {
+    if (sysf({GIT_PATH,"ls-remote",stringf::escape(url)}).first == 0 || (file && fs::exists(url))) {
         clif::log(INFO, "the library is accessible");
     } else {
         clif::log(FATAL, "library is not accessible");
-    }
-
-    if (!(stringf::starts_with(url, "http") || stringf::starts_with(url, "git@")) || !stringf::ends_with(url, ".git")) {
-        clif::log(FATAL, "invalid git url format");
     }
 
     if (!force) {
@@ -79,8 +75,17 @@ void install(const std::string& url, const bool force) {
     if (!fs::create_directory(tmpPath)) {
         clif::log(FATAL, "install failed");
     }
-    int cloneResult = sysf({GIT_PATH, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string())}).first;
-    yaml_t infoData = yaml::parser(yaml::read(tmpPath / LIBRARY_FILE));
+    int cloneResult = 0;
+    if (!file) cloneResult = sysf({GIT_PATH, "clone", "--depth", "1", stringf::escape(url), stringf::escape(tmpPath.string())}).first;
+    else {
+        std::error_code ec;
+        fs::copy(url, tmpPath, fs::copy_options::recursive, ec);
+        if (ec){
+            cloneResult = 1;
+        }
+    }
+    
+    yaml_t infoData = yaml::parser(yaml::read(tmpPath / CCLM_FILE));
 
     const std::vector<std::string> requiredKeys = {
         "@", "name", "version", "description", "build-compiler",
@@ -195,7 +200,7 @@ void install(const std::string& url, const bool force) {
                 }
 
                 pkgFile << "\n# origin:\n";
-                pkgFile << "git-url: " << url << "\n";
+                pkgFile << "origin: " << url << "\n";
                 pkgFile << "installation-date: " << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << "\n";
 
                 if (infoData.find("dependencies") != infoData.end()) {
@@ -252,12 +257,25 @@ void remove(const std::string& pkgName, bool force) {
     }
 }
 
+void type(){
+    yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / CCLM_FILE));
+
+    if (buildData.find("@") == buildData.end()) {
+        clif::log(FATAL, "metadata missing key: type (@) (try changing the project type)");
+        return;
+    }
+    
+    if (std::get<std::string>(buildData["@"]) == "# @project"){clif::log(INFO, "project");}
+    else if (std::get<std::string>(buildData["@"]) == "# @library"){clif::log(INFO, "library");}
+    else {clif::log(FATAL, "bad value of '@', '@' must be \"library\" or \"project\".");}
+}
+
 void run() {
-    if (!fs::exists(CURRENT_PATH / PROJECT_FILE)) {
+    if (!fs::exists(CURRENT_PATH / CCLM_FILE)) {
         clif::log(FATAL, "build file not found");
     }
 
-    yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / PROJECT_FILE));
+    yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / CCLM_FILE));
     const std::vector<std::string> requiredKeys = {
        "@", "name", "sources-files", "output-directory", "compiler"
     };
@@ -374,7 +392,7 @@ void report(const std::string& pkgName){
         clif::log(FATAL, "library is not installed");
     }
     yaml_t infoData = yaml::parser(yaml::read(HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml")));
-    std::string url = std::get<std::string>(infoData["git-url"]);
+    std::string url = std::get<std::string>(infoData["origin"]);
     if (stringf::ends_with(url, ".git")){
         url.erase(url.size() - 4);
     }

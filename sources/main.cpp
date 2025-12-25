@@ -27,6 +27,7 @@ enum class commands{
         SEARCH,
         EXIST,
         LS,
+        TYPE,
         INFO,
         GIT,
         WEBSITE,
@@ -42,6 +43,7 @@ static const std::unordered_map<std::string, commands> commandMap = {
     {"template", commands::TEMPLATE},
     {"search", commands::SEARCH},
     {"ls", commands::LS},
+    {"type", commands::TYPE},
     {"info", commands::INFO},
     {"git", commands::GIT},
     {"report", commands::REPORT},
@@ -59,9 +61,9 @@ std::string repo(const std::string& user, const std::string& repo){
 int main(int argc, char* argv[]){
     argvparser::init(argc, argv);
     bool _force = false;
-    bool _all = false;
     bool _url = false;
     bool _lib = false;
+    bool _file = false;
     
     add_help("init",                "initalizon the cclm project");
     add_help("install",             "install library\t\t\t(supports the '-f' flag)");
@@ -72,6 +74,7 @@ int main(int argc, char* argv[]){
     add_help("exist",               "checks if the library is installed");
     add_help("ls",                  "print a list of installed libraries");
     add_help("info",                "print package information");
+    add_help("type",                "print what type is the ccfile.yml");
     add_help("git",                 "git command wrapper (for debugging purposes)");
     add_help("report",              "report a library");
     add_help("website",             "open websites of the library");
@@ -82,6 +85,7 @@ int main(int argc, char* argv[]){
     define_argument({"-u", "--url"}, [&_url](){ _url = true;}, "takes the raw url address instead of the author and package name");
     define_argument({"-f", "--force"}, [&_force](){ _force = true;}, "executes the commands without question");
     define_argument({"-L", "--lib"}, [&_lib](){ _lib = true; }, "switch for init mode to library");
+    define_argument({"-F", "--file"}, [&_file](){ _file = true; }, "switch for install to file mode");
     define_argument({"-v", "--version"}, [](){ clif::log(INFO,std::string(VERSION)); }, "shows the current CCLM versions");
     argvparser::parser();
     
@@ -104,11 +108,11 @@ int main(int argc, char* argv[]){
             break;
 
         case commands::INSTALL:
-            if (!_url && argvparser::has_argument(3)){
+            if (!_url && !_file && argvparser::has_argument(3)){
                 install(repo(argvparser::get_argument(2), argvparser::get_argument(3)), _force);
                 break;
             }
-            install(argvparser::get_argument_after({cmd}), _force);
+            install(argvparser::get_argument_after({cmd}), _force, _file);
             break;
 
         case commands::REMOVE:
@@ -137,6 +141,10 @@ int main(int argc, char* argv[]){
 
         case commands::GIT:
             git(argvparser::get_argument_after({cmd}));
+            break;
+
+        case commands::TYPE:
+            type();
             break;
 
         case commands::REPORT:

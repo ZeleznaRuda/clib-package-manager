@@ -20,7 +20,7 @@
 namespace transactionf
 {
     void init(const bool lib=false);
-    void install(const std::string& url, bool force = false);
+    void install(const std::string& url, bool force = false, const bool file = false);
     void remove(const std::string& pkgName, bool force = false);
     void run();
     void use_template(const std::string& name, const std::filesystem::path& targetDirectory);
@@ -28,6 +28,7 @@ namespace transactionf
     void git(const std::string& command);
     void info(const std::string& repoName);
     void ls();
+    void type();
     void report(const std::string& url);
     void website(const std::string& pkgName);
     void exist(const std::string& pkgName);
