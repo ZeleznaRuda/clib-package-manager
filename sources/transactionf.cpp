@@ -258,6 +258,9 @@ void remove(const std::string& pkgName, bool force) {
 }
 
 void type(){
+    if (!fs::exists(CURRENT_PATH / CCLM_FILE)) {
+        clif::log(FATAL, "unknown");
+    }
     yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / CCLM_FILE));
 
     if (buildData.find("@") == buildData.end()) {
