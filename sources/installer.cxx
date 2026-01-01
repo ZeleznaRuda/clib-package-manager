@@ -1,13 +1,14 @@
 #include <cstdlib>
-#include <iostream>
-#include <string>
 #include <filesystem>
 #include <fstream>
-#include <unordered_map>
+#include <iostream>
+#include <string>
 #include <unistd.h>
+#include <unordered_map>
+
 namespace fs = std::filesystem;
 std::unordered_map<std::string, std::string> data = {
-{"CMakeLists.txt", R"(cmake_minimum_required(VERSION 3.10)
+    {"CMakeLists.txt", R"(cmake_minimum_required(VERSION 3.10)
 
 project(MyProject)
 
@@ -27,7 +28,7 @@ target_link_libraries(main PRIVATE mylib)
 target_include_directories(main PRIVATE
 )
 )"},
-{".library", R"(# @library
+    {"ccfile.yml#library", R"(# @library
 name: 
 description: 
 version: 
@@ -44,7 +45,7 @@ build-dependencies: [...]
 build-include-directory: 
 build-source-files: [...]
 )"},
-{".project",R"(# @project
+    {"ccfile.yml#project", R"(# @project
 name: 
 sources-files: [...]
 output-directory: 
@@ -54,49 +55,56 @@ cflags: [...]
 library: [...]
 )"},
 };
-int main(){
-    if (geteuid() == 0) {
-        std::cerr << "\033[31;1;3minstall error\033[0m: don't run the installer as administrator (root)." << std::endl;
-        return 1;
+int main() {
+  if (geteuid() == 0) {
+    std::cerr << "\033[31;1;3minstall error\033[0m: don't run the installer as "
+                 "administrator (root)."
+              << std::endl;
+    return 1;
+  }
+  try {
+    const char *home = getenv("HOME");
+    fs::path homeDirectory = fs::path(home) / ".cclm";
+
+    fs::path outputDirectory = fs::path(home) / ".local" / "bin";
+    fs::path binPath =
+        fs::canonical("/proc/self/exe").parent_path().parent_path() / "bin" /
+        "cclm";
+    if (!fs::exists(outputDirectory)) {
+      fs::create_directories(outputDirectory);
     }
-    try {
-        const char* home = getenv("HOME");
-        fs::path homeDirectory = fs::path(home) / ".cclm";
+    fs::copy_file(binPath, outputDirectory / "cclm",
+                  fs::copy_options::overwrite_existing);
 
-        fs::path outputDirectory = fs::path(home) / ".local" / "bin";
-        fs::path binPath = fs::canonical("/proc/self/exe").parent_path().parent_path() / "bin" / "cclm";
-        if (!fs::exists(outputDirectory)){
-            fs::create_directories(outputDirectory);
-        }
-        fs::copy_file(binPath, outputDirectory / "cclm", fs::copy_options::overwrite_existing);
+    fs::permissions((outputDirectory / "cclm"),
+                    fs::perms::owner_all | fs::perms::group_read |
+                        fs::perms::group_exec | fs::perms::others_read |
+                        fs::perms::others_exec,
+                    fs::perm_options::add);
 
-        fs::permissions((outputDirectory / "cclm"),
-                        fs::perms::owner_all |
-                        fs::perms::group_read | fs::perms::group_exec |
-                        fs::perms::others_read | fs::perms::others_exec,
-                        fs::perm_options::add);
+    if (fs::create_directories(homeDirectory / "_sys") &&
+        fs::create_directories(homeDirectory / "_sys" / "templates") &&
+        fs::create_directories(homeDirectory / "_sys" / "logs") &&
+        fs::create_directories(homeDirectory / "_sys" / "registry")) {
 
-        if (fs::create_directories(homeDirectory / "_sys") &&
-            fs::create_directories(homeDirectory / "_sys" / "templates") &&
-            fs::create_directories(homeDirectory / "_sys" / "logs") &&
-            fs::create_directories(homeDirectory / "_sys" / "registry")) {
+      std::ofstream READMEFile(homeDirectory / "README.md");
+      READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
+      READMEFile.close();
 
-            std::ofstream READMEFile(homeDirectory / "README.md");
-            READMEFile << "DO NOT MODIFY THIS FOLDER" << std::endl;
-            READMEFile.close();
-
-            for (const auto& [filename, content] : data) {
-                std::ofstream file(homeDirectory / "_sys" / "templates" / filename);
-                if (!file.is_open()) std::cout << "\033[31;1;3mcannot open file\033[0m" << std::endl;
-                file << content;
-                file.close();
-            }
-        }
-
-        std::cout << "\033[32;1minstallation completed (cclm: hello world)\033[0m" << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "\033[31;1;3minstall error\033[0m: " << e.what() << std::endl;
+      for (const auto &[filename, content] : data) {
+        std::ofstream file(homeDirectory / "_sys" / "templates" / filename);
+        if (!file.is_open())
+          std::cout << "\033[31;1;3mcannot open file\033[0m" << std::endl;
+        file << content;
+        file.close();
+      }
     }
 
-    return 0;
+    std::cout << "\033[32;1minstallation completed (cclm: hello world)\033[0m"
+              << std::endl;
+  } catch (const std::exception &e) {
+    std::cerr << "\033[31;1;3minstall error\033[0m: " << e.what() << std::endl;
+  }
+
+  return 0;
 }

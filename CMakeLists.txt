@@ -9,6 +9,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../dist/bin/)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../dist/bin/)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../dist/bin/)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
 )
@@ -21,9 +23,17 @@ set(SOURCES
     sources/clif.cpp
     sources/transactionf.cpp
     sources/appf.cpp
-
 )
+
+if(EXISTS "${CMAKE_BINARY_DIR}/compile_commands.json")
+    file(COPY "${CMAKE_BINARY_DIR}/compile_commands.json"
+         DESTINATION "${CMAKE_SOURCE_DIR}")
+endif()
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+)

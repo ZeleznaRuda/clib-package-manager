@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/main.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/main.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/main.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/main.cpp.o"
+},
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/toolsf.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/toolsf.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/toolsf.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/toolsf.cpp.o"
+},
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/argvf.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/argvf.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/argvf.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/argvf.cpp.o"
+},
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/yamlf.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/yamlf.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/yamlf.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/yamlf.cpp.o"
+},
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/clif.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/clif.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/clif.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/clif.cpp.o"
+},
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/transactionf.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/transactionf.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/transactionf.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/transactionf.cpp.o"
+},
+{
+  "directory": "/home/muller/Documents/Programming/C++/cclm/build",
+  "command": "/usr/sbin/c++  -I/home/muller/Documents/Programming/C++/cclm/include -std=c++20 -Wall -Wextra -Wpedantic -o CMakeFiles/cclm.dir/sources/appf.cpp.o -c /home/muller/Documents/Programming/C++/cclm/sources/appf.cpp",
+  "file": "/home/muller/Documents/Programming/C++/cclm/sources/appf.cpp",
+  "output": "CMakeFiles/cclm.dir/sources/appf.cpp.o"
+}
+]
