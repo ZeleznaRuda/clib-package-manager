@@ -1,3 +1,7 @@
-mkdir -p build && cd build && cmake .. && cmake --build .
-cd .. && g++ sources/installer.cxx -o ./dist/linux/install
+mkdir -p build
+cd build
+cmake -DCCLM_BUILD_INSTALLER=ON ..
+cmake --build .
+cd ..
 
+g++ src/installer.cxx -o ./dist/linux/install
