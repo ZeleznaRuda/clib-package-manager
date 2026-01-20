@@ -79,24 +79,27 @@
 
 <h2 id="installation">Installation</h2>
 <div class="note">
-    <div class="important">
+    <!--<div class="important">
         The installer installs to a folder (so that it can be accessed as a command), so before installing, please make sure you have the <code>$HOME/.local</code> folder.<br>
         We want to make sure we don't break your system<br>
         „I think it's unnecessary to install it to the system when we can install it to <code>$HOME/.local</code> and it has the same effect in the end“ - Rudolf Müller 2025
-    </div>
+    </div>-->
     <br>
     <br>
     Clone the repository:
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git"</code></pre>
     
-    Navigate to the installer:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cd cclm-package-manager/compiled/dist/linux/</code></pre>
+    Go in to the repo and make tar file (xyz is version, ok? ok ,ok):
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cd cclm-package-manager; tar -czf cclm-x.y.z.tar.gz . </code></pre>
     
-    Run the installer (may need permission):
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ chmod +x install.sh && ./install.sh</code></pre>
-    
+    Make package, and install:
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ makepkg -si</code></pre>
+
+    Tests cclm if works:
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm -v</code></pre>
+
     All-in-one line:
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git" && ./cclm-package-manager/dist/linux/install && rm -rf ./cclm-package-manager</code></pre>
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git" && cd cclm-package-manager && tar -czf cclm-x.y.z.tar.gz . && makepkg -si && cclm -v && cd .. && rm -rf cclm-package-manager</code></pre>
     
 </div>
 
