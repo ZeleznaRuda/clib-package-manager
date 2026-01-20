@@ -8,7 +8,7 @@ url="https://rudolfmuller.github.io/cclm-library-manager/"
 license=('MIT')
 depends=()
 makedepends=('cmake' 'gcc' 'make')
-source=("cclm-4.4.2.tar.gz")
+source=("cclm-$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
