@@ -189,7 +189,7 @@
         <tr><td><code>--force</code> / <code>-f</code></td><td>Execute command without confirmation</td></tr>
         <tr><td><code>--url</code> / <code>-u</code></td><td>Takes the raw url address instead of the author and package name</td></tr>
         <tr><td><code>--lib</code> / <code>-L</code></td><td>Switch for init mode to library</td></tr>
-        <tr><td><code>--file</code> / <code>-F</code></td><td>Switch for install to file mode</td></tr>
+        <tr><td><code>--local</code> / <code>-l</code></td><td>Switch for install to local mode</td></tr>
     </table>
 <div class="important">
     Always place switches at the end of the command. 
@@ -231,8 +231,8 @@ usage: git ls-remote [--branches] [--tags] [--refs] [--upload-pack=&lt;exec&gt;]
         Before using it, please make sure that the folder you want to initialize is really empty (there could be a collision of names).
 </div>
 <br>
-<strong>install</strong> – Downloads a repository from GitHub, stores it in the <code>.cclm</code> folder, and compiles it. Supports <code>-f</code> <code>-u</code>.
-<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install &lt;user&gt; &lt;repo&gt; [-f] [-u]</code></pre>
+<strong>install</strong> – Downloads a repository from GitHub, stores it in the <code>.cclm</code> folder, and compiles it. Supports <code>-f</code> <code>-u</code> <code>-l</code>.
+<pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install &lt;user&gt; &lt;repo&gt; [-f] [-u] [-l]</code></pre>
 
 <strong>remove</strong> – Removes a library and its metadata. Supports <code>-f</code>.
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm remove &lt;library_name&gt; [-f]</code></pre>

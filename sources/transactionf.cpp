@@ -57,9 +57,9 @@ build-source-files: [sources/add.cpp])";
   }
 }
 
-void install(const std::string &url, const bool force, const bool file) {
+void install(const std::string &url, const bool force, const bool local) {
   if (sysf({GIT_PATH, "ls-remote", stringf::escape(url)}).first == 0 ||
-      (file && fs::exists(url))) {
+      (local && fs::exists(url))) {
     clif::log(INFO, "the library is accessible");
   } else {
     clif::log(FATAL, "library is not accessible");
@@ -78,7 +78,7 @@ void install(const std::string &url, const bool force, const bool file) {
     clif::log(FATAL, "install failed");
   }
   int cloneResult = 0;
-  if (!file)
+  if (!local)
     cloneResult = sysf({GIT_PATH, "clone", "--depth", "1", stringf::escape(url),
                         stringf::escape(tmpPath.string())})
                       .first;
@@ -248,7 +248,7 @@ void install(const std::string &url, const bool force, const bool file) {
         pkgFile << "installation-date: "
                 << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << "\n";
 
-        if (infoData.find("dependencies") != infoData.end()) {
+        /*if (infoData.find("dependencies") != infoData.end()) {
           pkgFile << "\n# dependencies:\n";
           pkgFile << "dependencies: ["
                   << stringf::join(std::get<std::vector<std::string>>(
@@ -259,7 +259,7 @@ void install(const std::string &url, const bool force, const bool file) {
                std::get<std::vector<std::string>>(infoData["dependencies"])) {
             exist(dep);
           }
-        }
+        }*/
 
         pkgFile.close();
         clif::log(INFO, "record successfully created");

@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
   bool _force = false;
   bool _url = false;
   bool _lib = false;
-  bool _file = false;
+  bool _local = false;
 
   add_help("init", "initalizon the cclm project");
   add_help("install", "install library\t\t\t(supports the '-f' flag)");
@@ -92,8 +92,8 @@ int main(int argc, char *argv[]) {
       {"-L", "--lib"}, [&_lib]() { _lib = true; },
       "switch for init mode to library");
   define_argument(
-      {"-F", "--file"}, [&_file]() { _file = true; },
-      "switch for install to file mode");
+      {"-l", "--local"}, [&_local]() { _local = true; },
+      "switch for install to local mode");
   define_argument(
       {"-v", "--version"}, []() { clif::log(INFO, std::string(VERSION)); },
       "shows the current CCLM versions");
@@ -117,12 +117,12 @@ int main(int argc, char *argv[]) {
     break;
 
   case commands::INSTALL:
-    if (!_url && !_file && argvparser::has_argument(3)) {
+    if (!_url && !_local && argvparser::has_argument(3)) {
       install(repo(argvparser::get_argument(2), argvparser::get_argument(3)),
               _force);
       break;
     }
-    install(argvparser::get_argument_after({cmd}), _force, _file);
+    install(argvparser::get_argument_after({cmd}), _force, _local);
     break;
 
   case commands::REMOVE:

@@ -20,7 +20,7 @@
 namespace transactionf {
 void init(const bool lib = false);
 void install(const std::string &url, bool force = false,
-             const bool file = false);
+             const bool local = false);
 void remove(const std::string &pkgName, bool force = false);
 void run();
 void use_template(const std::string &name);
