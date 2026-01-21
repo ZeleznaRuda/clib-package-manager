@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(CCLM_DEV_MODE "Enable development helpers" OFF)
+option(DEV_MODE "enabled developer mode" OFF)
 
 add_executable(cclm
     src/main.cpp
@@ -29,7 +29,7 @@ target_compile_options(cclm PRIVATE
     -Wpedantic
 )
 
-if(CCLM_DEV_MODE)
+if(DEV_MODE)
     add_custom_target(compile_commands_link ALL
         COMMAND ${CMAKE_COMMAND} -E create_symlink
                 ${CMAKE_BINARY_DIR}/compile_commands.json
