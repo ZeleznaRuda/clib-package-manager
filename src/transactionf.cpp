@@ -129,12 +129,12 @@ void install(const std::string &url, const bool force, const bool local) {
       fs::create_directory(pkgPath / "build");
       fs::create_directory(pkgPath / "include");
 
-      if (infoData.find("build-dependencies") != infoData.end()) {
+      /*if (infoData.find("build-dependencies") != infoData.end()) {
         for (const auto &dep : std::get<std::vector<std::string>>(
                  infoData["build-dependencies"])) {
           exist(dep);
         }
-      }
+      }*/
 
       std::string compilerPath =
           (std::get<std::string>(infoData["build-compiler"]) == "gcc")
@@ -248,7 +248,7 @@ void install(const std::string &url, const bool force, const bool local) {
         pkgFile << "installation-date: "
                 << std::put_time(now, "%d.%m.%Y-%H:%M:%S") << "\n";
 
-        /*if (infoData.find("dependencies") != infoData.end()) {
+        if (infoData.find("dependencies") != infoData.end()) {
           pkgFile << "\n# dependencies:\n";
           pkgFile << "dependencies: ["
                   << stringf::join(std::get<std::vector<std::string>>(
@@ -259,7 +259,7 @@ void install(const std::string &url, const bool force, const bool local) {
                std::get<std::vector<std::string>>(infoData["dependencies"])) {
             exist(dep);
           }
-        }*/
+        }
 
         pkgFile.close();
         clif::log(INFO, "record successfully created");
