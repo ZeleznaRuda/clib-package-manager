@@ -125,9 +125,10 @@ void install(const std::string &url, const bool force, const bool local) {
       if (fs::exists(pkgPath)) {
         fs::remove_all(pkgPath);
       }
+      std::string name = std::get<std::string>(infoData["name"]);
       fs::create_directory(pkgPath);
       fs::create_directory(pkgPath / "build");
-      fs::create_directory(pkgPath / "include");
+      fs::create_directories(pkgPath / name / "include");
 
       /*if (infoData.find("build-dependencies") != infoData.end()) {
         for (const auto &dep : std::get<std::vector<std::string>>(
@@ -142,7 +143,6 @@ void install(const std::string &url, const bool force, const bool local) {
           : (std::get<std::string>(infoData["build-compiler"]) == "g++")
               ? GXX_PATH
               : "";
-      std::string name = std::get<std::string>(infoData["name"]);
       std::string mode = std::get<std::string>(infoData["build-mode"]);
       std::string includeDirectory =
           (tmpPath / std::get<std::string>(infoData["build-include-directory"]))
@@ -197,7 +197,7 @@ void install(const std::string &url, const bool force, const bool local) {
         }
         sysf(args);
       }
-      fs::copy(tmpPath / includeDirectory, pkgPath / "include");
+      fs::copy(tmpPath / includeDirectory, pkgPath / name / "include");
       fs::remove_all(tmpPath);
 
       std::ofstream pkgFile(HOME_DIRECTORY / "_sys" / "registry" /
