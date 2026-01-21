@@ -77,16 +77,19 @@
 </div>
 
 
-<h2 id="installation">Installation for pacman (archlinux)</h2>
+<h2 id="installation">Installation for pacman (archlinux) </h2>
 <div class="note">
     <div class="important">
         „sorry but if you want install on other distros than arch, pls wait“ - Rudolf Müller 2026
     </div><br>
     Clone the repository:
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git"</code></pre>
+
+    Go in to the repo:
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cd cclm-package-manager</code></pre>
     
-    Go in to the repo and make tar file (xyz is version, ok? ok ,ok):
-        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cd cclm-package-manager; tar -czf cclm-x.y.z.tar.gz . </code></pre>
+    Make tar file (xyz is version, ok? ok ,ok):
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ tar -czf cclm-x.y.z.tar.gz . </code></pre>
     
     Make package, and install:
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ makepkg -si</code></pre>
@@ -94,7 +97,10 @@
     Tests cclm if works:
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm -v</code></pre>
 
-    All-in-one line:
+    Remove build directory:
+        <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ rm -rf cclm-package-manager</code></pre>
+
+    All-in-one line (I dont recommend):
         <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ git clone "https://github.com/rudolfmuller/cclm-package-manager.git" && cd cclm-package-manager && tar -czf cclm-x.y.z.tar.gz . && makepkg -si && cclm -v && cd .. && rm -rf cclm-package-manager</code></pre>
     
 </div>
