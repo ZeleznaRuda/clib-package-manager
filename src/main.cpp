@@ -60,9 +60,11 @@ std::string repo(const std::string &user, const std::string &repo) {
   return ("https://github.com/" + user + "/" + repo + ".git");
 }
 int main(int argc, char *argv[]) {
-  fs::create_directories(HOME_DIRECTORY / "_sys" / "logs");
-  fs::create_directories(HOME_DIRECTORY / "_sys" / "templates");
-  fs::create_directories(HOME_DIRECTORY / "_sys" / "registry");
+  if (!fs::exists(HOME_DIRECTORY)) {
+    fs::create_directories(HOME_DIRECTORY / "_sys" / "logs");
+    fs::create_directories(HOME_DIRECTORY / "_sys" / "templates");
+    fs::create_directories(HOME_DIRECTORY / "_sys" / "registry");
+  }
 
   argvparser::init(argc, argv);
   bool _force = false;

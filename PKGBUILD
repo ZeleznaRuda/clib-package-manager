@@ -1,6 +1,6 @@
 # Maintainer: Rudolf Muller
 pkgname=cclm
-pkgver=5.0.0
+pkgver=5.0.1
 pkgrel=1
 pkgdesc="CCLM C/C++ Library manager - POSIX Only"
 arch=('x86_64')

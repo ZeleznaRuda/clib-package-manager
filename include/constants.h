@@ -5,7 +5,7 @@
 
 namespace fs = std::filesystem;
 
-inline constexpr std::string_view VERSION = "5.0.0";
+inline constexpr std::string_view VERSION = "5.0.1";
 inline const fs::path HOME = fs::path(getenv("HOME"));
 inline const fs::path HOME_DIRECTORY = HOME / ".cclm";
 inline const fs::path CURRENT_PATH = fs::current_path();
