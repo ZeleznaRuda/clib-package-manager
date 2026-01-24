@@ -5,14 +5,14 @@
 
 namespace fs = std::filesystem;
 
-inline constexpr std::string_view VERSION = "5.1.0";
+inline constexpr std::string_view VERSION = "6.1.0";
 inline const fs::path HOME = fs::path(getenv("HOME"));
 inline const fs::path HOME_DIRECTORY = HOME / ".cclm";
 inline const fs::path CURRENT_PATH = fs::current_path();
 
 inline const std::string CCLM_FILE = std::string(
     std::getenv("CCLM_CCLM_FILE_NAME") ? std::getenv("CCLM_CCLM_FILE_NAME")
-                                       : "ccfile.yml");
+                                       : "ccfile");
 
 inline const fs::path GIT_PATH = fs::path(
     std::getenv("CCLM_GIT_PATH") ? std::getenv("CCLM_GIT_PATH") : "git");
