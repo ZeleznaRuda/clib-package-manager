@@ -123,7 +123,7 @@ void install(const std::string &url, const bool force, const bool local) {
 
     fs::create_directory(pkgPath);
     fs::create_directory(pkgPath / "build");
-    fs::create_directories(pkgPath / name / "include");
+    fs::create_directories(pkgPath / "include" / name);
 
     std::string compilerPath =
         (std::get<std::string>(infoData["build.compiler"]) == "gcc") ? GCC_PATH
@@ -183,7 +183,7 @@ void install(const std::string &url, const bool force, const bool local) {
       sysf(args);
     }
 
-    fs::copy(tmpPath / includeDirectory, pkgPath / name / "include");
+    fs::copy(tmpPath / includeDirectory, pkgPath / "include" / name);
     fs::remove_all(tmpPath);
 
     fs::path registryFile = HOME_DIRECTORY / "_sys" / "registry" /
@@ -384,7 +384,6 @@ void run() {
             stringf::split(libDirectory.filename().string(), '@')[0];
 
         argv.push_back("-I" + (libDirectory / "include").string());
-
         argv.push_back("-L" + libDirectory.string());
         argv.push_back("-l" + library);
         argv.push_back("-Wl,-rpath," + libDirectory.string());

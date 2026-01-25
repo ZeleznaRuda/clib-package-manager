@@ -103,6 +103,9 @@ int main(int argc, char *argv[]) {
   define_argument(
       {"-v", "--version"}, []() { clif::log(INFO, std::string(VERSION)); },
       "shows the current CCLM versions");
+  define_argument(
+      {"-d", "--debug"}, []() { DEBUG_MODE = true; }, "switch to debug mode");
+
   argvparser::parser();
 
   std::string cmd;
