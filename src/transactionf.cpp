@@ -326,7 +326,7 @@ void run() {
   yaml_t buildData = yaml::parser(yaml::read(CURRENT_PATH / CCLM_FILE));
   const std::vector<std::string> requiredKeys = {
       "project.name", "build.source-files", "build.output-directory",
-      "build.compiler"};
+      "build.compiler", "project.version"};
   for (const auto &key : requiredKeys) {
     if (buildData.find(key) == buildData.end()) {
       clif::log(FATAL, "metadata missing key: " + key);
@@ -339,7 +339,7 @@ void run() {
         "this project cannot be compiled (try changing the project type).");
   }*/
   try {
-    std::string name = std::get<std::string>(buildData["name"]);
+    std::string name = std::get<std::string>(buildData["project.name"]);
 
     std::vector<std::string> librarys;
     if (std::holds_alternative<std::vector<std::string>>(
@@ -368,7 +368,9 @@ void run() {
 
     fs::path output =
         CURRENT_PATH /
-        std::get<std::string>(buildData["build.output-directory"]) / name;
+        std::get<std::string>(buildData["build.output-directory"]) /
+        std::get<std::string>(buildData["project.version"]) / name;
+    fs::create_directories(output.parent_path());
 
     std::vector<std::string> cflags =
         std::holds_alternative<std::vector<std::string>>(
@@ -402,11 +404,12 @@ void run() {
     if (result.first != 0) {
       clif::log(FATAL, '\n' + result.second, 2);
     }
+    if (fs::exists(output)) {
 
-    clif::log(INFO, "compilation successfully");
-    std::system(std::string(output.string()).c_str());
-    clif::log(INFO, "program run successfully");
-
+      clif::log(INFO, "compilation successfully");
+      std::system(std::string(output.string()).c_str());
+      clif::log(INFO, "program run successfully");
+    }
   } catch (const fs::filesystem_error &e) {
     clif::log(FATAL, std::string("file system error: ") + e.what(), 2);
   }
