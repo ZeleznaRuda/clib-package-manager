@@ -92,14 +92,10 @@ void install(const std::string &url, const bool force, const bool local) {
 
   yaml_t infoData = yaml::parser(yaml::read(tmpPath / CCLM_FILE));
 
-  const std::vector<std::string> requiredKeys = {"@",
-                                                 "library.name",
-                                                 "library.version",
-                                                 "library.description",
-                                                 "build.compiler",
-                                                 "build.mode",
-                                                 "build.include-directory",
-                                                 "build.source-files"};
+  const std::vector<std::string> requiredKeys = {
+      "library.name",      "library.version", "library.description",
+      "build.compiler",    "build.mode",      "build.include-directory",
+      "build.source-files"};
 
   /*if (std::get<std::string>(infoData["@"]) != "# @library") {
     clif::log(
