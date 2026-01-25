@@ -214,7 +214,7 @@ void install(const std::string &url, const bool force, const bool local) {
     } else
       pkgFile << "authors=unknown\n";
 
-    pkgFile << "\n# links=\n";
+    pkgFile << "\n# links:\n";
     if (infoData.find("library.websites") != infoData.end()) {
       pkgFile << "websites=("
               << stringf::join(std::get<std::vector<std::string>>(
@@ -352,7 +352,7 @@ void run() {
 
     std::string compiler =
         (std::get<std::string>(buildData["build.compiler"]) == "gcc") ? GCC_PATH
-        : (std::get<std::string>(buildData["build.project.compiler"]) == "g++")
+        : (std::get<std::string>(buildData["build.compiler"]) == "g++")
             ? GXX_PATH
             : "";
     if (compiler.empty())
