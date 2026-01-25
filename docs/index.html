@@ -28,7 +28,7 @@
         <a href="#installation">Installation</a>
         <a href="#quick-start">Quick Start</a>
         <a href="#environmental-variables">Environmental variables</a>
-        <a href="#concepts">Concepts</a>
+        <!--<a href="#concepts">Concepts</a>-->
         <a href="#commands">Commands</a>
         <a href="license.html" target="_blank">License</a>
     </nav>
@@ -110,7 +110,7 @@
     <h3>Using and Installing a Library</h3>
     <ol>
         <li>Install the necessary library:
-            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install "rudolfmuller" "ctml-lib"</code></pre>
+            <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm install "rudolfmuller" "fmt-lib"</code></pre>
         </li>
         <li>Initialize your project:
             <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm init</code></pre>
@@ -147,7 +147,7 @@
         </tr>
         <tr>
             <td><code>$CCLM_CCLM_FILE_NAME</code></td>
-            <td><code>ccfile.yml</code></td>
+            <td><code>ccfile</code></td>
             <td>Name of the library metadata file</td>
         </tr>
         <tr>
@@ -174,15 +174,15 @@
     <strong>Example:</strong>
     <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ export CCLM_GIT_PATH=/usr/bin/git</code></pre>
 </div>
-
-<h2 id="concepts">Concepts</h2>
+ 
+<!--<h2 id="concepts">Concepts</h2>
 <div class="note">
 <table>
     <tr><th>Concept</th><th>Explanation</th></tr>
     <tr><td>project type</td><td>Means the first line in configuration files (such as .library or .project) that is in the format <code># @[project/library]</code> This must be strictly adhered to, is used to communicate to the program whether it should install the library or operate with the project.<br> If you want to operate with the project, write <code># @project</code>, and if you want to do the library, write <code># @library</code>.  </td></tr>
     <tr><td>file: <code>ccfile.yml</code></td><td>A file containing instructions and metadata for a program.</td></tr>
 </table>
-</div>
+</div>-->
 
 <h2 id="commands">Commands</h2>
 
@@ -260,10 +260,10 @@ usage: git ls-remote [--branches] [--tags] [--refs] [--upload-pack=&lt;exec&gt;]
 
 <strong>ls</strong> – Lists all libraries in the <code>.cclm</code> folder.
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm ls</code></pre>
-
+<!--
 <strong>type</strong> – Print what type is the <code>ccfile.yml</code>.
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm type</code></pre>
-
+-->
 <strong>git</strong> – Calls the <code>git</code> command and passes arguments (for debugging purposes).
 <pre><button class="copy-btn" aria-label="Copy code">Copy</button><code>$ cclm git &lt;git_args&gt;</code></pre>
 
