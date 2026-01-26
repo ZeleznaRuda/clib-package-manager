@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
   add_help("exist", "checks if the library is installed");
   add_help("ls", "print a list of installed libraries");
   add_help("info", "print package information");
-  add_help("type", "print what type is the ccfile.yml");
+  // add_help("type", "print what type is the ccfile.yml");
   add_help("git", "git command wrapper (for debugging purposes)");
   add_help("report", "report a library");
   add_help("website", "open websites of the library");
@@ -162,9 +162,9 @@ int main(int argc, char *argv[]) {
     git(argvparser::get_argument_after({cmd}));
     break;
 
-  case commands::TYPE:
-    type();
-    break;
+    /*case commands::TYPE:
+      type();
+      break;*/
 
   case commands::REPORT:
     report(argvparser::get_argument_after({cmd}));
