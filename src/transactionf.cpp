@@ -15,14 +15,21 @@ int main(){
 })";
     main.close();
     std::ofstream project(CURRENT_PATH / CCLM_FILE);
-    project << R"(# @project
-name: main
-sources-files: ["src/main.cpp"]
-output-directory: dist/
+    project << R"(project(
+	project.name=ctml
+	project.version=2.2.0
+	project.description="html for cpp"
+)
 
-compiler: g++ 
-cflags: [-O2]
-library: [])";
+build(
+	build.compiler=g++
+	build.cflags=("-O2")
+	build.include-directory="include/"
+	build.source-files=("src/main.cpp")
+	build.output-directory="dist/"
+  #build.included-libraries=()
+)
+)";
     project.close();
   } else {
     fs::create_directory(CURRENT_PATH / "sources");
@@ -40,19 +47,22 @@ int add(int a, int b) {
 })";
     add.close();
     std::ofstream library(CURRENT_PATH / CCLM_FILE);
-    library << R"(# @library
-name: math
-description: math for cpp
-version: 1.0.0
+    library << R"(library(
+    library.name=math
+    library.description="math for cpp"
+    library.version=1.0.0
 
-# authors: []
-license: MIT
+    library.authors=()
+    library.license="MIT"
+)
 
-build-mode: shared
-build-compiler: g++ 
-build-cflags: [-O2]
-build-include-directory: include/
-build-source-files: [sources/add.cpp])";
+build(
+    build.mode=shared
+    build.compiler=g++
+    build.cflags=("-O2")
+    #build.dependencies=()
+    build.include-directory="include/"
+    build.source-files=("sources/add.cpp))";
     library.close();
   }
 }
