@@ -302,8 +302,8 @@ void remove(const std::string &pkgName, bool force) {
   }
 
   if (!force) {
-    if (!clif::input("To continue, you must rewrite the package name and enter "
-                     "it. [package name]: ")
+    if (!clif::input("To continue, you must rewrite the library name and enter "
+                     "it. [library name]: ")
              .compare(pkgName) == 0) {
       clif::log(INFO, "removal cancelled by force");
       return;
