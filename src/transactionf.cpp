@@ -522,7 +522,7 @@ void git(const std::string &command) {
 }
 
 void info(const std::string &repoName) {
-  const std::string suffix = "-metadata.yml";
+  const std::string suffix = "-metadata";
   std::string name = repoName;
 
   if (name.size() >= suffix.size() &&
@@ -532,7 +532,7 @@ void info(const std::string &repoName) {
 
   std::ifstream file(HOME_DIRECTORY / "_sys" / "registry" / (name + suffix));
   if (!file.is_open()) {
-    clif::log(ERROR, "package does not exist");
+    clif::log(ERROR, "library does not exist");
   }
 
   std::string line;
