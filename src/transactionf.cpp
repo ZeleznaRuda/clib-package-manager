@@ -447,10 +447,9 @@ void run() {
 void use_template(const std::string &name) {
   if (!name.empty() &&
       fs::exists(HOME_DIRECTORY / "_sys" / "templates" / name)) {
-    fs::copy(HOME_DIRECTORY / "_sys" / "templates" / name,
-             CURRENT_PATH / stringf::split(name, '#')[0]);
+    fs::copy(HOME_DIRECTORY / "_sys" / "templates" / name, CURRENT_PATH / name);
     clif::log(INFO, "template successfully created: " +
-                        (CURRENT_PATH / stringf::split(name, '#')[0]).string());
+                        (CURRENT_PATH / name).string());
   } else {
 
     clif::log(INFO, "templates:");
