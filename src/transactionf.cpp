@@ -16,9 +16,9 @@ int main(){
     main.close();
     std::ofstream project(CURRENT_PATH / CCLM_FILE);
     project << R"(project(
-	project.name=ctml
-	project.version=2.2.0
-	project.description="html for cpp"
+	project.name=main
+	project.version=1.0.0
+#project.description="..."
 )
 
 build(
@@ -27,7 +27,7 @@ build(
 	build.include-directory="include/"
 	build.source-files=("src/main.cpp")
 	build.output-directory="dist/"
-  #build.included-libraries=()
+#build.included-libraries=()
 )
 )";
     project.close();
