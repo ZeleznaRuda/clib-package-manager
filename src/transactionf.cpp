@@ -1,4 +1,5 @@
 #include "../include/transactionf.h"
+#include "toolsf.h"
 
 namespace transactionf {
 
@@ -54,15 +55,19 @@ int add(int a, int b) {
 
     library.authors=()
     library.license="MIT"
+
+    #library.dependencies=()
+
 )
 
 build(
     build.mode=shared
     build.compiler=g++
     build.cflags=("-O2")
-    #build.dependencies=()
+    
     build.include-directory="include/"
-    build.source-files=("sources/add.cpp))";
+    build.source-files=("sources/add.cpp)
+))";
     library.close();
   }
 }
@@ -247,9 +252,28 @@ void install(const std::string &url, const bool force, const bool local) {
                                    infoData["library.dependencies"]),
                                ", ")
               << ")\n";
-      for (const auto &dep :
-           std::get<std::vector<std::string>>(infoData["library.dependencies"]))
-        exist(dep);
+      for (const auto &dep : std::get<std::vector<std::string>>(
+               infoData["library.dependencies"])) {
+        std::string deptype = stringf::split(dep, '.')[0];
+        std::string depname = stringf::split(dep, '.')[1];
+        if (deptype == "library") {
+          exist(depname);
+        }
+        if (deptype == "tool") {
+          if (sysf({
+                       "command",
+                       "-v",
+                       depname,
+                       ">/dev/null 2>&1",
+                   })
+                  .first == 0) {
+            clif::log(INFO, "dependency tool '" + depname + "' is available.");
+          } else {
+            clif::log(WARN, "dependency tool '" + depname +
+                                "' is \033[1;31mnot\033[0m available");
+          }
+        }
+      }
     }
 
     pkgFile.close();
