@@ -295,7 +295,7 @@ void remove(const std::string &pkgName, bool force) {
               "library '" + pkgName + "' is \033[1;31mnot\033[0m installed.");
   }
   fs::path infoPath =
-      HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata.yml");
+      HOME_DIRECTORY / "_sys" / "registry" / (pkgName + "-metadata");
 
   if (!fs::exists(pkgPath)) {
     clif::log(FATAL, "library '" + pkgName + "' does not exist.");
