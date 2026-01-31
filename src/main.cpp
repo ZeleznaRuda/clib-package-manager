@@ -30,24 +30,19 @@ enum class commands {
   TYPE,
   INFO,
   GIT,
+  CLEAN,
   WEBSITE,
   REPORT,
   UNKNOWN
 };
 static const std::unordered_map<std::string, commands> commandMap = {
-    {"purge", commands::PURGE},
-    {"init", commands::INIT},
-    {"install", commands::INSTALL},
-    {"run", commands::RUN},
-    {"remove", commands::REMOVE},
-    {"template", commands::TEMPLATE},
-    {"search", commands::SEARCH},
-    {"ls", commands::LS},
-    {"type", commands::TYPE},
-    {"info", commands::INFO},
-    {"git", commands::GIT},
-    {"report", commands::REPORT},
-    {"website", commands::WEBSITE},
+    {"purge", commands::PURGE},     {"init", commands::INIT},
+    {"install", commands::INSTALL}, {"run", commands::RUN},
+    {"remove", commands::REMOVE},   {"template", commands::TEMPLATE},
+    {"search", commands::SEARCH},   {"ls", commands::LS},
+    {"type", commands::TYPE},       {"info", commands::INFO},
+    {"clean", commands::CLEAN},     {"git", commands::GIT},
+    {"report", commands::REPORT},   {"website", commands::WEBSITE},
     {"exist", commands::EXIST}
 
 };
@@ -81,6 +76,7 @@ int main(int argc, char *argv[]) {
   add_help("exist", "checks if the library is installed");
   add_help("ls", "print a list of installed libraries");
   add_help("info", "print package information");
+  add_help("clean", "clean unnecessary files");
   // add_help("type", "print what type is the ccfile.yml");
   add_help("git", "git command wrapper (for debugging purposes)");
   add_help("report", "report a library");
@@ -156,6 +152,10 @@ int main(int argc, char *argv[]) {
 
   case commands::INFO:
     info(argvparser::get_argument_after({cmd}));
+    break;
+
+  case commands::CLEAN:
+    clean();
     break;
 
   case commands::GIT:

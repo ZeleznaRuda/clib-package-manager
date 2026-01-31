@@ -1,5 +1,7 @@
 #include "../include/transactionf.h"
+#include "constants.h"
 #include "toolsf.h"
+#include <filesystem>
 
 namespace transactionf {
 
@@ -144,6 +146,7 @@ void install(const std::string &url, const bool force, const bool local) {
         (std::get<std::string>(infoData["build.compiler"]) == "gcc") ? GCC_PATH
         : (std::get<std::string>(infoData["build.compiler"]) == "g++")
             ? GXX_PATH
+
             : "";
     std::string mode = std::get<std::string>(infoData["build.mode"]);
     std::string includeDirectory =
@@ -280,7 +283,7 @@ void install(const std::string &url, const bool force, const bool local) {
     clif::log(INFO, "record successfully created");
 
   } catch (fs::filesystem_error &e) {
-    clif::log(FATAL, std::string("error: ") + e.what() + "\n");
+    clif::log(FATAL, std::string("filesystem error: ") + e.what() + "\n");
   }
 
   clif::log(INFO, "library installed successfully");
@@ -440,7 +443,7 @@ void run() {
       clif::log(INFO, "program run successfully");
     }
   } catch (const fs::filesystem_error &e) {
-    clif::log(FATAL, std::string("file system error: ") + e.what(), 2);
+    clif::log(FATAL, std::string("filesystem error: ") + e.what(), 2);
   }
 }
 
@@ -462,6 +465,26 @@ void use_template(const std::string &name) {
     if (!name.empty()) {
       clif::log(ERROR, "template '" + name + "' does not exist");
     }
+  }
+}
+
+void clean() {
+  try {
+    for (const auto &entry : fs::directory_iterator(HOME_DIRECTORY / "_sys")) {
+      std::string file = entry.path().string();
+      if (stringf::ends_with(file, ".tmp")) {
+        fs::remove_all(file);
+      }
+    }
+    for (const auto &entry :
+         fs::directory_iterator(HOME_DIRECTORY / "_sys" / "logs")) {
+      std::string file = entry.path().string();
+      if (stringf::ends_with(file, ".log")) {
+        fs::remove(file);
+      }
+    }
+  } catch (const fs::filesystem_error &e) {
+    clif::log(FATAL, std::string("filesystem error: ") + e.what(), 2);
   }
 }
 

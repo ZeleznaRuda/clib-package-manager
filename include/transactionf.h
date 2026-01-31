@@ -27,6 +27,7 @@ void use_template(const std::string &name);
 void search(const std::string &repoName);
 void git(const std::string &command);
 void info(const std::string &repoName);
+void clean();
 void ls();
 void type();
 void report(const std::string &url);
