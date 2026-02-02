@@ -5,7 +5,7 @@
 
 namespace transactionf {
 
-void init(const bool lib) {
+void init(const bool lib, const bool git) {
   if (!lib) {
     fs::create_directory(CURRENT_PATH / "dist");
     fs::create_directory(CURRENT_PATH / "src");
@@ -71,6 +71,9 @@ build(
     build.source-files=("sources/add.cpp)
 ))";
     library.close();
+  }
+  if (git && sysf({GIT_PATH, "init", CURRENT_PATH.string()}).first != 0) {
+    clif::log(WARN, "git initalizon failed, bruh");
   }
 }
 

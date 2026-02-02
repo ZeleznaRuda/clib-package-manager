@@ -18,7 +18,7 @@
 #include "../include/yamlf.h"
 
 namespace transactionf {
-void init(const bool lib = false);
+void init(const bool lib = false, const bool git = false);
 void install(const std::string &url, bool force = false,
              const bool local = false);
 void remove(const std::string &pkgName, bool force = false);

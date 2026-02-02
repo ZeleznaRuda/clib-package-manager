@@ -66,6 +66,7 @@ int main(int argc, char *argv[]) {
   bool _url = false;
   bool _lib = false;
   bool _local = false;
+  bool _git = false;
 
   add_help("init", "initalizon the cclm project");
   add_help("install", "install library\t\t\t(supports the '-f' flag)");
@@ -94,6 +95,10 @@ int main(int argc, char *argv[]) {
       {"-L", "--lib"}, [&_lib]() { _lib = true; },
       "switch for init mode to library");
   define_argument(
+      {"-g", "--git"}, [&_git]() { _git = true; },
+      "switch for init git auto initalizon");
+
+  define_argument(
       {"-l", "--local"}, [&_local]() { _local = true; },
       "switch for install to local mode");
   define_argument(
@@ -118,7 +123,7 @@ int main(int argc, char *argv[]) {
     break;
 
   case commands::INIT:
-    init(_lib);
+    init(_lib, _git);
     break;
 
   case commands::INSTALL:
