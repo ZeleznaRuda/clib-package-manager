@@ -92,6 +92,7 @@ void install(const std::string &url, const bool force, const bool local) {
       return;
     }
   }
+  clif::log(INFO, "installing library from '" + url + "'");
 
   fs::path tmpPath =
       HOME_DIRECTORY / "_sys" / (std::to_string(std::time(nullptr)) + ".tmp");
@@ -116,12 +117,11 @@ void install(const std::string &url, const bool force, const bool local) {
       "library.name",      "library.version", "library.description",
       "build.compiler",    "build.mode",      "build.include-directory",
       "build.source-files"};
-
   /*if (std::get<std::string>(infoData["@"]) != "# @library") {
-    clif::log(
-        FATAL,
-        "this library cannot be installed (try changing the project type).");
-  }*/
+  clif::log(
+      FATAL,
+      "this library cannot be installed (try changing the project type).");
+}*/
 
   for (const auto &key : requiredKeys) {
     if (infoData.find(key) == infoData.end())
@@ -577,6 +577,34 @@ void ls() {
     if (name == "_sys")
       continue;
     std::cout << "-\t" << name << std::endl;
+  }
+}
+void Export() {
+  std::ofstream exportfile(CURRENT_PATH / "library_export.txt");
+  exportfile << "export=(";
+  for (const auto &entry :
+       fs::directory_iterator(HOME_DIRECTORY / "_sys" / "registry")) {
+    yaml_t infoData = yaml::parser(yaml::read(entry));
+    std::string origin = std::get<std::string>(infoData["origin"]);
+    /*std::string name = std::get<std::string>(infoData["name"]);
+    std::string ver = std::get<std::string>(infoData["version"]);*/
+
+    exportfile << "\"" << origin
+               << /*" name." << name << "@" << ver <<*/ "\" ,";
+  }
+  exportfile << ")";
+  exportfile.close();
+}
+
+void import(const fs::path &path) {
+  /*if (path.string().empty()) {
+    path = CURRENT_PATH / "lib-exports";
+  }*/
+  yaml_t exportData = yaml::parser(yaml::read(path));
+  std::vector<std::string> exports =
+      std::get<std::vector<std::string>>(exportData["export"]);
+  for (auto &exportItem : exports) {
+    install(exportItem, true, false);
   }
 }
 

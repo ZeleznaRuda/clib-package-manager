@@ -33,4 +33,6 @@ void type();
 void report(const std::string &url);
 void website(const std::string &pkgName);
 void exist(const std::string &pkgName);
+void Export();
+void import(const fs::path &path);
 } // namespace transactionf

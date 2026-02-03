@@ -33,6 +33,8 @@ enum class commands {
   CLEAN,
   WEBSITE,
   REPORT,
+  EXPORT,
+  IMPORT,
   UNKNOWN
 };
 static const std::unordered_map<std::string, commands> commandMap = {
@@ -43,7 +45,8 @@ static const std::unordered_map<std::string, commands> commandMap = {
     {"type", commands::TYPE},       {"info", commands::INFO},
     {"clean", commands::CLEAN},     {"git", commands::GIT},
     {"report", commands::REPORT},   {"website", commands::WEBSITE},
-    {"exist", commands::EXIST}
+    {"exist", commands::EXIST},     {"export", commands::EXPORT},
+    {"import", commands::IMPORT},
 
 };
 
@@ -153,6 +156,12 @@ int main(int argc, char *argv[]) {
     break;
   case commands::LS:
     ls();
+    break;
+  case commands::EXPORT:
+    Export();
+    break;
+  case commands::IMPORT:
+    import(argvparser::get_argument_after({cmd}));
     break;
 
   case commands::INFO:
