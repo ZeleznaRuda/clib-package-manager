@@ -35,6 +35,7 @@ enum class commands {
   REPORT,
   EXPORT,
   IMPORT,
+  CLONE,
   UNKNOWN
 };
 static const std::unordered_map<std::string, commands> commandMap = {
@@ -46,7 +47,7 @@ static const std::unordered_map<std::string, commands> commandMap = {
     {"clean", commands::CLEAN},     {"git", commands::GIT},
     {"report", commands::REPORT},   {"website", commands::WEBSITE},
     {"exist", commands::EXIST},     {"export", commands::EXPORT},
-    {"import", commands::IMPORT},
+    {"import", commands::IMPORT},   {"clone", commands::CLONE},
 
 };
 
@@ -91,6 +92,7 @@ int main(int argc, char *argv[]) {
            "can import (install) libraries from library_export.txt or other");
 
   add_help("purge", "uninstalls the application and removes all its traces.");
+  add_help("clone", "clone from git repository.");
 
   define_argument(
       {"-u", "--url"}, [&_url]() { _url = true; },
@@ -145,9 +147,18 @@ int main(int argc, char *argv[]) {
   case commands::REMOVE:
     remove(argvparser::get_argument_after({cmd}), _force);
     break;
+
   case commands::RUN:
     run();
     break;
+
+  case commands::CLONE:
+    if (!_url && argvparser::has_argument(3)) {
+      clone(repo(argvparser::get_argument(2), argvparser::get_argument(3)));
+      break;
+    }
+    clone(argvparser::get_argument_after({cmd}));
+
   case commands::TEMPLATE:
     use_template(argvparser::get_argument_after({cmd}));
     break;

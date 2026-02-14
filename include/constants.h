@@ -14,6 +14,10 @@ inline const fs::path CURRENT_PATH = fs::current_path();
 inline const std::string CCLM_FILE = std::string(
     std::getenv("CCLM_CCLM_FILE_NAME") ? std::getenv("CCLM_CCLM_FILE_NAME")
                                        : "ccfile");
+inline const fs::path PRIMARY_WEB_BROWSER_PATH =
+    fs::path(std::getenv("CCLM_PRIMARY_WEB_BROWSER_PATH")
+                 ? std::getenv("CCLM_PRIMARY_WEB_BROWSER_PATH")
+                 : "xdg-open"); // dont work :(
 
 inline const fs::path GIT_PATH = fs::path(
     std::getenv("CCLM_GIT_PATH") ? std::getenv("CCLM_GIT_PATH") : "git");

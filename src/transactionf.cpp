@@ -354,6 +354,18 @@ void type() {
   }*/
 }
 
+void clone(const std::string &url) {
+  if (sysf({GIT_PATH, "ls-remote", stringf::escape(url)}).first == 0) {
+    clif::log(INFO, "the repo is accessible");
+  } else {
+    clif::log(FATAL, "repo is not accessible");
+  }
+  clif::log(INFO, "cloneing repo from '" + url + "'");
+  fs::create_directory("cloned-repo.cclm");
+  sysf({GIT_PATH, "clone", stringf::escape(url),
+        stringf::escape(CURRENT_PATH / "cloned-repo.cclm")});
+}
+
 void run() {
   if (!fs::exists(CURRENT_PATH / CCLM_FILE)) {
     clif::log(FATAL, "build file not found");
@@ -521,7 +533,7 @@ void report(const std::string &pkgName) {
   if (stringf::ends_with(url, ".git")) {
     url.erase(url.size() - 4);
   }
-  sysf({"xdg-open", stringf::escape(url + "/issues/new/")});
+  sysf({PRIMARY_WEB_BROWSER_PATH, stringf::escape(url + "/issues/new/")});
 }
 
 void website(const std::string &pkgName) {
@@ -538,7 +550,7 @@ void website(const std::string &pkgName) {
       std::get<std::vector<std::string>>(infoData["websites"]);
 
   for (auto &website : websites) {
-    sysf({"xdg-open", stringf::escape(website)});
+    sysf({PRIMARY_WEB_BROWSER_PATH, stringf::escape(website)});
   }
 }
 

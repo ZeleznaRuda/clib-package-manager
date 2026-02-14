@@ -30,6 +30,7 @@ void info(const std::string &repoName);
 void clean();
 void ls();
 void type();
+void clone(const std::string &url);
 void report(const std::string &url);
 void website(const std::string &pkgName);
 void exist(const std::string &pkgName);
