@@ -3,3 +3,4 @@
 /.cache/*
 compile_commands.json
 /cclm
+/library_export.txt 

@@ -1,8 +1,8 @@
     body {
         font-family: "Segoe UI", Arial, sans-serif;
-        line-height: 1.4;
+        line-height: 1.6;
         background-color: #ecf2f5;
-        color: #000;
+        color: #2d3436;
         margin: 0;
         padding: 0;
     }
@@ -17,7 +17,7 @@
         padding: 0;
     }
     .site-header {
-        padding: 10px 10px;
+        padding: 16px 24px;
         background-color: #0073bf;
     }
     .header-top {
@@ -47,7 +47,7 @@
         color: #2d3436;
         margin-top: 40px;
         padding: 16px 24px;
-        /*! border-top: 10px solid #0073bf; */
+        border-top: 10px solid #0073bf;
     }
     .header-nav {
         margin-top: 10px;
@@ -59,16 +59,15 @@
 
     .header-nav a {
         color: #ffffff;
-        font-weight: 700;
         text-decoration: none;
-        /*! padding: 4px 6px; */
+        padding: 4px 6px;
         border-radius: 4px;
         transition: color 0.2s ease, background-color 0.2s ease;
     }
 
     .header-nav a:hover {
         color: #ffffff;
-        /*!background-color: rgba(60, 135, 190, 0.60) */
+        background-color: rgba(60, 135, 190, 0.60)
     }
 
     table {

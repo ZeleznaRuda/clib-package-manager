@@ -85,6 +85,10 @@ int main(int argc, char *argv[]) {
   add_help("git", "git command wrapper (for debugging purposes)");
   add_help("report", "report a library");
   add_help("website", "open websites of the library");
+  add_help("export", "creates an export file containing the URL address for "
+                     "installing libraries (sum file)");
+  add_help("import",
+           "can import (install) libraries from library_export.txt or other");
 
   add_help("purge", "uninstalls the application and removes all its traces.");
 
