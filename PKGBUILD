@@ -1,6 +1,6 @@
 # Maintainer: Rudolf Muller
 pkgname=cclm
-pkgver=6.9.0
+pkgver=6.10.1
 pkgrel=1
 pkgdesc="CCLM C/C++ Library manager - POSIX Only"
 arch=('x86_64')
@@ -12,11 +12,11 @@ source=("cclm-$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-  cmake -S . -B build
-  cmake --build build
+	cmake -S . -B build
+	cmake --build build
 }
 
 package() {
-  install -Dm755 build/cclm "$pkgdir/usr/bin/cclm"
-  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm755 build/cclm "$pkgdir/usr/bin/cclm"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

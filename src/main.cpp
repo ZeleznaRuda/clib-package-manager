@@ -158,6 +158,7 @@ int main(int argc, char *argv[]) {
       break;
     }
     clone(argvparser::get_argument_after({cmd}));
+    break;
 
   case commands::TEMPLATE:
     use_template(argvparser::get_argument_after({cmd}));
